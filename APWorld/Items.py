@@ -68,7 +68,7 @@ item_table: Dict[str, MinitItemData] = {
         classification=ItemClassification.progression),
     "ItemGrinder": MinitItemData(
         code=60017,
-        #is filler?
+        #is filler? no lets you kill boxes with a sword swipe
         classification=ItemClassification.progression),
     "ItemTrophy": MinitItemData(
         code=60018,
