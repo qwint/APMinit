@@ -30,26 +30,27 @@ location_table = {
         #hidden - coffee
         code=CODENUMBER,
         region="Hotel Room",),
-    "REGION - ItemKey": MinitLocationData(
-        #logic: 
+    "Dog House - ItemKey": MinitLocationData(
+        #logic: Dog House AND sword AND coffee
         code=CODENUMBER,
-        region="REGION",),
+        region="Dog House",),
     "Dog House - ItemWateringCan": MinitLocationData(
         #logic: Dog House AND sword
         code=CODENUMBER,
         region="Dog House",),
-    "REGION - ItemThrow": MinitLocationData(
-        #logic: 
+    "Desert RV - ItemThrow": MinitLocationData(
+        #logic: Desert RV AND sword
         code=CODENUMBER,
-        region="REGION",),
+        region="Desert RV",),
     "Desert RV - ItemShoes": MinitLocationData(
         #logic: Desert RV AND 7 "coin"
         code=CODENUMBER,
         region="Desert RV",),
-    "REGION - ItemGlove": MinitLocationData(
-        #logic: 
+    "Desert RV - ItemGlove": MinitLocationData(
+        #logic: Desert RV AND wateringCan
+        #alt logic: Dog House AND (sword AND glove) OR swim
         code=CODENUMBER,
-        region="REGION",),
+        region="Desert RV",),
     "Dog house - ItemBoat": MinitLocationData(
         #logic: Dog House AND sword AND glove
         code=CODENUMBER,
@@ -82,12 +83,12 @@ location_table = {
         #logic: Underground Tent
         code=CODENUMBER,
         region="Underground Tent",),
-    "REGION - itemPressPass": MinitLocationData(
+    "Dog House - itemPressPass": MinitLocationData(
         #logic: Dog House AND sword AND coffee AND throw
         #alt logic: Hotel Room AND sword AND grinder AND glove
         #alt logic: Hotel Room AND canTank(lots)
         code=CODENUMBER,
-        region="REGION",),
+        region="Dog House",),
     "Dog House - House Pot Coin": MinitLocationData(
         #coin1
         #logic: Dog House AND sword
@@ -148,11 +149,11 @@ location_table = {
         #logic: Hotel Room AND sword AND grinder 
         code=CODENUMBER,
         region="Hotel Room",),
-    "REGION - Broken Truck": MinitLocationData(
+    "Desert RV - Broken Truck": MinitLocationData(
         #coin13
-        #logic: ? need to check timer restrictions, maybe hotel maybe desert?
+        #logic: Desert RV AND sword
         code=CODENUMBER,
-        region="REGION",),
+        region="Desert RV",),
     "Hotel Room - Inside Truck": MinitLocationData(
         #coin14
         #logic: Hotel Room AND sword AND pressPass AND bridge()
