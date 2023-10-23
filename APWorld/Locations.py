@@ -13,155 +13,251 @@ class MinitLocationData(NamedTuple):
 location_table = {
 
     "Dog House - ItemCoffee": MinitLocationData(
+        #logic: Dog House AND sword
         code=CODENUMBER,
         region="Dog House",),
     "Dog House - ItemFlashLight": MinitLocationData(
+        #logic: Dog House AND ItemKEY
         code=CODENUMBER,
         region="Dog House",),
     "Hotel Room - ItemSwim": MinitLocationData(
+        #logic: Hotel Room AND savedResidents(
+        #swimmer - true
+        #hostage - sword
+        #wallet - coffee AND sword AND glove
+        #ninja - sword AND glove
+        #bridge - darkroom? AND throw 
+        #hidden - coffee
         code=CODENUMBER,
         region="Hotel Room",),
     "REGION - ItemKey": MinitLocationData(
+        #logic: 
         code=CODENUMBER,
         region="REGION",),
     "Dog House - ItemWateringCan": MinitLocationData(
+        #logic: Dog House AND sword
         code=CODENUMBER,
         region="Dog House",),
     "REGION - ItemThrow": MinitLocationData(
+        #logic: 
         code=CODENUMBER,
         region="REGION",),
     "Desert RV - ItemShoes": MinitLocationData(
+        #logic: Desert RV AND 7 "coin"
         code=CODENUMBER,
         region="Desert RV",),
     "REGION - ItemGlove": MinitLocationData(
+        #logic: 
         code=CODENUMBER,
         region="REGION",),
     "Dog house - ItemBoat": MinitLocationData(
+        #logic: Dog House AND sword AND glove
         code=CODENUMBER,
-        region="Dog house",),
+        region="Dog House",),
     "REGION - ItemCamera": MinitLocationData(
+        #logic: 
         code=CODENUMBER,
         region="REGION",),
-    "REGION - ItemBasement": MinitLocationData(
+    "Dog House - ItemBasement": MinitLocationData(
+        #logic: Dog House AND sword AND glove AND madeboat(boatwood and watered guy?)
         code=CODENUMBER,
-        region="REGION",),
+        region="Dog House",),
     "REGION - itemMegaSword": MinitLocationData(
+        #logic: 
         code=CODENUMBER,
         region="REGION",),
     "REGION - ItemBrokenSword": MinitLocationData(
+        #logic: 
         code=CODENUMBER,
         region="REGION",),
-    "REGION - ItemTurboInk": MinitLocationData(
+    "Desert RV - ItemTurboInk": MinitLocationData(
+        #logic: Desert RV AND 8 "tentacle"
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - ItemGrinder": MinitLocationData(
+        region="Desert RV",),
+    "Hotel Room - ItemGrinder": MinitLocationData(
+        #logic: Hotel Room AND coffee
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - ItemTrophy": MinitLocationData(
+        region="Hotel Room",),
+    "Underground Tent - ItemTrophy": MinitLocationData(
+        #logic: Underground Tent
         code=CODENUMBER,
-        region="REGION",),
+        region="Underground Tent",),
     "REGION - itemPressPass": MinitLocationData(
+        #logic: Dog House AND sword AND coffee AND throw
+        #alt logic: Hotel Room AND sword AND grinder AND glove
+        #alt logic: Hotel Room AND canTank(lots)
         code=CODENUMBER,
         region="REGION",),
-    "REGION - coin01": MinitLocationData(
+    "Dog House - House Pot Coin": MinitLocationData(
+        #coin1
+        #logic: Dog House AND sword
+        code=CODENUMBER,
+        region="Dog House",),
+    "Dog House - Sewer Island Coin": MinitLocationData(
+        #coin2
+        #logic: Dog House AND sword AND darkroom
+        code=CODENUMBER,
+        region="Dog House",),
+    "Dog House - Sewer Coin": MinitLocationData(
+        #coin3
+        #logic: Dog House AND sword AND darkroom
+        code=CODENUMBER,
+        region="Dog House",),
+    "Dog House - Land is Great Coin": MinitLocationData(
+        #coin4
+        #logic: Dog House AND sword AND (coffee OR swim)
+        code=CODENUMBER,
+        region="Dog House",),
+    "Dog House - Hidden Snake Coin": MinitLocationData(
+        #coin5
+        #logic: Dog House AND sword AND darkroom
+        code=CODENUMBER,
+        region="Dog House",),
+    "Dog House - Waterfall Coin": MinitLocationData(
+        #coin6
+        #logic: Dog House AND swim
+        code=CODENUMBER,
+        region="Dog House",),
+    "Dog House - Treasure Island Coin": MinitLocationData(
+        #coin7
+        #logic: Dog House AND swim
+        code=CODENUMBER,
+        region="Dog House",),
+    "Desert RV - Temple Coin": MinitLocationData(
+        #coin8
+        #logic: Desert RV AND ?
+        code=CODENUMBER,
+        region="Desert RV",),
+    "Desert RV - Fire Bat Coin": MinitLocationData(
+        #coin9
+        #logic: Desert RV AND wateringCan
+        code=CODENUMBER,
+        region="Desert RV",),
+    "Desert RV - Truck Supplies Coin": MinitLocationData(
+        #coin10
+        #logic: Desert RV AND sword
+        code=CODENUMBER,
+        region="Desert RV",),
+    "Hotel Room - Shrub Arena Coin": MinitLocationData(
+        #coin11
+        #logic: Hotel Room AND sword
+        code=CODENUMBER,
+        region="Hotel Room",),
+    "Hotel Room - Miner's Chest Coin": MinitLocationData(
+        #coin12
+        #logic: Hotel Room AND sword AND grinder 
+        code=CODENUMBER,
+        region="Hotel Room",),
+    "REGION - Broken Truck": MinitLocationData(
+        #coin13
+        #logic: ? need to check timer restrictions, maybe hotel maybe desert?
         code=CODENUMBER,
         region="REGION",),
-    "REGION - coin02": MinitLocationData(
+    "Hotel Room - Inside Truck": MinitLocationData(
+        #coin14
+        #logic: Hotel Room AND sword AND pressPass AND bridge(darkroom? AND sword AND throw)
+        #alt logic: Desert RV AND grinder
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin03": MinitLocationData(
+        region="Hotel Room",),
+    "Hotel Room - Queue": MinitLocationData(
+        #coin15
+        #logic: Hotel Room AND (bridge(darkroom? AND sword AND throw) OR flippers)
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin04": MinitLocationData(
+        region="Hotel Room",),
+    "Desert RV - Quicksand Coin": MinitLocationData(
+        #coin16
+        #logic: Desert RV AND sword?
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin05": MinitLocationData(
+        region="Desert RV",),
+    "Hotel Room - Hotel Backroom Coin": MinitLocationData(
+        #coin17
+        #logic: Hotel Room AND coffee AND sword
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin06": MinitLocationData(
+        region="Hotel Room",),
+    "Hotel Room - Drill Coin": MinitLocationData(
+        #coin18
+        #logic: Hotel Room AND sword AND bridge(darkroom? AND sword AND throw) AND pressPass ?(AND coffee)
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin07": MinitLocationData(
+        region="Hotel Room",),
+    "Desert RV - Dumpster": MinitLocationData(
+        #coin19
+        #logic: Desert RV AND sword
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin08": MinitLocationData(
+        region="Desert RV",),
+    "Dog House - Plant Heart": MinitLocationData(
+        #heartPiece1
+        #logic: Dog House AND wateringCan
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin09": MinitLocationData(
+        region="Dog House",),
+    "Dog House - Bull Heart": MinitLocationData(
+        #heartPiece2
+        #logic: Dog House AND darkroom() AND sword
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin10": MinitLocationData(
+        region="Dog House",),
+    "Desert RV - Temple Heart": MinitLocationData(
+        #heartPiece3
+        #logic: Desert RV AND shoes ?(OR grinder)
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin11": MinitLocationData(
+        region="Desert RV",),
+    "Desert RV - Shop Heart": MinitLocationData(
+        #heartPiece4
+        #logic: Desert RV ?(Basement) AND 19 "coin"
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin12": MinitLocationData(
+        region="Desert RV",),
+    "Hotel Room - Crow Heart": MinitLocationData(
+        #heartPiece5
+        #logic: Hotel Room AND sword AND glove ?(AND coffee)
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin13": MinitLocationData(
+        region="Hotel Room",),
+    "Hotel Room - Dog Heart": MinitLocationData(
+        #heartPiece6
+        #logic: Hotel Room AND sword AND glove AND basement
+        #this logic changes if i rando the bone, don't think i will though
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin14": MinitLocationData(
+        region="Hotel Room",),
+    "Dog House - Boat Tentacle": MinitLocationData(
+        #tentacle1
+        #logic: Dog House AND sword AND madeboat()
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin15": MinitLocationData(
+        region="Dog House",),
+    "Dog House - Treasure Island Tentacle": MinitLocationData(
+        #tentacle2
+        #logic: Dog House AND sword AND swim
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin16": MinitLocationData(
+        region="Dog House",),
+    "Dog House - Sword Toss Tentacle": MinitLocationData(
+        #tentacle3
+        #logic: Dog House AND sword AND coffee AND throw AND glove
+        #note, can get past the bridge guards without throw but still need it for the tentacle
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin17": MinitLocationData(
+        region="Dog House",),
+    "Dog House - Sewer Tentacle": MinitLocationData(
+        #tentacle4
+        #logic: Dog House AND sword AND darkroom? AND swim
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin18": MinitLocationData(
+        region="Dog House",),
+    "Desert RV - Octopus Tentacle": MinitLocationData(
+        #tentacle5
+        #logic: Desert RV AND sword AND swim
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - coin19": MinitLocationData(
+        region="Desert RV",),
+    "Island Shack - Teleporter Tentacle": MinitLocationData(
+        #tentacle6
+        #logic: Island Shack AND sword AND basementKey AND (swim OR throw)
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - heartPiece1": MinitLocationData(
+        region="Island Shack",),
+    "Hotel Room - Cooler Tentacle": MinitLocationData(
+        #tentacle7
+        #logic: Hotel Room AND sword AND pressPass
+        #alt logic: through underground and loading dock without pass but likely req shoes
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - heartPiece2": MinitLocationData(
+        region="Hotel Room",),
+    "Desert RV - Beach Tentacle": MinitLocationData(
+        #tentacle8
+        #logic: Desert RV AND sword
+        #alt logic: Dog House AND sword AND swim
         code=CODENUMBER,
-        region="REGION",),
-    "REGION - heartPiece3": MinitLocationData(
-        code=CODENUMBER,
-        region="REGION",),
-    "REGION - heartPiece4": MinitLocationData(
-        code=CODENUMBER,
-        region="REGION",),
-    "REGION - heartPiece5": MinitLocationData(
-        code=CODENUMBER,
-        region="REGION",),
-    "REGION - heartPiece6": MinitLocationData(
-        code=CODENUMBER,
-        region="REGION",),
-    "REGION - tentacle1": MinitLocationData(
-        code=CODENUMBER,
-        region="REGION",),
-    "REGION - tentacle2": MinitLocationData(
-        code=CODENUMBER,
-        region="REGION",),
-    "REGION - tentacle3": MinitLocationData(
-        code=CODENUMBER,
-        region="REGION",),
-    "REGION - tentacle4": MinitLocationData(
-        code=CODENUMBER,
-        region="REGION",),
-    "REGION - tentacle5": MinitLocationData(
-        code=CODENUMBER,
-        region="REGION",),
-    "REGION - tentacle6": MinitLocationData(
-        code=CODENUMBER,
-        region="REGION",),
-    "REGION - tentacle7": MinitLocationData(
-        code=CODENUMBER,
-        region="REGION",),
-    "REGION - tentacle8": MinitLocationData(
-        code=CODENUMBER,
-        region="REGION",),
+        region="Desert RV",),
 
     #event locations for spending small and big keys from Pseudoregalia
     # "Dilapidated Dungeon - Unlock Door": MinitLocationData(
