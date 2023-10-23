@@ -26,7 +26,7 @@ location_table = {
         #hostage - sword
         #wallet - coffee AND sword AND glove
         #ninja - sword AND glove
-        #bridge - darkroom? AND throw 
+        #bridge - bridge(darkroom? AND sword AND throw)
         #hidden - coffee
         code=CODENUMBER,
         region="Hotel Room",),
@@ -155,18 +155,18 @@ location_table = {
         region="REGION",),
     "Hotel Room - Inside Truck": MinitLocationData(
         #coin14
-        #logic: Hotel Room AND sword AND pressPass AND bridge(darkroom? AND sword AND throw)
+        #logic: Hotel Room AND sword AND pressPass AND bridge()
         #alt logic: Desert RV AND grinder
         code=CODENUMBER,
         region="Hotel Room",),
     "Hotel Room - Queue": MinitLocationData(
         #coin15
-        #logic: Hotel Room AND (bridge(darkroom? AND sword AND throw) OR flippers)
+        #logic: Hotel Room AND (bridge() OR flippers)
         code=CODENUMBER,
         region="Hotel Room",),
     "Desert RV - Quicksand Coin": MinitLocationData(
         #coin16
-        #logic: Desert RV AND sword?
+        #logic: Desert RV
         code=CODENUMBER,
         region="Desert RV",),
     "Hotel Room - Hotel Backroom Coin": MinitLocationData(
@@ -176,7 +176,7 @@ location_table = {
         region="Hotel Room",),
     "Hotel Room - Drill Coin": MinitLocationData(
         #coin18
-        #logic: Hotel Room AND sword AND bridge(darkroom? AND sword AND throw) AND pressPass ?(AND coffee)
+        #logic: Hotel Room AND sword AND bridge() AND pressPass
         code=CODENUMBER,
         region="Hotel Room",),
     "Desert RV - Dumpster": MinitLocationData(
@@ -206,7 +206,7 @@ location_table = {
         region="Desert RV",),
     "Hotel Room - Crow Heart": MinitLocationData(
         #heartPiece5
-        #logic: Hotel Room AND sword AND glove ?(AND coffee)
+        #logic: Hotel Room AND sword AND glove AND coffee
         code=CODENUMBER,
         region="Hotel Room",),
     "Hotel Room - Dog Heart": MinitLocationData(
