@@ -281,18 +281,20 @@ class MinitRules:
         return state.count("Tentacle", self.player) >= count
 
     def set_Minit_rules(self) -> None:
-        multiworld = self.world.multiworld
+        multiworld = self.multiworld
+        rules = MinitRules(multiworld)
+        print(dir(rules))
 
         for region in multiworld.get_regions(self.player):
             for entrance in region.entrances:
-                if entrance.name in self.region_rules:
-                    set_rule(entrance, self.region_rules[entrance.name])
+                if entrance.name in MinitRules.region_rules:
+                    set_rule(entrance, MinitRules.region_rules[entrance.name])
             for location in region.locations:
-                if location.name in self.location_rules:
-                    set_rule(location, self.location_rules[location.name])
+                if location.name in MinitRules.location_rules:
+                    set_rule(location, MinitRules.location_rules[location.name])
 
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player)
-
+    
         #existing Pseudoregalia gomode/completion logic, to copy later if needed
         # set_rule(multiworld.get_location("D S T RT ED M M O   Y", self.player), lambda state:
         #          state.has_all({

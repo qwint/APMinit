@@ -74,8 +74,8 @@ class MinitWorld(World):
     def fill_slot_data(self) -> Dict[str, Any]:
         return {"slot_number": self.player,}
 
-    def set_rules(self) -> None:
-        set_Minit_rules()
+    def set_rules(self):
+        MinitRules.set_Minit_rules(self)
 
     #difficulty settings from Pseudoregalia, won't likely need but may want to reuse
     # def set_rules(self):
