@@ -18,7 +18,7 @@ location_table = {
         code=CODENUMBER,
         region="Dog House",),
     "Dog House - ItemFlashLight": MinitLocationData(
-        #logic: Dog House AND ItemKEY
+        #logic: Dog House AND ItemKey
         code=CODENUMBER,
         region="Dog House",),
     "Dog House - ItemKey": MinitLocationData(
@@ -165,7 +165,7 @@ location_table = {
         region="Desert RV",),
     "Desert RV - Shop Heart": MinitLocationData(
         #heartPiece4
-        #logic: Desert RV ?(Basement) AND 19 "coin"
+        #logic: Desert RV AND 19 "coin" ?(AND Basement) 
         code=CODENUMBER,
         region="Desert RV",),
     "Desert RV - Octopus Tentacle": MinitLocationData(
@@ -213,7 +213,7 @@ location_table = {
         region="Hotel Room",),
     "Hotel Room - Queue": MinitLocationData(
         #coin15
-        #logic: Hotel Room AND (bridge() OR flippers)
+        #logic: Hotel Room AND (bridge() OR swim)
         code=CODENUMBER,
         region="Hotel Room",),
     "Hotel Room - Hotel Backroom Coin": MinitLocationData(
