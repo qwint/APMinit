@@ -12,8 +12,8 @@ region_table: Dict[str, List[str]] = {
     "Menu": ["Dog House"],
     "Dog House": ["Island Shack", "Desert RV", "Hotel Room"],
     "Island Shack": ["Basement"],
-    "Desert RV": ["Dog House"],
-    "Hotel Room": ["Dog House"],
-    "Underground Tent": ["Dog House"],
+    "Desert RV": [],
+    "Hotel Room": [],
+    "Underground Tent": [],
     "Basement": ["Dog House", "Island Shack", "Hotel Room"]
 }
