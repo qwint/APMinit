@@ -25,7 +25,7 @@ class MinitRules:
             "Dog House -> Desert RV": lambda state:
                 has_sword(state) and state.has("ItemGlove", self.player)
                 or has_sword(state) and has_darkroom(state)
-                or state.has("ItemSwim", self.player)
+                or state.has("ItemSwim", self.player),
             "Dog House -> Hotel Room": lambda state: 
                 has_sword(state) and state.has("ItemGlove", self.player),
             "Island Shack -> Basement": lambda state:
@@ -36,7 +36,11 @@ class MinitRules:
             #have no idea how to do this btw
             "Basement -> Dog House": lambda state: True,
             "Basement -> Island Shack": lambda state: True,
-            "Basement -> Hotel Room": lambda state: True
+            "Basement -> Hotel Room": lambda state: True,
+            "Hotel Room -> Underground Tent": lambda state: 
+                has_sword(state) and has_darkroom(state) and state.has("ItemGrinder", self.player),
+           "Hotel Room -> Boss Fight": lambda state: 
+                state.has("ItemPressPass", self.player) and self.has_bridge(state)
         }
 
         self.location_rules = {
@@ -119,7 +123,7 @@ class MinitRules:
             "Dog House - Sewer Tentacle": lambda state:
                 #tentacle4
                 #logic: Dog House and sword and darkroom? and swim
-                self.has_sword(state) and self.has_darkroom(state)? and state.has("ItemSwim", self.player),
+                self.has_sword(state) and self.has_darkroom(state) and state.has("ItemSwim", self.player),
 
         #Desert RV
             "Desert RV - ItemThrow": lambda state:
@@ -160,11 +164,11 @@ class MinitRules:
             "Desert RV - Temple Heart": lambda state:
                 #heartPiece3
                 #logic: Desert RV and shoes ?(or grinder)
-                shoes ?(or state.has("ItemGrinder", self.player)),
+                state.has("ItemShoes", self.player) or state.has("ItemGrinder", self.player),
             "Desert RV - Shop Heart": lambda state:
                 #heartPiece4
                 #logic: Desert RV and 19 "coin" ?(and Basement) 
-                self.get_coins(state, 19)?(and Basement) ,
+                self.get_coins(state, 19) and Basement ,
             "Desert RV - Octopus Tentacle": lambda state:
                 #tentacle5
                 #logic: Desert RV and sword and swim
@@ -240,13 +244,17 @@ class MinitRules:
                 #logic: Underground Tent
 
         #Undefined
-            "REGION - ItemCamera": lambda state: False,
+            #"REGION - ItemCamera": lambda state: False,
                 #logic: unwritten/unknown
 
-            "REGION - itemMegaSword": lambda state: False,
+            "REGION - itemMegaSword": lambda state: 
+                self.has_sword(state) and state.has("ItemWateringCan", self.player) and self.has_bridge(state) and state.has("ItemPressPass", self.player)
+            ,
                 #logic: unwritten/unknown
-            "REGION - ItemBrokenSword": lambda state: False,
+            "REGION - ItemBrokenSword": lambda state: True,
                 #logic: unwritten/unknown
+            "Fight the Boss": lambda state: 
+                state.has("ItemMegaSword", self.player)
         }
 
     def has_sword(self, state) -> bool:
@@ -344,6 +352,8 @@ class MinitRules:
             for location in region.locations:
                 if location.name in self.location_rules:
                     set_rule(location, self.location_rules[location.name])
+
+        self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player)
 
         #existing Pseudoregalia gomode/completion logic, to copy later if needed
         # set_rule(multiworld.get_location("D S T RT ED M M O   Y", self.player), lambda state:

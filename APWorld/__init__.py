@@ -1,11 +1,11 @@
 from worlds.AutoWorld import World
 from BaseClasses import Region, Location, Item
-from .items import MinitItem, MinitItemData, item_table, item_frequencies, item_groups
-from .locations import location_table
-from .regions import region_table
+from .Items import MinitItem, MinitItemData, item_table, item_frequencies
+from .Locations import location_table
+from .Regions import region_table
 #from .options import Minit_options
 from worlds.generic.Rules import add_rule, set_rule, forbid_item
-from .rules import MinitRules
+from .Rules import MinitRules
 from typing import Dict, Any
 
 class MinitWorld(World):
@@ -15,7 +15,7 @@ class MinitWorld(World):
     item_name_to_id = {name: data.code for name, data in item_table.items() if data.code is not None}
     location_name_to_id = {name: data.code for name, data in location_table.items() if data.code is not None}
     locked_locations = {name: data for name, data in location_table.items() if data.locked_item}
-    item_name_groups = item_groups
+#    item_name_groups = item_groups
 
 #    option_definitions = Minit_options
 
@@ -73,6 +73,9 @@ class MinitWorld(World):
 
     def fill_slot_data(self) -> Dict[str, Any]:
         return {"slot_number": self.player,}
+
+    def set_rules(self) -> None:
+        set_Minit_rules()
 
     #difficulty settings from Pseudoregalia, won't likely need but may want to reuse
     # def set_rules(self):
