@@ -277,37 +277,4 @@ location_table = {
          region="Boss Fight",
          locked_item="Boss dead",),
 
-    #event locations for spending small and big keys from Pseudoregalia
-    # "Dilapidated Dungeon - Unlock Door": MinitLocationData(
-    #     region="Dungeon Strong Eyes",
-    #     locked_item="Unlocked Door",
-    #     show_in_spoiler=False),
-    # "Castle Sansa - Unlock Door (Professionalism)": MinitLocationData(
-    #     region="Castle Main",
-    #     locked_item="Unlocked Door",
-    #     show_in_spoiler=False),
-    # "Castle Sansa - Unlock Door (Sansa Keep)": MinitLocationData(
-    #     region="Castle Main",
-    #     locked_item="Unlocked Door",
-    #     show_in_spoiler=False),
-    # "Sansa Keep - Unlock Door": MinitLocationData(
-    #     region="Keep Main",
-    #     locked_item="Unlocked Door",
-    #     show_in_spoiler=False),
-    # "Listless Library - Unlock Door": MinitLocationData(
-    #     region="Library Main",
-    #     locked_item="Unlocked Door",
-    #     show_in_spoiler=False),
-    # "Twilight Theatre - Unlock Door": MinitLocationData(
-    #     region="Theatre Main",
-    #     locked_item="Unlocked Door",
-    #     show_in_spoiler=False),
-    # "The Underbelly - Unlock Door": MinitLocationData(
-    #     region="Underbelly Main",
-    #     locked_item="Unlocked Door",
-    #     show_in_spoiler=False),
-
-    # "D S T RT ED M M O   Y": MinitLocationData(
-    #     region="The Great Door",
-    #     locked_item="Something Worth Being Awake For"),
 }
