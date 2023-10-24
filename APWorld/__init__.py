@@ -56,26 +56,26 @@ class MinitWorld(World):
             region.add_exits(exit_list)
 
         #Locked location logic from Pseudoregalia, will likely need for sword
-        # # Place locked locations.
-        # for location_name, location_data in self.locked_locations.items():
-        #     if not location_data.can_create(self.multiworld, self.player):
-        #         continue
+        # Place locked locations.
+        for location_name, location_data in self.locked_locations.items():
+            if not location_data.can_create(self.multiworld, self.player):
+                continue
 
-        #     # Doing this really stupidly because breaker's locking will change after logic rework is done
-        #     if location_name == "Dilapidated Dungeon - Dream Breaker":
-        #         if bool(self.multiworld.progressive_breaker[self.player]):
-        #             locked_item = self.create_item("Progressive Dream Breaker")
-        #             self.multiworld.get_location(location_name, self.player).place_locked_item(locked_item)
-        #             continue
+            # # Doing this really stupidly because breaker's locking will change after logic rework is done
+            # if location_name == "Dilapidated Dungeon - Dream Breaker":
+            #     if bool(self.multiworld.progressive_breaker[self.player]):
+            #         locked_item = self.create_item("Progressive Dream Breaker")
+            #         self.multiworld.get_location(location_name, self.player).place_locked_item(locked_item)
+            #         continue
 
-        #     locked_item = self.create_item(location_table[location_name].locked_item)
-        #     self.multiworld.get_location(location_name, self.player).place_locked_item(locked_item)
+            locked_item = self.create_item(location_table[location_name].locked_item)
+            self.multiworld.get_location(location_name, self.player).place_locked_item(locked_item)
 
     def fill_slot_data(self) -> Dict[str, Any]:
         return {"slot_number": self.player,}
 
-    def set_rules(self) -> None:
-        set_Minit_rules()
+    def set_rules(self):
+        self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player)
 
     #difficulty settings from Pseudoregalia, won't likely need but may want to reuse
     # def set_rules(self):

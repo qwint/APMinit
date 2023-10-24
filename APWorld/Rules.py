@@ -40,8 +40,8 @@ class MinitRules:
             "Basement -> Hotel Room": lambda state: True,
             "Hotel Room -> Underground Tent": lambda state: 
                 has_sword(state) and has_darkroom(state) and state.has("ItemGrinder", self.player),
-           "Hotel Room -> Boss Fight": lambda state: 
-                state.has("ItemPressPass", self.player) and self.has_bridge(state)
+            "Hotel Room -> Boss Fight": lambda state: 
+                state.has("ItemPressPass", self.player) and self.has_bridge(state) and state.has("ItemMegaSword", self.player)
         }
 
         self.location_rules = {
@@ -248,14 +248,14 @@ class MinitRules:
             #"REGION - ItemCamera": lambda state: False,
                 #logic: unwritten/unknown
 
-            "REGION - itemMegaSword": lambda state: 
+            "Hotel Room - ItemMegaSword": lambda state: 
                 self.has_sword(state) and state.has("ItemWateringCan", self.player) and self.has_bridge(state) and state.has("ItemPressPass", self.player)
             ,
                 #logic: unwritten/unknown
             "REGION - ItemBrokenSword": lambda state: True,
                 #logic: unwritten/unknown
-            "Fight the Boss": lambda state: 
-                state.has("ItemMegaSword", self.player)
+            # "Boss dead": lambda state: 
+            #     state.has("ItemMegaSword", self.player)
         }
 
     def has_sword(self, state) -> bool:
@@ -263,7 +263,8 @@ class MinitRules:
     def has_darkroom(self, state) -> bool:
         return state.has_any({"ItemFlashLight"}, self.player)
     def has_savedResidents(self, state) -> bool:
-        return state.has_any({"ItemBrokenSword", "itemMegaSword", "Progressive Sword"}, self.player)
+        #TODO: fix
+        return state.has_any({"ItemBrokenSword", "ItemMegaSword", "Progressive Sword"}, self.player)
     def has_bridge(self, state) -> bool:
         return (has_darkroom(state) and has_sword(state) and state.has_any({"ItemThrow"}, self.player)) or state.has_any({"ItemSwim"}, self.player)
         #needs to be revisited when i know if the bomb room is a darkroom
@@ -281,7 +282,8 @@ class MinitRules:
         return state.count("Tentacle", self.player) >= count
 
     def set_Minit_rules(self) -> None:
-        multiworld = self.world.multiworld
+        multiworld = self.multiworld
+
 
         for region in multiworld.get_regions(self.player):
             for entrance in region.entrances:
@@ -291,7 +293,7 @@ class MinitRules:
                 if location.name in self.location_rules:
                     set_rule(location, self.location_rules[location.name])
 
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player)
+        #self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player)
 
         #existing Pseudoregalia gomode/completion logic, to copy later if needed
         # set_rule(multiworld.get_location("D S T RT ED M M O   Y", self.player), lambda state:
