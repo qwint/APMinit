@@ -120,14 +120,14 @@ class MinitRules:
                 self.has_sword(state),
             "Desert RV - ItemShoes": lambda state:
                 #logic: Desert RV and 7 "coin"
-                7 "coin",
+                self.get_coins(state, 7),
             "Desert RV - ItemGlove": lambda state:
                 #logic: Desert RV and wateringCan
                 state.has("ItemWateringCan", self.player),
                 #alt logic: Dog House and (sword and glove) or swim
             "Desert RV - ItemTurboInk": lambda state:
                 #logic: Desert RV and 8 "tentacle"
-                8 "tentacle",
+                self.get_tentacles(state, 8),
             "Desert RV - Temple Coin": lambda state: True,
                 #coin8
                 #logic: Desert RV and ?
@@ -157,7 +157,7 @@ class MinitRules:
             "Desert RV - Shop Heart": lambda state:
                 #heartPiece4
                 #logic: Desert RV and 19 "coin" ?(and Basement) 
-                19 "coin" ?(and Basement) ,
+                self.get_coins(state, 19)?(and Basement) ,
             "Desert RV - Octopus Tentacle": lambda state:
                 #tentacle5
                 #logic: Desert RV and sword and swim
@@ -254,7 +254,15 @@ class MinitRules:
     def has_madeboat(self, state) -> bool:
         return state.has_any({"ItemBoat"}, self.player) and state.has_any({"ItemWateringCan"}, self.player)
         #needs to be revisited when i'm sure what spawns boatman
+    def can_openChest(self, state) -> bool:
+        return state.has_any({"ItemWateringCan"}, self.player) or has_sword(state)
+        #need to double check what can all open chests
+        #TODO: apply this
 
+    def get_coins(self, state, count: int) -> bool:
+        return state.count("Coin", self.player) >= count
+    def get_tentacles(self, state, count: int) -> bool:
+        return state.count("Tentacle", self.player) >= count
 
     #existing Pseudoregalia shortcut methods, to copy later if needed
     # def has_breaker(self, state) -> bool:
