@@ -56,7 +56,7 @@ item_table: Dict[str, MinitItemData] = {
     "ItemBasement": MinitItemData(
         code=60013,
         classification=ItemClassification.progression),
-    "itemMegaSword": MinitItemData(
+    "ItemMegaSword": MinitItemData(
         code=60014,
         classification=ItemClassification.progression),
     "ItemBrokenSword": MinitItemData(
@@ -73,13 +73,13 @@ item_table: Dict[str, MinitItemData] = {
     "ItemTrophy": MinitItemData(
         code=60018,
         classification=ItemClassification.filler),
-    "itemPressPass": MinitItemData(
+    "ItemPressPass": MinitItemData(
         code=60019,
         classification=ItemClassification.progression),
 
 
-    "Boss dead": MinitItemData(
-        classification=ItemClassification.progression),
+#    "Boss dead": MinitItemData(
+#        classification=ItemClassification.progression),
 
 #stolen events from pseudoregalia for gomode and game completion respectivly
 #    "Unlocked Door": MinitItemData(

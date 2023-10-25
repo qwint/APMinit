@@ -22,15 +22,15 @@ class MinitRules:
         self.region_rules = {
             "Menu -> Dog House": lambda state: True,
             "Dog House -> Island Shack": lambda state: 
-                has_madeboat(state),
+                self.has_madeboat(state),
             "Dog House -> Desert RV": lambda state:
-                has_sword(state) and state.has("ItemGlove", self.player)
-                or has_sword(state) and has_darkroom(state)
+                self.has_sword(state) and state.has("ItemGlove", self.player)
+                or self.has_sword(state) and self.has_darkroom(state)
                 or state.has("ItemSwim", self.player),
             "Dog House -> Hotel Room": lambda state: 
-                has_sword(state) and state.has("ItemGlove", self.player),
+                self.has_sword(state) and state.has("ItemGlove", self.player),
             "Island Shack -> Basement": lambda state:
-                has_sword(state) and state.has("ItemBasement", self.player),
+                self.has_sword(state) and state.has("ItemBasement", self.player),
             #"Desert RV -> Dog House": lambda state: True,
             #"Hotel Room -> Dog House": lambda state: True,
             #"Underground Tent -> Dog House": lambda state: True,
@@ -39,9 +39,9 @@ class MinitRules:
             "Basement -> Island Shack": lambda state: True,
             "Basement -> Hotel Room": lambda state: True,
             "Hotel Room -> Underground Tent": lambda state: 
-                has_sword(state) and has_darkroom(state) and state.has("ItemGrinder", self.player),
+                self.has_sword(state) and self.has_darkroom(state) and state.has("ItemGrinder", self.player),
             "Hotel Room -> Boss Fight": lambda state: 
-                state.has("ItemPressPass", self.player) and self.has_bridge(state) and state.has("ItemMegaSword", self.player)
+                state.has("ItemPressPass", self.player) and self.has_bridge(state) and state.has("ItemMegaSword", self.player),
         }
 
         self.location_rules = {
@@ -107,7 +107,7 @@ class MinitRules:
             "Dog House - Bull Heart": lambda state:
                 #heartPiece2
                 #logic: Dog House and darkroom() and sword
-                self.has_darkroom(state)() and self.has_sword(state),
+                self.has_darkroom(state) and self.has_sword(state),
             "Dog House - Boat Tentacle": lambda state:
                 #tentacle1
                 #logic: Dog House and sword and madeboat()
@@ -169,7 +169,7 @@ class MinitRules:
             "Desert RV - Shop Heart": lambda state:
                 #heartPiece4
                 #logic: Desert RV and 19 "coin" ?(and Basement) 
-                self.get_coins(state, 19) and Basement ,
+                self.get_coins(state, 19) and state.has("ItemBasement", self.player) ,
             "Desert RV - Octopus Tentacle": lambda state:
                 #tentacle5
                 #logic: Desert RV and sword and swim
@@ -266,13 +266,13 @@ class MinitRules:
         #TODO: fix
         return state.has_any({"ItemBrokenSword", "ItemMegaSword", "Progressive Sword"}, self.player)
     def has_bridge(self, state) -> bool:
-        return (has_darkroom(state) and has_sword(state) and state.has_any({"ItemThrow"}, self.player)) or state.has_any({"ItemSwim"}, self.player)
+        return (self.has_darkroom(state) and self.has_sword(state) and state.has_any({"ItemThrow"}, self.player)) or state.has_any({"ItemSwim"}, self.player)
         #needs to be revisited when i know if the bomb room is a darkroom
     def has_madeboat(self, state) -> bool:
         return state.has_any({"ItemBoat"}, self.player) and state.has_any({"ItemWateringCan"}, self.player)
         #needs to be revisited when i'm sure what spawns boatman
     def can_openChest(self, state) -> bool:
-        return state.has_any({"ItemWateringCan"}, self.player) or has_sword(state)
+        return state.has_any({"ItemWateringCan"}, self.player) or self.has_sword(state)
         #need to double check what can all open chests
         #TODO: apply this
 
@@ -282,7 +282,7 @@ class MinitRules:
         return state.count("Tentacle", self.player) >= count
 
     def set_Minit_rules(self) -> None:
-        multiworld = self.multiworld
+        multiworld = self.world.multiworld
 
 
         for region in multiworld.get_regions(self.player):
