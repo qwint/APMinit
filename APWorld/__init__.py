@@ -76,9 +76,9 @@ class MinitWorld(World):
 
     def set_rules(self):
         print("setting Minit Rules")
-        def rules = MinitRules(self)
-        rules.set_Minit_rules()
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("ItemPressPass", self.player) and rules.has_bridge(state) and state.has("ItemMegaSword", self.player)
+        miniRules = MinitRules(self)
+        miniRules.set_Minit_rules()
+        self.multiworld.completion_condition[self.player] = lambda state: state.has("ItemPressPass", self.player) and miniRules.has_bridge(state) and state.has("ItemMegaSword", self.player)
         #state.has("Boss dead", self.player)
 
     #difficulty settings from Pseudoregalia, won't likely need but may want to reuse
