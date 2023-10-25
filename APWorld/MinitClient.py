@@ -8,6 +8,8 @@ from NetUtils import decode, encode, JSONtoTextParser, JSONMessagePart, NetworkI
 from MultiServer import Endpoint
 from CommonClient import CommonContext, gui_enabled, ClientCommandProcessor, logger, get_base_parser
 
+import os
+
 DEBUG = False
 GAMENAME = "Minit"
 ITEMS_HANDLING = 0b111
@@ -234,4 +236,40 @@ if __name__ == '__main__':
     import colorama
     colorama.init()
     asyncio.run(main())
+    colorama.deinit()
+
+def launch():
+    import colorama
+    global executable, server_settings, server_args
+    colorama.init()
+
+    # if server_settings:
+    #     server_settings = os.path.abspath(server_settings)
+    # if not isinstance(options["factorio_options"]["filter_item_sends"], bool):
+    #     logging.warning(f"Warning: Option filter_item_sends should be a bool.")
+    # initial_filter_item_sends = bool(options["factorio_options"]["filter_item_sends"])
+    # if not isinstance(options["factorio_options"]["bridge_chat_out"], bool):
+    #     logging.warning(f"Warning: Option bridge_chat_out should be a bool.")
+    # initial_bridge_chat_out = bool(options["factorio_options"]["bridge_chat_out"])
+
+    # if not os.path.exists(os.path.dirname(executable)):
+    #     raise FileNotFoundError(f"Path {os.path.dirname(executable)} does not exist or could not be accessed.")
+    # if os.path.isdir(executable):  # user entered a path to a directory, let's find the executable therein
+    #     executable = os.path.join(executable, "factorio")
+    # if not os.path.isfile(executable):
+    #     if os.path.isfile(executable + ".exe"):
+    #         executable = executable + ".exe"
+    #     else:
+    #         raise FileNotFoundError(f"Path {executable} is not an executable file.")
+
+    if server_settings and os.path.isfile(server_settings):
+        server_args = (
+            "--rcon-port", rcon_port,
+            "--rcon-password", rcon_password,
+            "--server-settings", server_settings,
+            *rest)
+    else:
+        server_args = ("--rcon-port", rcon_port, "--rcon-password", rcon_password, *rest)
+
+    asyncio.run(main(args, initial_filter_item_sends, initial_bridge_chat_out))
     colorama.deinit()

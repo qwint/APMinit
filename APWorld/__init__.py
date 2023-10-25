@@ -7,6 +7,16 @@ from .Regions import region_table
 from worlds.generic.Rules import add_rule, set_rule, forbid_item
 from .Rules import MinitRules
 from typing import Dict, Any
+from worlds.LauncherComponents import Component, components, Type, launch_subprocess
+
+
+def launch_client():
+    from .MinitClient import launch
+    launch_subprocess(launch, name="MinitClient")
+
+
+components.append(Component("Minit Client", "MinitClient", func=launch_client, component_type=Type.CLIENT))
+
 
 class MinitWorld(World):
     game = "Minit"
