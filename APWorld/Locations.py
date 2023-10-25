@@ -44,37 +44,37 @@ location_table = {
         code=60606,
         region="Dog House",),
     "Dog House - House Pot Coin": MinitLocationData(
-        #coin1
+        #coin1 - coin
         #logic: Dog House AND sword
         code=60607,
         region="Dog House",),
     "Dog House - Sewer Island Coin": MinitLocationData(
-        #coin2
+        #coin2 - chest
         #logic: Dog House AND sword AND darkroom
         code=60608,
         region="Dog House",),
     "Dog House - Sewer Coin": MinitLocationData(
-        #coin3
+        #coin3 - chest
         #logic: Dog House AND sword AND darkroom
         code=60609,
         region="Dog House",),
     "Dog House - Land is Great Coin": MinitLocationData(
-        #coin4
+        #coin4 - chest
         #logic: Dog House AND sword AND (coffee OR swim)
         code=60610,
         region="Dog House",),
     "Dog House - Hidden Snake Coin": MinitLocationData(
-        #coin5
+        #coin5 - chest
         #logic: Dog House AND sword AND darkroom
         code=60611,
         region="Dog House",),
     "Dog House - Waterfall Coin": MinitLocationData(
-        #coin6
+        #coin6 - chest
         #logic: Dog House AND swim
         code=60612,
         region="Dog House",),
     "Dog House - Treasure Island Coin": MinitLocationData(
-        #coin7
+        #coin7 - chest
         #logic: Dog House AND swim
         code=60613,
         region="Dog House",),
@@ -129,32 +129,32 @@ location_table = {
         code=60623,
         region="Desert RV",),
     "Desert RV - Temple Coin": MinitLocationData(
-        #coin8
+        #coin8 - chest
         #logic: Desert RV AND ?
         code=60624,
         region="Desert RV",),
     "Desert RV - Fire Bat Coin": MinitLocationData(
-        #coin9
+        #coin9 - chest
         #logic: Desert RV AND wateringCan
         code=60625,
         region="Desert RV",),
     "Desert RV - Truck Supplies Coin": MinitLocationData(
-        #coin10
+        #coin10 - chest
         #logic: Desert RV AND sword
         code=60626,
         region="Desert RV",),
     "Desert RV - Broken Truck": MinitLocationData(
-        #coin13
+        #coin13 - chest
         #logic: Desert RV AND sword
         code=60627,
         region="Desert RV",),
     "Desert RV - Quicksand Coin": MinitLocationData(
-        #coin16
+        #coin16 - chest
         #logic: Desert RV
         code=60628,
         region="Desert RV",),
     "Desert RV - Dumpster": MinitLocationData(
-        #coin19
+        #coin19 - coin but you need to hit it
         #logic: Desert RV AND sword
         code=60629,
         region="Desert RV",),
@@ -196,33 +196,33 @@ location_table = {
         code=60635,
         region="Hotel Room",),
     "Hotel Room - Shrub Arena Coin": MinitLocationData(
-        #coin11
+        #coin11 - coin but you need to stab them
         #logic: Hotel Room AND sword
         code=60636,
         region="Hotel Room",),
     "Hotel Room - Miner's Chest Coin": MinitLocationData(
-        #coin12
+        #coin12 - chest
         #logic: Hotel Room AND sword AND grinder 
         code=60637,
         region="Hotel Room",),
     "Hotel Room - Inside Truck": MinitLocationData(
-        #coin14
+        #coin14 - coin
         #logic: Hotel Room AND sword AND pressPass AND bridge()
         #alt logic: Desert RV AND grinder
         code=60638,
         region="Hotel Room",),
     "Hotel Room - Queue": MinitLocationData(
-        #coin15
+        #coin15 - coin
         #logic: Hotel Room AND (bridge() OR swim)
         code=60639,
         region="Hotel Room",),
     "Hotel Room - Hotel Backroom Coin": MinitLocationData(
-        #coin17
+        #coin17 - chest
         #logic: Hotel Room AND coffee AND sword
         code=60640,
         region="Hotel Room",),
     "Hotel Room - Drill Coin": MinitLocationData(
-        #coin18
+        #coin18 - coin
         #logic: Hotel Room AND sword AND bridge() AND pressPass
         code=60641,
         region="Hotel Room",),
