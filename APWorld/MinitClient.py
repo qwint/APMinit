@@ -9,6 +9,8 @@ from MultiServer import Endpoint
 from CommonClient import CommonContext, gui_enabled, ClientCommandProcessor, logger, get_base_parser
 
 DEBUG = False
+GAMENAME = "Minit"
+ITEMS_HANDLING = 0b111
 
 
 class ProxyGameJSONToTextParser(JSONtoTextParser):
@@ -28,7 +30,7 @@ class ProxyGameCommandProcessor(ClientCommandProcessor):
 
 class ProxyGameContext(CommonContext):
     command_processor = ProxyGameCommandProcessor
-    game = "Minit"
+    game = GAMENAME
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
@@ -37,7 +39,7 @@ class ProxyGameContext(CommonContext):
         self.gamejsontotext = ProxyGameJSONToTextParser(self)
         self.autoreconnect_task = None
         self.endpoint = None
-        self.items_handling = 0b111
+        self.items_handling = ITEMS_HANDLING
         self.room_info = None
         self.connected_msg = None
         self.game_connected = False
@@ -54,9 +56,9 @@ class ProxyGameContext(CommonContext):
 
     def get_ProxyGame_status(self) -> str:
         if not self.is_proxy_connected():
-            return "Not connected to " + str(game)
+            return "Not connected to " + str(GAMENAME)
 
-        return "Connected to " + str(game)
+        return "Connected to " + str(GAMENAME)
     async def send_msgs_proxy(self, msgs: Iterable[dict]) -> bool:
         """ `msgs` JSON serializable """
         if not self.endpoint or not self.endpoint.socket.open or self.endpoint.socket.closed:
@@ -133,7 +135,7 @@ class ProxyGameContext(CommonContext):
             logging_pairs = [
                 ("Client", "Archipelago")
             ]
-            base_title = "Archipelago " + str(game) + " Client"
+            base_title = "Archipelago " + str(GAMENAME) + " Client"
 
         self.ui = ProxyGameManager(self)
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
@@ -152,8 +154,8 @@ async def proxy(websocket, path: str = "/", ctx: ProxyGameContext = None):
                 for msg in decode(data):
                     if msg["cmd"] == "Connect":
                         # Proxy is connecting, make sure it is valid
-                        if msg["game"] != str(game):
-                            logger.info("Aborting proxy connection: game is not " + str(game))
+                        if msg["game"] != str(GAMENAME):
+                            logger.info("Aborting proxy connection: game is not " + str(GAMENAME))
                             await ctx.disconnect_proxy()
                             break
 
@@ -197,7 +199,7 @@ async def main():
     args = parser.parse_args()
 
     ctx = ProxyGameContext(args.connect, args.password)
-    logger.info("Starting " + str(game) + " proxy server")
+    logger.info("Starting " + str(GAMENAME) + " proxy server")
     ctx.proxy = websockets.serve(functools.partial(proxy, ctx=ctx),
                                  host="localhost", port=11311, ping_timeout=999999, ping_interval=999999)
     ctx.proxy_task = asyncio.create_task(proxy_loop(ctx), name="ProxyLoop")
