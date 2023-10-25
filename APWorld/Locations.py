@@ -37,7 +37,7 @@ location_table = {
         #logic: Dog House AND sword AND glove AND madeboat(boatwood and watered guy?)
         code=60605,
         region="Dog House",),
-    "Dog House - itemPressPass": MinitLocationData(
+    "Dog House - ItemPressPass": MinitLocationData(
         #logic: Dog House AND sword AND coffee AND throw
         #alt logic: Hotel Room AND sword AND grinder AND glove
         #alt logic: Hotel Room AND canTank(lots)

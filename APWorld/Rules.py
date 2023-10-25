@@ -53,7 +53,7 @@ class MinitRules:
                 self.has_sword(state),
             "Dog House - ItemFlashLight": lambda state:
                 #logic: Dog House and ItemKey
-                state.has("ItemKey", self.player),
+                self.has_sword(state) and state.has("ItemKey", self.player),
             "Dog House - ItemKey": lambda state:
                 #logic: Dog House and sword and coffee
                 self.has_sword(state) and state.has("ItemCoffee", self.player),
@@ -237,8 +237,8 @@ class MinitRules:
             "Island Shack - Teleporter Tentacle": lambda state:
                 #tentacle6
                 #logic: Island Shack and sword and basementKey and (swim or throw)
-                self.has_sword(state) and state.has("ItemBasement", self.player) and   (state.has("ItemSwim", self.player) 
-                                                                                        or state.has("ItemThrow", self.player)),
+                self.has_sword(state) and state.has("ItemBasement", self.player) and (state.has("ItemSwim", self.player) and state.has("ItemCoffee", self.player)) 
+                                                                                 or state.has("ItemThrow", self.player),
 
         #Underground Tent
             "Underground Tent - ItemTrophy": lambda state: True,
@@ -253,9 +253,6 @@ class MinitRules:
             ,
                 #logic: unwritten/unknown
             "REGION - ItemBrokenSword": lambda state: True,
-                #logic: unwritten/unknown
-            # "Boss dead": lambda state: 
-            #     state.has("ItemMegaSword", self.player)
         }
 
     def has_sword(self, state) -> bool:
@@ -263,8 +260,8 @@ class MinitRules:
     def has_darkroom(self, state) -> bool:
         return state.has_any({"ItemFlashLight"}, self.player)
     def has_savedResidents(self, state) -> bool:
-        #TODO: fix
-        return state.has_any({"ItemBrokenSword", "ItemMegaSword", "Progressive Sword"}, self.player)
+        #can save all the residents to access the hotel roof
+        return self.has_sword(state) and state.has("ItemCoffee", self.player) and state.has("ItemGlove", self.player) and self.has_bridge(state) 
     def has_bridge(self, state) -> bool:
         return (self.has_darkroom(state) and self.has_sword(state) and state.has_any({"ItemThrow"}, self.player)) or state.has_any({"ItemSwim"}, self.player)
         #needs to be revisited when i know if the bomb room is a darkroom
