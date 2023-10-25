@@ -11,30 +11,30 @@ from CommonClient import CommonContext, gui_enabled, ClientCommandProcessor, log
 DEBUG = False
 
 
-class AHITJSONToTextParser(JSONtoTextParser):
+class ProxyGameJSONToTextParser(JSONtoTextParser):
     def _handle_color(self, node: JSONMessagePart):
         return self._handle_text(node)  # No colors for the in-game text
 
 
-class AHITCommandProcessor(ClientCommandProcessor):
+class ProxyGameCommandProcessor(ClientCommandProcessor):
     def __init__(self, ctx: CommonContext):
         super().__init__(ctx)
 
-    def _cmd_ahit(self):
-        """Check AHIT Connection State"""
-        if isinstance(self.ctx, AHITContext):
-            logger.info(f"AHIT Status: {self.ctx.get_ahit_status()}")
+    def _cmd_ProxyGame(self):
+        """Check ProxyGame Connection State"""
+        if isinstance(self.ctx, ProxyGameContext):
+            logger.info(f"ProxyGame Status: {self.ctx.get_ProxyGame_status()}")
 
 
-class AHITContext(CommonContext):
-    command_processor = AHITCommandProcessor
-    game = "A Hat in Time"
+class ProxyGameContext(CommonContext):
+    command_processor = ProxyGameCommandProcessor
+    game = "Minit"
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
         self.proxy = None
         self.proxy_task = None
-        self.gamejsontotext = AHITJSONToTextParser(self)
+        self.gamejsontotext = ProxyGameJSONToTextParser(self)
         self.autoreconnect_task = None
         self.endpoint = None
         self.items_handling = 0b111
@@ -47,17 +47,16 @@ class AHITContext(CommonContext):
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
-            await super(AHITContext, self).server_auth(password_requested)
+            await super(ProxyGameContext, self).server_auth(password_requested)
 
         await self.get_username()
         await self.send_connect()
 
-    def get_ahit_status(self) -> str:
+    def get_ProxyGame_status(self) -> str:
         if not self.is_proxy_connected():
-            return "Not connected to A Hat in Time"
+            return "Not connected to " + str(game)
 
-        return "Connected to A Hat in Time"
-
+        return "Connected to " + str(game)
     async def send_msgs_proxy(self, msgs: Iterable[dict]) -> bool:
         """ `msgs` JSON serializable """
         if not self.endpoint or not self.endpoint.socket.open or self.endpoint.socket.closed:
@@ -130,17 +129,17 @@ class AHITContext(CommonContext):
     def run_gui(self):
         from kvui import GameManager
 
-        class AHITManager(GameManager):
+        class ProxyGameManager(GameManager):
             logging_pairs = [
                 ("Client", "Archipelago")
             ]
-            base_title = "Archipelago A Hat in Time Client"
+            base_title = "Archipelago " + str(game) + " Client"
 
-        self.ui = AHITManager(self)
+        self.ui = ProxyGameManager(self)
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
 
-async def proxy(websocket, path: str = "/", ctx: AHITContext = None):
+async def proxy(websocket, path: str = "/", ctx: ProxyGameContext = None):
     ctx.endpoint = Endpoint(websocket)
     try:
         await on_client_connected(ctx)
@@ -153,8 +152,8 @@ async def proxy(websocket, path: str = "/", ctx: AHITContext = None):
                 for msg in decode(data):
                     if msg["cmd"] == "Connect":
                         # Proxy is connecting, make sure it is valid
-                        if msg["game"] != "A Hat in Time":
-                            logger.info("Aborting proxy connection: game is not A Hat in Time")
+                        if msg["game"] != str(game):
+                            logger.info("Aborting proxy connection: game is not " + str(game))
                             await ctx.disconnect_proxy()
                             break
 
@@ -186,7 +185,7 @@ async def proxy(websocket, path: str = "/", ctx: AHITContext = None):
         await ctx.disconnect_proxy()
 
 
-async def on_client_connected(ctx: AHITContext):
+async def on_client_connected(ctx: ProxyGameContext):
     if ctx.room_info and ctx.is_connected():
         await ctx.send_msgs_proxy(ctx.room_info)
     else:
@@ -197,8 +196,8 @@ async def main():
     parser = get_base_parser()
     args = parser.parse_args()
 
-    ctx = AHITContext(args.connect, args.password)
-    logger.info("Starting A Hat in Time proxy server")
+    ctx = ProxyGameContext(args.connect, args.password)
+    logger.info("Starting " + str(game) + " proxy server")
     ctx.proxy = websockets.serve(functools.partial(proxy, ctx=ctx),
                                  host="localhost", port=11311, ping_timeout=999999, ping_interval=999999)
     ctx.proxy_task = asyncio.create_task(proxy_loop(ctx), name="ProxyLoop")
@@ -212,7 +211,7 @@ async def main():
     await ctx.exit_event.wait()
 
 
-async def proxy_loop(ctx: AHITContext):
+async def proxy_loop(ctx: ProxyGameContext):
     try:
         while not ctx.exit_event.is_set():
             if len(ctx.server_msgs) > 0:
@@ -223,11 +222,11 @@ async def proxy_loop(ctx: AHITContext):
             await asyncio.sleep(0.1)
     except Exception as e:
         logger.exception(e)
-        logger.info("Aborting AHIT Proxy Client due to errors")
+        logger.info("Aborting ProxyGame Proxy Client due to errors")
 
 
 if __name__ == '__main__':
-    Utils.init_logging("AHITClient")
+    Utils.init_logging("ProxyGameClient")
     options = Utils.get_options()
 
     import colorama
