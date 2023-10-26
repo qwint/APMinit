@@ -20,7 +20,7 @@ components.append(Component("Minit Client", "MinitClient", func=launch_client, c
 
 class MinitWorld(World):
     game = "Minit"
-    required_client_version = (0, 6, 0)
+    required_client_version = (0, 4, 3)
 
     item_name_to_id = {name: data.code for name, data in item_table.items() if data.code is not None}
     location_name_to_id = {name: data.code for name, data in location_table.items() if data.code is not None}
