@@ -141,9 +141,9 @@ class MinitRules:
                 or self.region_DogHouse(state) and (self.has_sword(state) and state.has("ItemGlove", self.player)) or state.has("ItemSwim", self.player),
             "Desert RV - ItemTurboInk": lambda state:
                 #logic: Desert RV and 8 "tentacle"
-                self.get_tentacles(state, 8),
+                self.get_tentacles(state, 8) and self.has_darkroom(state),
             "Desert RV - Temple Coin": lambda state: 
-                self.can_openChest(state),
+                self.can_openChest(state) and self.has_darkroom(state),
                 #coin8
                 #logic: Desert RV and ?
             "Desert RV - Fire Bat Coin": lambda state:
@@ -159,7 +159,7 @@ class MinitRules:
                 #logic: Desert RV and sword
                 self.has_sword(state) and self.can_openChest(state),
             "Desert RV - Quicksand Coin": lambda state: 
-                self.can_openChest(state),
+                self.can_openChest(state) and self.has_darkroom(state),
                 #TODO: check if this is a darkroom
                 #coin16
                 #logic: Desert RV
@@ -170,7 +170,7 @@ class MinitRules:
             "Desert RV - Temple Heart": lambda state:
                 #heartPiece3
                 #logic: Desert RV and shoes ?(or grinder)
-                state.has("ItemShoes", self.player) or state.has("ItemGrinder", self.player),
+                state.has("ItemShoes", self.player) or state.has("ItemGrinder", self.player) and self.has_darkroom(state),
             "Desert RV - Shop Heart": lambda state:
                 #heartPiece4
                 #logic: Desert RV and 19 "coin" ?(and Basement) 
@@ -178,7 +178,7 @@ class MinitRules:
             "Desert RV - Octopus Tentacle": lambda state:
                 #tentacle5
                 #logic: Desert RV and sword and swim
-                self.has_sword(state) and state.has("ItemSwim", self.player),
+                self.has_sword(state) and state.has("ItemSwim", self.player) and self.has_darkroom(state),
             "Desert RV - Beach Tentacle": lambda state:
                 #tentacle8
                 #logic: Desert RV and sword

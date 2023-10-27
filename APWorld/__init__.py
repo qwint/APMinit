@@ -9,6 +9,17 @@ from .Rules import MinitRules
 from typing import Dict, Any
 from worlds.LauncherComponents import Component, components, Type, launch_subprocess
 
+#misc game mod TODOs
+#TODO - handle receiving items better
+#TODO - figure out how to start the clock
+#TODO - figure out how to spawn broken/mega sword when you pick up watering can
+#TODO - is there a coin in island shack???
+#TODO - need to revisit item/location codes and logic for the sword's's
+#TODO - make patch process easier
+#TODO - make item sync global
+#TODO - make items sync synchronously (long polling?)
+#TODO - pull all required game mods out and reapply to clean up patch file
+#TODO - add fanfare (back)
 
 def launch_client():
     from .MinitClient import launch
@@ -17,6 +28,8 @@ def launch_client():
 
 components.append(Component("Minit Client", "MinitClient", func=launch_client, component_type=Type.CLIENT))
 
+class MinitItem(Item):
+    game = "Minit"
 
 class MinitWorld(World):
     game = "Minit"
@@ -38,12 +51,12 @@ class MinitWorld(World):
             if (item_data.code and item_data.can_create(self.multiworld, self.player)):
                 if (item_name in item_frequencies):
                     for count in range(item_frequencies[item_name]):
-                        self.multiworld.itempool.append(Item(item_name,
+                        self.multiworld.itempool.append(MinitItem(item_name,
                                                              item_data.classification,
                                                              item_data.code,
                                                              self.player))
                 else:
-                    self.multiworld.itempool.append(Item(item_name,
+                    self.multiworld.itempool.append(MinitItem(item_name,
                                                          item_data.classification,
                                                          item_data.code,
                                                          self.player))

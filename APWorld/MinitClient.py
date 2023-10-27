@@ -38,6 +38,8 @@ class MinitCommandProcessor(CommandProcessor):
             self.ctx.patch_game()
             self.output("Patched.")
 
+    #TODO - figure out why the client UI isn't showing text
+
     #def _cmd_audo_patch(self):
     #think about importing this from undertaleclient too
 
@@ -145,6 +147,7 @@ def handleItems(ctx: CommonContext):
         else:
             itemIds.append(item[0])
     itemmessage = {"Items": itemIds,"Coins":coins, "Hearts": hearts, "Tentacles":tentacles}
+    #itemmessage = {"Items": [{"first": 60018},{"second":  60007},{"third":  60008}], "Coins": 2, "Hearts": 0, "Tentacles": 0}
     return itemmessage
 
 #TODO update to transform the data - will eventually handle the datapackage from CommonContext.consume_network_data_package() to make them minit pretty
