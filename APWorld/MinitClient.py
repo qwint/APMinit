@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import typing
-from NetUtils import JSONtoTextParser, JSONMessagePart
+from NetUtils import JSONtoTextParser, JSONMessagePart, ClientStatus
 from CommonClient import CommonContext, gui_enabled, logger, get_base_parser, server_loop
 
 #webserver imports
@@ -50,42 +50,65 @@ class ProxyGameContext(CommonContext):
         await self.get_username()
         await self.send_connect()
 
-    def locationHandler(self, request: web.Request) -> web.Response:#, ctx: CommonContext):
-        #send_server_cmd('LocationChecks', ['locations',handleLocations(ctx)])
-        response = {'locations':[123,456]}
-        return web.json_response(response)
-    def goalHandler(self, request: web.Request) -> web.Response:#, ctx: CommonContext):
-        #send_server_cmd('StatusUpdate',['status':'CLIENT_GOAL'])   
-        response = {'status':'GOAL_COMPLETE'}
+    #handle POST at /Locations
+    async def locationHandler(self, request: web.Request) -> web.Response:
+        response = handleLocations(self, await request.json())
+        await self.send_msgs(response)
+        return web.json_response(str(response)) 
+    #handle POST at /Goal
+    async def goalHandler(self, request: web.Request) -> web.Response:
+        response = handleGoal(self)
+        await self.send_msgs(response)
         return web.json_response(response) 
-    def itemsHandler(self, request: web.Request) -> web.Response:#, ctx: CommonContext):
+    #handle GET at /Items
+    async def itemsHandler(self, request: web.Request) -> web.Response:
         #response = handleItems(ctx)
-        response = {'items':[123,456]}
-        return web.json_response(response)
-    def datapackageHandler(self, request: web.Request) -> web.Response:#, ctx: CommonContext):
+        response = handleItems(self)
+        #response = {'items':[123,456]}
+        #await self.send_msgs(response)
+        return web.json_response(response) 
+    #handle GET at /Datapackage
+    async def datapackageHandler(self, request: web.Request) -> web.Response:
         #response = handleDatapackage(ctx)
-        response = {'datapackage':'FROM MINIT - need to figure out data'}
-        return web.json_response(response)
+        response = handleDatapackage(self)
+        #response = {'datapackage':'FROM MINIT - need to figure out data'}
+        #await self.send_msgs(response)
+        return web.json_response(response) 
 
-#potential steal of datapackage code to handle minit specific translations if needed 
-#    def consume_network_data_package(self, data_package: dict):
-#        super(data_package['data'])
+def handleGoal(ctx: CommonContext):
+    goalmessage = [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
+    return goalmessage
 
-#TODO update to transform the data - will eventually handle the data from minit to format them for LocationChecks API call
-def handleLocations(ctx: CommonContext):
-    #TODO - handle locationId -1 receivedItems (from a /send or !get)
-    #TODO pair locations down to just those 
-    return ctx.locations_checked
-    # return [123,456] where 123 and 456 are all of the locations that minit has reported checked
+def handleLocations(ctx: CommonContext, request: json) -> json:
+    #expecting request to be json body in the form of {"Locations": [123,456]}
+    #TODO - make this actually send the difference
+    needed_updates = set(request["Locations"]).difference(ctx.locations_checked)
+    locationmessage = [{"cmd": "LocationChecks", "locations": list(needed_updates)}]
+    #TODO - (see if i need to) handle locationId -1 receivedItems (from a /send or !get)
+    return locationmessage
 
-#TODO update to transform the data - will eventually handle the items_received to make them minit pretty
 def handleItems(ctx: CommonContext):
-    #TODO add items from cache if needed
-    return ctx.items_received
+    #expecting request to be json body in the form of {"Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
+    itemIds = []
+    coins = 0
+    hearts = 0
+    tentacles = 0
+    for item in ctx.items_received:
+        if item[0] == 60000:
+            coins += 1
+        elif item[0] == 60001:
+            hearts += 1
+        elif item[0] == 60002:
+            tentacles += 1
+        else:
+            itemIds.append(item[0])
+    itemmessage = {"Items": itemIds,"Coins":coins, "Hearts": hearts, "Tentacles":tentacles}
+    return itemmessage
 
 #TODO update to transform the data - will eventually handle the datapackage from CommonContext.consume_network_data_package() to make them minit pretty
 def handleDatapackage(ctx: CommonContext):
-    return ctx.datapackage
+    datapackagemessage = [{"cmd": "blah", "data": "blah"}]
+    return datapackagemessage
 
 async def main(args):
     from .testServer import Webserver, http_server_loop

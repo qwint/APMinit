@@ -16,7 +16,7 @@ class Webserver:
         self.connected = False
 
     async def initializer(self) -> web.Application:
-        self.app.router.add_post('/Location',self.ctx.locationHandler)
+        self.app.router.add_post('/Locations',self.ctx.locationHandler)
         self.app.router.add_post('/Goal',self.ctx.goalHandler)
         self.app.router.add_get('/Items',self.ctx.itemsHandler)
         self.app.router.add_get('/Datapackage',self.ctx.datapackageHandler)
