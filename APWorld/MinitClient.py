@@ -4,12 +4,9 @@ import typing
 from NetUtils import JSONtoTextParser, JSONMessagePart
 from CommonClient import CommonContext, gui_enabled, logger, get_base_parser, server_loop
 
-
 #webserver imports
 import json
-from uuid import uuid4
 from aiohttp import web
-#from aiopg.sa import create_engine
 
 logger = logging.getLogger("Client")
 
@@ -21,34 +18,6 @@ ITEMS_HANDLING = 0b111
 class ProxyGameJSONToTextParser(JSONtoTextParser):
     def _handle_color(self, node: JSONMessagePart):
         return self._handle_text(node)  # No colors for the in-game text
-
-# class Webserver:
-#     def __init__(self):#, **kwargs: dict):
-#         self.app = web.Application()
-#         self.host = "localhost"#kwargs['webserver']['host']
-#         self.port = "11311"#kwargs['webserver']['port']
-#         #self.dbconf = kwargs['db']
-#         self.sessionToUser = {}
-#         self.userToSession = {}
-
-#     async def initializer(self) -> web.Application:
-#         # self.dbEngine = await create_engine(
-#         #     user = self.dbConf['user'],
-#         #     password = self.dbConf['password'],
-#         #     host = self.dbConf['host'],
-#         #     database = self.dbConf['database'],
-#         #     )
-#         self.app.router.add_post('/user',self.loginHandler)
-#         self.app.router.add_delete('/user',self.loginHandler)
-#         return self.app
-
-#     async def loginHandler(self, request: web.Request) -> web.Response:
-#         response = {'hello world': 0}
-#         return web.json_response(response)
-
-#     def run(self):
-#         web.run_app(self.initializer(),host=self.host, port=self.port)
-
 
 #TODO look into how this can be handled as a ctx.watcher_event instead
 # #this should work to intercept the process server command method, let it run as written, but then also handle received items to 'send a ping' to the game (as of now a log message isntead)
@@ -102,18 +71,6 @@ class ProxyGameContext(CommonContext):
 #    def consume_network_data_package(self, data_package: dict):
 #        super(data_package['data'])
 
-#TODO update to use proper python - barebones handle logic for requests from Minit
-# def handle_POST(self, ctx: CommonContext):
-#     if request.path == "Location":
-#         send_server_cmd('LocationChecks', ['locations',handleLocations(ctx)])
-#     elif request.path == "Goal":
-#         send_server_cmd('StatusUpdate',['status':'CLIENT_GOAL'])    
-# def handle_GET(self, ctx: CommonContext):
-#     if request.path == "Items":
-#         response = handleItems(ctx)
-#     elif request.path == "Datapackage":
-#         response = handleDatapackage(ctx)
-
 #TODO update to transform the data - will eventually handle the data from minit to format them for LocationChecks API call
 def handleLocations(ctx: CommonContext):
     #TODO - handle locationId -1 receivedItems (from a /send or !get)
@@ -139,7 +96,6 @@ async def main(args):
 
     ctx.auth = args.name
     ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
-    #TODO host an HTTP server that waits for requests and uses handle_POST() and handle_GET()
 
     if gui_enabled:
         ctx.run_gui()
@@ -147,17 +103,6 @@ async def main(args):
 
     await ctx.exit_event.wait()
     await ctx.shutdown()
-
-# async def httpMain(args):
-#     from .testServer import Webserver, http_server_loop
-    
-#     ctx = ProxyGameContext(args.connect, args.password)
-#     webserver = Webserver(ctx)
-#     ctx.server_task = asyncio.create_task(http_server_loop(webserver), name="http server loop")
-
-
-#     await ctx.exit_event.wait()
-#     await ctx.shutdown()
 
 def launch():
     import colorama
@@ -177,7 +122,5 @@ def launch():
 
     colorama.init()
 
-    # asyncio.run(httpMain(args))
-    # logger.info("httpMain kicked off")
     asyncio.run(main(args))
     colorama.deinit()

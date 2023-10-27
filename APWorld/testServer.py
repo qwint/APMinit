@@ -1,59 +1,26 @@
-#webserver imports
 import asyncio
 import json
 from uuid import uuid4
 from aiohttp import web
-#from aiopg.sa import create_engine
 
 from .MinitClient import ProxyGameContext
-from CommonClient import CommonContext, logger#, gui_enabled, logger, get_base_parser, server_loop
-
-
+from CommonClient import logger
 
 class Webserver:
-    def __init__(self, ctx: ProxyGameContext):#, **kwargs: dict):
+    def __init__(self, ctx: ProxyGameContext):
         self.app = web.Application()
-        self.host = "localhost"#kwargs['webserver']['host']
-        self.port = "11311"#kwargs['webserver']['port']
-        #self.dbconf = kwargs['db']
-        self.sessionToUser = {}
-        self.userToSession = {}
+        self.host = "localhost"
+        self.port = "11311"
         self.ctx = ctx
 
         self.connected = False
 
     async def initializer(self) -> web.Application:
-        # self.dbEngine = await create_engine(
-        #     user = self.dbConf['user'],
-        #     password = self.dbConf['password'],
-        #     host = self.dbConf['host'],
-        #     database = self.dbConf['database'],
-        #     )
         self.app.router.add_post('/Location',self.ctx.locationHandler)
         self.app.router.add_post('/Goal',self.ctx.goalHandler)
         self.app.router.add_get('/Items',self.ctx.itemsHandler)
         self.app.router.add_get('/Datapackage',self.ctx.datapackageHandler)
         return self.app
-    # def locationHandler(self, request: web.Request) -> web.Response:#, ctx: CommonContext):
-    #     #send_server_cmd('LocationChecks', ['locations',handleLocations(ctx)])
-    #     response = {'locations':[123,456]}
-    #     return web.json_response(response)
-    # def goalHandler(self, request: web.Request) -> web.Response:#, ctx: CommonContext):
-    #     #send_server_cmd('StatusUpdate',['status':'CLIENT_GOAL'])   
-    #     response = {'status':'GOAL_COMPLETE'}
-    #     return web.json_response(response) 
-    # def itemsHandler(self, request: web.Request) -> web.Response:#, ctx: CommonContext):
-    #     #response = handleItems(ctx)
-    #     response = {'items':[123,456]}
-    #     return web.json_response(response)
-    # def datapackageHandler(self, request: web.Request) -> web.Response:#, ctx: CommonContext):
-    #     #response = handleDatapackage(ctx)
-    #     response = {'datapackage':'need to figure out data'}
-    #     return web.json_response(response)
-
-    async def loginHandler(self, request: web.Request) -> web.Response:
-        response = {'hello world': 0}
-        return web.json_response(response)
 
     async def my_run_app(self, app, host, port):
         runner = web.AppRunner(app)
@@ -67,7 +34,6 @@ class Webserver:
     async def run(self):
         if self.connected != True:
             await self.my_run_app(app=await self.initializer(),host=self.host, port=self.port)
-            #web.run_app(self.initializer(),host=self.host, port=self.port)
             self.connected = True
             return self.connected
         else:
@@ -108,6 +74,5 @@ async def http_server_loop(wb: Webserver) -> None:
 
 if __name__ == '__main__':
     ctx = ProxyGameContext("localhost","")
-
     webserver = Webserver(ctx)
     webserver.run()
