@@ -271,10 +271,9 @@ class MinitRules:
         return self.has_sword(state) and state.has("ItemCoffee", self.player) and state.has("ItemGlove", self.player) and self.has_bridge(state) 
     def has_bridge(self, state) -> bool:
         return (self.has_darkroom(state) and self.has_sword(state) and state.has_any({"ItemThrow"}, self.player)) or state.has_any({"ItemSwim"}, self.player)
-        #needs to be revisited when i know if the bomb room is a darkroom
     def has_madeboat(self, state) -> bool:
-        return state.has_any({"ItemBoat"}, self.player) and state.has_any({"ItemWateringCan"}, self.player)
-        #needs to be revisited when i'm sure what spawns boatman
+        return state.has_any({"ItemBoat"}, self.player) and state.has_any({"ItemWateringCan"}, self.player) and state.has_any({"ItemGlove"}, self.player)
+        #needs to be revisited when i'm sure what spawns boatman                                                #throwing stuff at the wall, i couldn't get the spawn with just boatwood + water and talk to the guy
     def can_openChest(self, state) -> bool:
         return state.has_any({"ItemWateringCan"}, self.player) or self.has_sword(state)
         #need to double check what can all open chests

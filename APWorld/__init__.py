@@ -20,6 +20,8 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - make items sync synchronously (long polling?)
 #TODO - pull all required game mods out and reapply to clean up patch file
 #TODO - add fanfare (back)
+#TODO - figure out how to protect launching a non-ap save (don't think it matters because the app is different? but maybe if you use same folder??)
+#TODO - figure out why glove despawns when you have it
 
 def launch_client():
     from .MinitClient import launch
