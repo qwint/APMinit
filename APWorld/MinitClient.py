@@ -3,9 +3,11 @@ import logging
 import typing
 from NetUtils import JSONtoTextParser, JSONMessagePart, ClientStatus
 from CommonClient import CommonContext, gui_enabled, logger, get_base_parser, server_loop
-
+from MultiServer import CommandProcessor
 #webserver imports
 import json
+import os
+import bsdiff4
 from aiohttp import web
 
 logger = logging.getLogger("Client")
@@ -14,10 +16,31 @@ DEBUG = False
 GAMENAME = "Minit"
 ITEMS_HANDLING = 0b111
 
+def data_path(file_name: str):
+    import pkgutil
+    return pkgutil.get_data(__name__, "data/" + file_name)
+
 #parsing function
 class ProxyGameJSONToTextParser(JSONtoTextParser):
     def _handle_color(self, node: JSONMessagePart):
         return self._handle_text(node)  # No colors for the in-game text
+
+
+class MinitCommandProcessor(CommandProcessor):
+    def __init__(self, ctx):
+        super().__init__()
+        self.ctx = ctx
+
+    def _cmd_patch(self):
+        """Patch the game."""
+        if isinstance(self.ctx, ProxyGameContext):
+            os.makedirs(name=os.path.join(os.getcwd(), "Minit"), exist_ok=True)
+            self.ctx.patch_game()
+            self.output("Patched.")
+
+    #def _cmd_audo_patch(self):
+    #think about importing this from undertaleclient too
+
 
 #TODO look into how this can be handled as a ctx.watcher_event instead
 # #this should work to intercept the process server command method, let it run as written, but then also handle received items to 'send a ping' to the game (as of now a log message isntead)
@@ -35,6 +58,7 @@ class ProxyGameJSONToTextParser(JSONtoTextParser):
 class ProxyGameContext(CommonContext):
     game = GAMENAME
     httpServer_task: typing.Optional["asyncio.Task[None]"] = None
+    command_processor = MinitCommandProcessor
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
@@ -42,6 +66,24 @@ class ProxyGameContext(CommonContext):
         self.items_handling = ITEMS_HANDLING
         self.locations_checked = []
         self.datapackage = []
+
+    # def run_gui(self):
+    #     from kvui import GameManager
+
+    #     class UTManager(GameManager):
+    #         logging_pairs = [
+    #             ("Client", "Archipelago")
+    #         ]
+    #         base_title = "Archipelago Undertale Client"
+
+    #     self.ui = UTManager(self)
+    #     self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
+
+    def patch_game(self):
+        with open(os.path.join(os.getcwd(), "Minit", "data.win"), "rb") as f:
+            patchedFile = bsdiff4.patch(f.read(), data_path("patch.bsdiff"))
+        with open(os.path.join(os.getcwd(), "Minit", "data.win"), "wb") as f:
+            f.write(patchedFile)
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
