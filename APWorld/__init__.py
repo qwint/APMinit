@@ -22,6 +22,11 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - add fanfare (back)
 #TODO - figure out how to protect launching a non-ap save (don't think it matters because the app is different? but maybe if you use same folder??)
 #TODO - figure out why glove despawns when you have it
+#TODO - switch press pass with camera (logic changes?)
+#TODO - check if coins are despawning by num as well?
+#TODO - research why save file percents are inflating
+#TODO - figure out how to progressive sword
+#TODO - add a darkroom option to ignore flashlight req
 
 def launch_client():
     from .MinitClient import launch
