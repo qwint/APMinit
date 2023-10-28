@@ -4,6 +4,8 @@ import typing
 from NetUtils import JSONtoTextParser, JSONMessagePart, ClientStatus
 from CommonClient import CommonContext, gui_enabled, logger, get_base_parser, server_loop
 from MultiServer import CommandProcessor
+#probably need
+#import urllib.parse
 #webserver imports
 import json
 import os
@@ -160,7 +162,7 @@ async def main(args):
     
     ctx = ProxyGameContext(args.connect, args.password)
     webserver = Webserver(ctx)
-    ctx.server_task = asyncio.create_task(http_server_loop(webserver), name="http server loop")
+    ctx.httpServer_task = asyncio.create_task(http_server_loop(webserver), name="http server loop")
 
     ctx.auth = args.name
     ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")

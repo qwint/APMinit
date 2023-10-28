@@ -27,6 +27,11 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - research why save file percents are inflating
 #TODO - figure out how to progressive sword
 #TODO - add a darkroom option to ignore flashlight req
+#TODO - fix boss fight finish cutscene
+#TODO - bossfight is a darkroom
+#TODO - fix camera/press pass (pc version uses camera)
+#TODO - flippers despawned on me
+#TODO - fix basement logic
 
 def launch_client():
     from .MinitClient import launch
