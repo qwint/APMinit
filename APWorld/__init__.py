@@ -30,6 +30,7 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - add normal sword
 #TODO - switch the Q press to sync to be an AP pickup that spawns at houses
 #TODO - add a warp back to doghouse (not really needed, but may be required for island shack logic and/or underground tent logic)
+#TODO - add exception handling on: patching, connecting, more?
 
 def launch_client():
     from .MinitClient import launch
