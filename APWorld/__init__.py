@@ -125,3 +125,6 @@ class MinitWorld(World):
     #         PseudoregaliaExpertRules(self).set_pseudoregalia_rules()
     #     elif difficulty == LUNATIC:
     #         PseudoregaliaLunaticRules(self).set_pseudoregalia_rules()
+
+    def get_filler_item_name(self) -> str:
+        return "HeartPiece"

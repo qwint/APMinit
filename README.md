@@ -31,10 +31,8 @@ when prompted for you Slot Name, enter whatever your username in the .yaml file 
 you now have the proxy client connected to the AP server
 
 For Patching
-under Archipelago/Minit (create the folder) put the "data.win" file from your minit install
-launch ArchipelagoLauncher.exe, and select "Minit Client"
-in the text box of the client that pops up type "/Patch"
-take your (now patched) data.win and put it back into your Minit install folder (you can make a copy if you don't want to muck your vanilla game)
+in the text box of the client that pops up type "/Patch", it will prompt you for the data.win file that is in your Minit installation. If the client does not have access to that folder unexpected things may happen, so having a copy of your Minit folder for AP and pointing it there may be safer.
+your (now patched) data.win is now ready and installed, only needing to launch the .exe to run the patched game.
 
 # Setup for Archipelago users
 
@@ -42,8 +40,6 @@ take your (now patched) data.win and put it back into your Minit install folder 
 the proxy "Minit Client" can be accessed through ArchipelagoLauncher
 
 you need to patch the game by doing the following:
-under Archipelago/Minit (create the folder) put the "data.win" file from your minit install
-launch ArchipelagoLauncher.exe, and select "Minit Client"
-in the text box of the client that pops up type "/Patch"
-take your (now patched) data.win and put it back into your Minit install folder (you can make a copy if you don't want to muck your vanilla game)
+in the text box of the client that pops up type "/Patch", it will prompt you for the data.win file that is in your Minit installation. If the client does not have access to that folder unexpected things may happen, so having a copy of your Minit folder for AP and pointing it there may be safer.
+your (now patched) data.win is now ready and installed, only needing to launch the .exe to run the patched game.
 
