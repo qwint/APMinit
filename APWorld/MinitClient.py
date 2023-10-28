@@ -2,8 +2,8 @@ import asyncio
 import logging
 import typing
 from NetUtils import JSONtoTextParser, JSONMessagePart, ClientStatus
-from CommonClient import CommonContext, gui_enabled, logger, get_base_parser, server_loop
-from MultiServer import CommandProcessor
+from CommonClient import CommonContext, gui_enabled, logger, get_base_parser, server_loop, ClientCommandProcessor
+#from MultiServer import 
 #probably need
 #import urllib.parse
 #webserver imports
@@ -11,6 +11,7 @@ import json
 import os
 import bsdiff4
 from aiohttp import web
+import Utils
 
 logger = logging.getLogger("Client")
 
@@ -28,15 +29,15 @@ class ProxyGameJSONToTextParser(JSONtoTextParser):
         return self._handle_text(node)  # No colors for the in-game text
 
 
-class MinitCommandProcessor(CommandProcessor):
-    def __init__(self, ctx):
-        super().__init__()
-        self.ctx = ctx
+class MinitCommandProcessor(ClientCommandProcessor):
+    # def __init__(self, ctx):
+    #     super().__init__()
+    #     self.ctx = ctx
 
     def _cmd_patch(self):
         """Patch the game."""
         if isinstance(self.ctx, ProxyGameContext):
-            os.makedirs(name=os.path.join(os.getcwd(), "Minit"), exist_ok=True)
+            #os.makedirs(name=os.path.join(os.getcwd(), "Minit"), exist_ok=True)
             self.ctx.patch_game()
             self.output("Patched.")
 
@@ -84,10 +85,12 @@ class ProxyGameContext(CommonContext):
     #     self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     def patch_game(self):
-        with open(os.path.join(os.getcwd(), "Minit", "data.win"), "rb") as f:
+        source_data_win = Utils.open_filename('Select Minit data.win', (('data.win', ('.win',)),))
+        with open(os.path.join(source_data_win), "rb") as f:
             patchedFile = bsdiff4.patch(f.read(), data_path("patch.bsdiff"))
-        with open(os.path.join(os.getcwd(), "Minit", "data.win"), "wb") as f:
+        with open(os.path.join(source_data_win), "wb") as f:
             f.write(patchedFile)
+        logger.info("patched "+source_data_win+". You can launch the .exe game to run the patched game.")
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:

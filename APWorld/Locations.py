@@ -267,7 +267,7 @@ location_table = {
         #logic: 
         code=60648,
         region="Hotel Room",),
-    "REGION - ItemBrokenSword": MinitLocationData(
+    "Dog House - ItemSword": MinitLocationData(
         #logic: 
         code=60649,
         region="Dog House",),

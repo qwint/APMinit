@@ -29,6 +29,7 @@ item_table: Dict[str, MinitItemData] = {
     "ItemFlashLight": MinitItemData(
         code=60004,
         classification=ItemClassification.progression),
+        #potentially reclassify if darkrooms in logic (when implemented)
     "ItemSwim": MinitItemData(
         code=60005,
         classification=ItemClassification.progression),
@@ -52,7 +53,7 @@ item_table: Dict[str, MinitItemData] = {
         classification=ItemClassification.progression),
     "ItemCamera": MinitItemData(
         code=60012,
-        classification=ItemClassification.progression),
+        classification=ItemClassification.filler),
     "ItemBasement": MinitItemData(
         code=60013,
         classification=ItemClassification.progression),
@@ -64,8 +65,8 @@ item_table: Dict[str, MinitItemData] = {
         classification=ItemClassification.progression),
     "ItemTurboInk": MinitItemData(
         code=60016,
-        #is filler?
-        classification=ItemClassification.progression),
+        classification=ItemClassification.filler),
+        #this could be helpful, could be filler, but i'd rather have more filler to cut out so i can add extra stuff :)
     "ItemGrinder": MinitItemData(
         code=60017,
         #is filler? no lets you kill boxes with a sword swipe
@@ -75,6 +76,9 @@ item_table: Dict[str, MinitItemData] = {
         classification=ItemClassification.filler),
     "ItemPressPass": MinitItemData(
         code=60019,
+        classification=ItemClassification.progression),
+    "ItemSword": MinitItemData(
+        code=60020,
         classification=ItemClassification.progression),
 
 

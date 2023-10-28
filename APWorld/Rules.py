@@ -40,7 +40,7 @@ class MinitRules:
             "Hotel Room -> Underground Tent": lambda state: 
                 self.has_sword(state) and self.has_darkroom(state) and state.has("ItemGrinder", self.player),
             "Hotel Room -> Boss Fight": lambda state: 
-                state.has("ItemPressPass", self.player) and self.has_bridge(state) and state.has("ItemMegaSword", self.player),
+                state.has("ItemPressPass", self.player) and self.has_bridge(state) and state.has("ItemMegaSword", self.player) and self.has_darkroom(state),
         }
 
         self.location_rules = {
@@ -52,16 +52,16 @@ class MinitRules:
                 self.has_sword(state),
             "Dog House - ItemFlashLight": lambda state:
                 #logic: Dog House and ItemKey
-                self.has_sword(state) and state.has("ItemKey", self.player),
+                (self.has_sword(state) or state.has("ItemSwim", self.player)) and state.has("ItemKey", self.player),
             "Dog House - ItemKey": lambda state:
                 #logic: Dog House and sword and coffee
-                self.has_sword(state) and state.has("ItemCoffee", self.player),
+                (self.has_sword(state) or state.has("ItemSwim", self.player)) and self.can_passBoxes(state),
             "Dog House - ItemWateringCan": lambda state:
                 #logic: Dog House and sword
                 self.has_sword(state),
             "Dog house - ItemBoat": lambda state:
                 #logic: Dog House and sword and glove
-                self.has_sword(state) and state.has("ItemGlove", self.player),
+                (self.has_sword(state) or state.has("ItemSwim", self.player)) and state.has("ItemGlove", self.player),
             "Dog House - ItemBasement": lambda state:
                 #logic: Dog House and sword and glove and madeboat(boatwood and watered guy?)
                 self.has_sword(state) and state.has("ItemGlove", self.player) and self.has_madeboat(state),
@@ -69,9 +69,11 @@ class MinitRules:
                 #logic: Dog House and sword and coffee and throw
                 #alt logic: Hotel Room and sword and grinder and glove
                 #alt logic: Hotel Room and canTank(lots)
-                self.has_sword(state) and state.has("ItemCoffee", self.player) and state.has("ItemThrow", self.player)
-                or self.region_HotelRoom(state) and self.has_sword(state) and state.has("ItemGrinder", self.player) and state.has("ItemGlove", self.player)
-                or self.region_HotelRoom(state) and self.get_hearts(state,3),
+                (self.has_sword(state) and self.can_passBoxes(state) and state.has("ItemThrow", self.player))
+                or (self.region_HotelRoom(state) 
+                    and (self.has_sword(state) and state.has("ItemGrinder", self.player) and state.has("ItemGlove", self.player))
+                    or (self.has_sword(state) and self.get_hearts(state,2))),
+                #you can hit the grass on the output of the toxic river and swim through, may bump to +3 life?
             "Dog House - House Pot Coin": lambda state:
                 #coin1
                 #logic: Dog House and sword
@@ -87,12 +89,11 @@ class MinitRules:
             "Dog House - Land is Great Coin": lambda state:
                 #coin4
                 #logic: Dog House and sword and (coffee or swim)
-                self.has_sword(state) and self.can_openChest(state) and (state.has("ItemCoffee", self.player) 
-                or state.has("ItemSwim", self.player)),
+                self.can_openChest(state) and (state.has("ItemCoffee", self.player) or state.has("ItemSwim", self.player)),
             "Dog House - Hidden Snake Coin": lambda state:
                 #coin5
                 #logic: Dog House and sword and darkroom
-                self.has_sword(state) and self.has_darkroom(state) and self.can_openChest(state),
+                (self.has_sword(state) or state.has("ItemSwim", self.player)) and self.has_darkroom(state) and self.can_openChest(state),
             "Dog House - Waterfall Coin": lambda state:
                 #coin6
                 #logic: Dog House and swim
@@ -108,7 +109,9 @@ class MinitRules:
             "Dog House - Bull Heart": lambda state:
                 #heartPiece2
                 #logic: Dog House and darkroom() and sword
-                self.has_darkroom(state) and self.has_sword(state),
+                (self.has_darkroom(state) and self.has_sword(state))
+                or (self.region_DesertRV(state)
+                        and self.has_sword(state)),
             "Dog House - Boat Tentacle": lambda state:
                 #tentacle1
                 #logic: Dog House and sword and madeboat()
@@ -138,7 +141,9 @@ class MinitRules:
                 #logic: Desert RV and wateringCan
                 #alt logic: Dog House and (sword and glove) or swim
                 state.has("ItemWateringCan", self.player)
-                or self.region_DogHouse(state) and (self.has_sword(state) and state.has("ItemGlove", self.player)) or state.has("ItemSwim", self.player),
+                or (self.region_DogHouse(state) 
+                    and (self.has_sword(state) and state.has("ItemGlove", self.player))
+                    or state.has("ItemSwim", self.player)),
             "Desert RV - ItemTurboInk": lambda state:
                 #logic: Desert RV and 8 "tentacle"
                 self.get_tentacles(state, 8) and self.has_darkroom(state),
@@ -157,7 +162,7 @@ class MinitRules:
             "Desert RV - Broken Truck": lambda state:
                 #coin13
                 #logic: Desert RV and sword
-                self.has_sword(state) and self.can_openChest(state),
+                self.can_openChest(state),
             "Desert RV - Quicksand Coin": lambda state: 
                 self.can_openChest(state) and self.has_darkroom(state),
                 #TODO: check if this is a darkroom
@@ -170,11 +175,11 @@ class MinitRules:
             "Desert RV - Temple Heart": lambda state:
                 #heartPiece3
                 #logic: Desert RV and shoes ?(or grinder)
-                state.has("ItemShoes", self.player) or state.has("ItemGrinder", self.player) and self.has_darkroom(state),
+                state.has("ItemShoes", self.player) and self.has_darkroom(state),
             "Desert RV - Shop Heart": lambda state:
                 #heartPiece4
-                #logic: Desert RV and 19 "coin" ?(and Basement) 
-                self.get_coins(state, 19) and state.has("ItemBasement", self.player) ,
+                #logic: Desert RV and 19 "coin" and Basement
+                self.get_coins(state, 19) and state.has("ItemBasement", self.player),
             "Desert RV - Octopus Tentacle": lambda state:
                 #tentacle5
                 #logic: Desert RV and sword and swim
@@ -184,7 +189,8 @@ class MinitRules:
                 #logic: Desert RV and sword
                 #alt logic: Dog House and sword and swim
                 self.has_sword(state)
-                or self.region_DogHouse(state) and self.has_sword(state) and state.has("ItemSwim", self.player),
+                or (self.region_DogHouse(state)
+                     and self.has_sword(state) and state.has("ItemSwim", self.player)),
 
         #Hotel Room
             "Hotel Room - ItemSwim": lambda state:
@@ -198,7 +204,7 @@ class MinitRules:
                 #hidden - coffee
             "Hotel Room - ItemGrinder": lambda state:
                 #logic: Hotel Room and coffee
-                state.has("ItemCoffee", self.player),
+                state.has("ItemCoffee", self.player) and self.has_darkroom(state),
             "Hotel Room - Shrub Arena Coin": lambda state:
                 #coin11
                 #logic: Hotel Room and sword
@@ -206,13 +212,14 @@ class MinitRules:
             "Hotel Room - Miner's Chest Coin": lambda state:
                 #coin12
                 #logic: Hotel Room and sword and grinder 
-                self.has_sword(state) and state.has("ItemGrinder", self.player) and self.can_openChest(state),
+                self.has_sword(state) and state.has("ItemGrinder", self.player) and self.can_openChest(state) and self.has_darkroom(state),
             "Hotel Room - Inside Truck": lambda state:
                 #coin14
                 #logic: Hotel Room and sword and pressPass and bridge()
                 #alt logic: Desert RV and grinder
-                self.has_sword(state) and state.has("ItemPressPass", self.player) and self.has_bridge(state)
-                or self.region_DesertRV(state) and self.has_sword(state) and state.has("ItemGrinder", self.player),
+                (self.has_sword(state) and state.has("ItemPressPass", self.player) and self.has_bridge(state))
+                or (self.region_DesertRV(state) 
+                        and self.has_sword(state) and state.has("ItemGrinder", self.player)),
             "Hotel Room - Queue": lambda state:
                 #coin15
                 #logic: Hotel Room and (bridge() or swim)
@@ -220,15 +227,17 @@ class MinitRules:
             "Hotel Room - Hotel Backroom Coin": lambda state:
                 #coin17
                 #logic: Hotel Room and coffee and sword
-                state.has("ItemCoffee", self.player) and self.has_sword(state) and self.can_openChest(state),
+                self.can_passBoxes(state) and self.has_sword(state),
             "Hotel Room - Drill Coin": lambda state:
                 #coin18
                 #logic: Hotel Room and sword and bridge() and pressPass
-                self.has_sword(state) and self.has_bridge(state) and state.has("ItemPressPass", self.player),
+                (self.has_sword(state) and self.has_bridge(state) and state.has("ItemPressPass", self.player))
+                or (self.region_DesertRV(state)
+                     and (self.has_sword(state) and state.has("ItemGrinder", self.player))),
             "Hotel Room - Crow Heart": lambda state:
                 #heartPiece5
                 #logic: Hotel Room and sword and glove and coffee
-                self.has_sword(state) and state.has("ItemGlove", self.player) and state.has("ItemCoffee", self.player),
+                self.has_sword(state) and state.has("ItemGlove", self.player) and self.can_passBoxes(state),
             "Hotel Room - Dog Heart": lambda state:
                 #heartPiece6
                 #logic: Hotel Room and sword and glove and basement
@@ -237,7 +246,9 @@ class MinitRules:
             "Hotel Room - Cooler Tentacle": lambda state:
                 #tentacle7
                 #logic: Hotel Room and sword and pressPass
-                self.has_sword(state) and state.has("ItemPressPass", self.player),
+                (self.has_sword(state) and state.has("ItemPressPass", self.player))
+                or (self.region_DesertRV(state)
+                     and (self.has_sword(state) and state.has("ItemGrinder", self.player))),
                 #alt logic: through underground and loading dock without pass but likely req shoes
 
         #Island Shack
@@ -250,33 +261,33 @@ class MinitRules:
         #Underground Tent
             "Underground Tent - ItemTrophy": lambda state: True,
                 #logic: Underground Tent
+                #may require shoes
 
         #Undefined
-            #"REGION - ItemCamera": lambda state: False,
-                #logic: unwritten/unknown
 
             "Hotel Room - ItemMegaSword": lambda state: 
-                self.has_sword(state) and state.has("ItemWateringCan", self.player) and self.has_bridge(state) and state.has("ItemPressPass", self.player)
-            ,
+                self.has_sword(state) and state.has("ItemWateringCan", self.player) and self.has_bridge(state) and state.has("ItemPressPass", self.player),
                 #logic: unwritten/unknown
-            "REGION - ItemBrokenSword": lambda state: True,
+            "Dog House - ItemSword": lambda state: True,
         }
 
     def has_sword(self, state) -> bool:
-        return state.has_any({"ItemBrokenSword", "ItemMegaSword", "Progressive Sword"}, self.player)
+        return state.has_any({"ItemSword","ItemBrokenSword", "ItemMegaSword", "Progressive Sword"}, self.player)
     def has_darkroom(self, state) -> bool:
-        return state.has_any({"ItemFlashLight"}, self.player)
+        return state.has("ItemFlashLight", self.player)
     def has_savedResidents(self, state) -> bool:
         #can save all the residents to access the hotel roof
         return self.has_sword(state) and state.has("ItemCoffee", self.player) and state.has("ItemGlove", self.player) and self.has_bridge(state) 
     def has_bridge(self, state) -> bool:
-        return (self.has_darkroom(state) and self.has_sword(state) and state.has_any({"ItemThrow"}, self.player)) or state.has_any({"ItemSwim"}, self.player)
+        return (self.has_darkroom(state) and self.has_sword(state) and state.has("ItemThrow", self.player)) or state.has("ItemSwim", self.player)
     def has_madeboat(self, state) -> bool:
-        return state.has_any({"ItemBoat"}, self.player) and state.has_any({"ItemWateringCan"}, self.player) and state.has_any({"ItemGlove"}, self.player)
+        return state.has("ItemBoat", self.player) and state.has("ItemWateringCan", self.player) and state.has("ItemGlove", self.player)
         #needs to be revisited when i'm sure what spawns boatman                                                #throwing stuff at the wall, i couldn't get the spawn with just boatwood + water and talk to the guy
     def can_openChest(self, state) -> bool:
-        return state.has_any({"ItemWateringCan"}, self.player) or self.has_sword(state)
+        return state.has("ItemWateringCan", self.player) or self.has_sword(state)
         #need to double check what can all open chests
+    def can_passBoxes(self, state) -> bool:
+        return state.has("ItemCoffee", self.player) or (self.has_sword(state) and state.has("ItemGrinder", self.player))
 
     def get_coins(self, state, count: int) -> bool:
         return state.count("Coin", self.player) >= count
@@ -289,12 +300,13 @@ class MinitRules:
         return True
     def region_DesertRV(self, state) -> bool:
         return (self.region_DogHouse(state)
-                 and (self.has_sword(state) and state.has("ItemGlove", self.player)
-                 or self.has_sword(state) and self.has_darkroom(state)
-                 or state.has("ItemSwim", self.player)))
+                    and (self.has_sword(state) and state.has("ItemGlove", self.player)
+                    or (self.has_sword(state) or state.has("ItemSwim", self.player)) and self.has_darkroom(state)
+                    or state.has("ItemSwim", self.player)))
     def region_HotelRoom(self, state) -> bool:
         return (self.region_DogHouse(state)
-                and (self.has_sword(state) and state.has("ItemGlove", self.player)))
+                    and (self.has_sword(state) and state.has("ItemGlove", self.player))
+                    or state.has("ItemSwim", self.player))
 
     def set_Minit_rules(self) -> None:
         multiworld = self.world.multiworld
