@@ -29,6 +29,7 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - add a warp back to doghouse (not really needed, but may be required for island shack logic and/or underground tent logic) (workaround: make a new save, what does that break?)
 #TODO - see if more factory checks can be handled with drillshortcut
 #TODO - figure out how to protect launching a non-ap save (don't think it matters because the app is different? but maybe if you use same folder??)
+#TODO - clean up game mod logging to necessities
 
 def launch_client():
     from .MinitClient import launch
@@ -107,7 +108,6 @@ class MinitWorld(World):
         return {"slot_number": self.player,}
 
     def set_rules(self):
-        print("setting Minit Rules")
         miniRules = MinitRules(self)
         miniRules.set_Minit_rules()
         self.multiworld.completion_condition[self.player] = lambda state: miniRules.region_HotelRoom(state)

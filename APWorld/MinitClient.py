@@ -11,6 +11,8 @@ import os
 import bsdiff4
 from aiohttp import web
 import Utils
+import settings
+#from settings import FilePath
 
 logger = logging.getLogger("Client")
 
@@ -42,6 +44,13 @@ class MinitCommandProcessor(ClientCommandProcessor):
                 self.output("Patched.")
         except FileNotFoundError:
             logger.info("Patch cancelled")
+        except ValueError:
+            logger.info("Selected game is not vanilla, please reset the game and repatch")
+
+class RomFile(settings.UserFilePath):
+    description = "Minit Vanilla File"
+    md5s = ["cd676b395dc2a25df10a569c17226dde"]
+        #the hash for vanilla to be verified by the /patch command
 
 
 #TODO look into how this can be handled as a ctx.watcher_event instead
@@ -82,7 +91,11 @@ class ProxyGameContext(CommonContext):
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     def patch_game(self):
+        validator = RomFile()
+
+
         source_data_win = Utils.open_filename('Select Minit data.win', (('data.win', ('.win',)),))
+        validator.validate(source_data_win)
         with open(os.path.join(source_data_win), "rb") as f:
             patchedFile = bsdiff4.patch(f.read(), data_path("patch.bsdiff"))
         with open(os.path.join(source_data_win), "wb") as f:
