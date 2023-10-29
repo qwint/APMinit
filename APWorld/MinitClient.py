@@ -35,10 +35,13 @@ class MinitCommandProcessor(ClientCommandProcessor):
 
     def _cmd_patch(self):
         """Patch the game."""
-        if isinstance(self.ctx, ProxyGameContext):
-            #os.makedirs(name=os.path.join(os.getcwd(), "Minit"), exist_ok=True)
-            self.ctx.patch_game()
-            self.output("Patched.")
+        try:
+            if isinstance(self.ctx, ProxyGameContext):
+                #os.makedirs(name=os.path.join(os.getcwd(), "Minit"), exist_ok=True)
+                self.ctx.patch_game()
+                self.output("Patched.")
+        except FileNotFoundError:
+            logger.info("Patch cancelled")
 
 
 #TODO look into how this can be handled as a ctx.watcher_event instead
@@ -66,17 +69,17 @@ class ProxyGameContext(CommonContext):
         self.locations_checked = []
         self.datapackage = []
 
-    # def run_gui(self):
-    #     from kvui import GameManager
+    def run_gui(self):
+        from kvui import GameManager
 
-    #     class UTManager(GameManager):
-    #         logging_pairs = [
-    #             ("Client", "Archipelago")
-    #         ]
-    #         base_title = "Archipelago Undertale Client"
+        class UTManager(GameManager):
+            logging_pairs = [
+                ("Client", "Archipelago")
+            ]
+            base_title = "Minit Client"
 
-    #     self.ui = UTManager(self)
-    #     self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
+        self.ui = UTManager(self)
+        self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     def patch_game(self):
         source_data_win = Utils.open_filename('Select Minit data.win', (('data.win', ('.win',)),))

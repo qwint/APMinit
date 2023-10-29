@@ -33,7 +33,7 @@ class MinitRules:
             "Hotel Room -> Underground Tent": lambda state: 
                 self.has_sword(state) and self.has_darkroom(state) and state.has("ItemGrinder", self.player),
             "Hotel Room -> Boss Fight": lambda state: 
-                state.has("ItemPressPass", self.player) and self.has_bridge(state) and state.has("ItemMegaSword", self.player) and self.has_darkroom(state),
+                self.region_BossFight(state),
         }
 
         self.location_rules = {
@@ -266,7 +266,7 @@ class MinitRules:
         }
 
     def has_sword(self, state) -> bool:
-        return state.has_any({"ItemSword","ItemBrokenSword", "ItemMegaSword", "Progressive Sword"}, self.player)
+        return state.has_any({"ItemSword","ItemBrokenSword", "ItemMegaSword", "ProgressiveSword"}, self.player)
     def has_darkroom(self, state) -> bool:
         return state.has("ItemFlashLight", self.player)
     def has_savedResidents(self, state) -> bool:
@@ -279,6 +279,7 @@ class MinitRules:
         #needs to be revisited when i'm sure what spawns boatman                                                #throwing stuff at the wall, i couldn't get the spawn with just boatwood + water and talk to the guy
     def has_drillShortcut(self, state) -> bool:
         return (self.region_HotelRoom(state) and self.has_sword(state) and self.has_bridge(state) and state.has("ItemPressPass", self.player)) or (self.region_DesertRV(state) and (self.has_sword(state) and state.has("ItemGrinder", self.player)))
+                                                                                                                                                    #newline
         #allows you to get into the factory with enough time to wait for queue
         #also why can i not put a newline in here but i can in the region methods??
 
@@ -308,6 +309,9 @@ class MinitRules:
         return (self.region_DogHouse(state)
                     and (self.has_sword(state) and state.has("ItemGlove", self.player))
                     or state.has("ItemSwim", self.player))
+    def region_BossFight(self, state) -> bool:
+        return state.has("ItemMegaSword", self.player) and self.has_darkroom(state) and  (self.region_HotelRoom(state) and state.has("ItemPressPass", self.player) and self.has_bridge(state))  or (self.has_drillShortcut(state))
+                                                                                          #newline                                                                                              newline
 
     def set_Minit_rules(self) -> None:
         multiworld = self.world.multiworld

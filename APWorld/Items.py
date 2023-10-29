@@ -99,21 +99,20 @@ item_frequencies = {
     "Tentacle": 8
 }
 
-# item groups stolen from pseudoregalia for reuse if/when i need them
-# item_groups: Dict[str, Set[str]] = {
-#     "major keys": {"Major Key - Empty Bailey",
-#                    "Major Key - The Underbelly",
-#                    "Major Key - Tower Remains",
-#                    "Major Key - Sansa Keep",
-#                    "Major Key - Twilight Theatre"},
-#     "plunge": {"Sunsetter"},
-#     "air kicks": {"Sun Greaves"},
-#     "nike kicks": {"Sun Greaves"},
-#     "charge": {"Strikebreak"},
-#     "projectile": {"Soul Cutter"},
-#     "slidejump": {"Solar Wind"},
-#     "wallride": {"Cling Gem"},
-#     "pogo": {"Ascendant Light"},
-#     "floof": {"Professionalism"},
-#     "heliacal power": {"Air Kick"},
-# }
+item_groups: Dict[str, Set[str]] = {
+    "swords": {"ItemBrokenSword",
+                   "ItemSword",
+                   "ItemMegaSword"},
+    "swim": {"ItemSwim"},
+    "push": {"ItemCoffee"},
+    "cut": {"ItemGlove"},
+    "press pass": {"ItemPressPass"},
+    "shoes": {"ItemShoes"},
+    "watering can": {"ItemWateringCan"},
+    "flashlight": {"ItemFlashLight"},
+    "lighthouse key": {"ItemKey"},
+    "basement key": {"ItemBasement"},
+    "grinder": {"ItemGrinder"},
+    "throw": {"ItemThrow"},
+    "boatwood": {"ItemBoat"},
+}

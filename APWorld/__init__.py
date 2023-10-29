@@ -9,21 +9,26 @@ from .Rules import MinitRules
 from typing import Dict, Any
 from worlds.LauncherComponents import Component, components, Type, launch_subprocess
 
+#high prio
+#TODO - fix goal complete to not require the walk to toilet (speedrun mode)
+#TODO - find more places exceptions need to be handled
+#TODO - handle dumpster coin 'despawning'
+
 #misc game mod TODOs
 #TODO - pull all required game mods out and reapply to clean up patch file
 #TODO - add fanfare (back)
-#TODO - figure out how to protect launching a non-ap save (don't think it matters because the app is different? but maybe if you use same folder??)
-#TODO - research why save file percents are inflating
-#TODO - figure out how to progressive sword
-#TODO - add a darkroom option to ignore flashlight req
-#TODO - fix boss fight finish cutscene
-#TODO - add a warp back to doghouse (not really needed, but may be required for island shack logic and/or underground tent logic) (workaround: make a new save, what does that break?)
-#TODO - add exception handling on: patching, connecting, more?
-#TODO - handle dumpster coin 'despawning'
-#TODO - add aliases to location/items
-#TODO - see if more factory checks can be handled with drillshortcut
+
+#add options
 #TODO - sword is sword option
-#TODO - change tracker title name
+#TODO - add a darkroom option to ignore flashlight req
+#TODO - figure out how to progressive sword
+#TODO - figure out how to add alt goal (flush broken sword)
+
+#known low prio
+#TODO - research why save file percents are inflating - the items += trigger is the count of 
+#TODO - add a warp back to doghouse (not really needed, but may be required for island shack logic and/or underground tent logic) (workaround: make a new save, what does that break?)
+#TODO - see if more factory checks can be handled with drillshortcut
+#TODO - figure out how to protect launching a non-ap save (don't think it matters because the app is different? but maybe if you use same folder??)
 
 def launch_client():
     from .MinitClient import launch
@@ -105,7 +110,7 @@ class MinitWorld(World):
         print("setting Minit Rules")
         miniRules = MinitRules(self)
         miniRules.set_Minit_rules()
-        self.multiworld.completion_condition[self.player] = lambda state: miniRules.region_HotelRoom(state) and state.has("ItemPressPass", self.player) and miniRules.has_bridge(state) and state.has("ItemMegaSword", self.player)
+        self.multiworld.completion_condition[self.player] = lambda state: miniRules.region_HotelRoom(state)
         #state.has("Boss dead", self.player)
 
     #difficulty settings from Pseudoregalia, won't likely need but may want to reuse
