@@ -10,27 +10,29 @@ from typing import Dict, Any
 from worlds.LauncherComponents import Component, components, Type, launch_subprocess
 
 #misc game mod TODOs
-#TODO - handle receiving items better
-#TODO - figure out how to spawn broken/mega sword when you pick up watering can
 #TODO - is there a coin in island shack???
 #TODO - need to revisit item/location codes and logic for the sword's's
-#TODO - make items sync synchronously (long polling?)
 #TODO - pull all required game mods out and reapply to clean up patch file
 #TODO - add fanfare (back)
 #TODO - figure out how to protect launching a non-ap save (don't think it matters because the app is different? but maybe if you use same folder??)
-#TODO - switch press pass with camera (logic changes?)
 #TODO - research why save file percents are inflating
 #TODO - figure out how to progressive sword
 #TODO - add a darkroom option to ignore flashlight req
 #TODO - fix boss fight finish cutscene
-#TODO - fix camera/press pass (pc version uses camera)
 #TODO - flippers despawned on me
 #TODO - fix basement logic
-#TODO - figure out the itemGet memory leak-type thing
 #TODO - add normal sword
-#TODO - switch the Q press to sync to be an AP pickup that spawns at houses
 #TODO - add a warp back to doghouse (not really needed, but may be required for island shack logic and/or underground tent logic)
 #TODO - add exception handling on: patching, connecting, more?
+#TODO - extra hearts despawning on create player
+#TODO - handle dumpster coin 'despawning'
+#TODO - handle shoes despawning
+#TODO - handle boatwood despawning
+#TODO - handle oasis(throw) despawning
+#TODO - handle basement key despawning
+#TODO - add aliases to location/items
+#TODO - see if more factory checks can be handled with drillshortcut
+#TODO - sword is sword option
 
 def launch_client():
     from .MinitClient import launch
