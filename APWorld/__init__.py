@@ -23,6 +23,7 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - add aliases to location/items
 #TODO - see if more factory checks can be handled with drillshortcut
 #TODO - sword is sword option
+#TODO - change tracker title name
 
 def launch_client():
     from .MinitClient import launch

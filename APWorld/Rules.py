@@ -84,7 +84,7 @@ class MinitRules:
             "Dog House - Land is Great Coin": lambda state:
                 #coin4
                 #logic: Dog House and sword and (coffee or swim)
-                self.can_openChest(state) and (state.has("ItemCoffee", self.player) or state.has("ItemSwim", self.player)),
+                self.can_openChest(state) and (state.has("ItemSwim", self.player) or (state.has("ItemCoffee", self.player) and self.has_sword(state))),
             "Dog House - Hidden Snake Coin": lambda state:
                 #coin5
                 #logic: Dog House and sword and darkroom
