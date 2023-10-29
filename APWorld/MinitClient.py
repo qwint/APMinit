@@ -143,7 +143,6 @@ def handleLocations(ctx: CommonContext, request: json) -> json:
     #TODO - make this actually send the difference
     needed_updates = set(request["Locations"]).difference(ctx.locations_checked)
     locationmessage = [{"cmd": "LocationChecks", "locations": list(needed_updates)}]
-    #TODO - (see if i need to) handle locationId -1 receivedItems (from a /send or !get)
     return locationmessage
 
 def handleItems(ctx: CommonContext):

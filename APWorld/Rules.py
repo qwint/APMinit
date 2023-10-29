@@ -20,7 +20,6 @@ class MinitRules:
         self.player = world.player
 
         self.region_rules = {
-        #TODO fix basement rules
             "Menu -> Dog House": lambda state: self.region_DogHouse(state),
             "Dog House -> Island Shack": lambda state: 
                 self.has_madeboat(state),
@@ -37,7 +36,6 @@ class MinitRules:
         }
 
         self.location_rules = {
-        #TODO double check if sword req is only for the line of bushes north or west, and if so make it (sword or swim)
 
         #Dog House
             "Dog House - ItemCoffee": lambda state:
@@ -161,7 +159,7 @@ class MinitRules:
                 self.can_openChest(state),
             "Desert RV - Quicksand Coin": lambda state: 
                 self.has_sword(state) and self.has_darkroom(state),
-                #TODO: check if vanilla drops the watering can when falling through quicksand and fix if it's not vanilla behavior 
+                #vanilla does require sword because the wateringcan drops while drowing in quicksand
                 #coin16
                 #logic: Desert RV
             "Desert RV - Dumpster": lambda state:
