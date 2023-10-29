@@ -51,9 +51,9 @@ item_table: Dict[str, MinitItemData] = {
     "ItemBoat": MinitItemData(
         code=60011,
         classification=ItemClassification.progression),
-    "ItemCamera": MinitItemData(
-        code=60012,
-        classification=ItemClassification.filler),
+    # "ItemCamera": MinitItemData(
+    #     code=60012,
+    #     classification=ItemClassification.filler),
     "ItemBasement": MinitItemData(
         code=60013,
         classification=ItemClassification.progression),

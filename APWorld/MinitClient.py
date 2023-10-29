@@ -3,7 +3,6 @@ import logging
 import typing
 from NetUtils import JSONtoTextParser, JSONMessagePart, ClientStatus
 from CommonClient import CommonContext, gui_enabled, logger, get_base_parser, server_loop, ClientCommandProcessor
-#from MultiServer import 
 #probably need
 #import urllib.parse
 #webserver imports
@@ -40,11 +39,6 @@ class MinitCommandProcessor(ClientCommandProcessor):
             #os.makedirs(name=os.path.join(os.getcwd(), "Minit"), exist_ok=True)
             self.ctx.patch_game()
             self.output("Patched.")
-
-    #TODO - figure out why the client UI isn't showing text
-
-    #def _cmd_audo_patch(self):
-    #think about importing this from undertaleclient too
 
 
 #TODO look into how this can be handled as a ctx.watcher_event instead

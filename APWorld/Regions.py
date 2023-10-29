@@ -15,6 +15,7 @@ region_table: Dict[str, List[str]] = {
     "Desert RV": [],
     "Hotel Room": ["Underground Tent", "Boss Fight"],
     "Underground Tent": [],
-    "Basement": ["Dog House", "Island Shack", "Hotel Room"],
+    "Basement": [],
     "Boss Fight": []
 }
+    #there are basement -> place entrances but they are not logically relevant

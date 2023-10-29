@@ -10,8 +10,6 @@ from typing import Dict, Any
 from worlds.LauncherComponents import Component, components, Type, launch_subprocess
 
 #misc game mod TODOs
-#TODO - is there a coin in island shack???
-#TODO - need to revisit item/location codes and logic for the sword's's
 #TODO - pull all required game mods out and reapply to clean up patch file
 #TODO - add fanfare (back)
 #TODO - figure out how to protect launching a non-ap save (don't think it matters because the app is different? but maybe if you use same folder??)
@@ -19,17 +17,9 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - figure out how to progressive sword
 #TODO - add a darkroom option to ignore flashlight req
 #TODO - fix boss fight finish cutscene
-#TODO - flippers despawned on me
-#TODO - fix basement logic
-#TODO - add normal sword
-#TODO - add a warp back to doghouse (not really needed, but may be required for island shack logic and/or underground tent logic)
+#TODO - add a warp back to doghouse (not really needed, but may be required for island shack logic and/or underground tent logic) (workaround: make a new save, what does that break?)
 #TODO - add exception handling on: patching, connecting, more?
-#TODO - extra hearts despawning on create player
 #TODO - handle dumpster coin 'despawning'
-#TODO - handle shoes despawning
-#TODO - handle boatwood despawning
-#TODO - handle oasis(throw) despawning
-#TODO - handle basement key despawning
 #TODO - add aliases to location/items
 #TODO - see if more factory checks can be handled with drillshortcut
 #TODO - sword is sword option
