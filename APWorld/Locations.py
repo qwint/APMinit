@@ -274,7 +274,7 @@ location_table = {
 
 
     "Fight the Boss": MinitLocationData(
-        code=60650,
+ #       code=60650,
         region="Boss Fight",
  #       locked_item="Boss dead",
         ),

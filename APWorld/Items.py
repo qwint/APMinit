@@ -81,8 +81,8 @@ item_table: Dict[str, MinitItemData] = {
         code=60020,
         classification=ItemClassification.progression),
 
-   "Boss dead": MinitItemData(
-       classification=ItemClassification.progression),
+   # "Boss dead": MinitItemData(
+   #     classification=ItemClassification.progression),
 
 #stolen events from pseudoregalia for gomode and game completion respectivly
 #    "Unlocked Door": MinitItemData(

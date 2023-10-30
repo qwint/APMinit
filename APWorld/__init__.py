@@ -84,7 +84,7 @@ class MinitWorld(World):
                 new_loc.show_in_spoiler = False
             region.locations.append(new_loc)
             if loc_name == "Fight the Boss":
-                self.multiworld.get_location(loc_name, self.player).place_locked_item(MinitItem("Boss dead", ItemClassification.progression, None, self.player))
+                self.multiworld.get_location(loc_name, self.player).place_locked_item(MinitItem(name = "Boss dead", classification = ItemClassification.progression, code = 60021, player = self.player))
 
         for region_name, exit_list in region_table.items():
             region = self.multiworld.get_region(region_name, self.player)
