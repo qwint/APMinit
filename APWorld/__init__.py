@@ -1,5 +1,5 @@
 from worlds.AutoWorld import World
-from BaseClasses import Region, Location, Item
+from BaseClasses import Region, Location, Item, ItemClassification
 from .Items import MinitItem, MinitItemData, item_table, item_frequencies
 from .Locations import location_table
 from .Regions import region_table
@@ -83,6 +83,8 @@ class MinitWorld(World):
             if (not loc_data.show_in_spoiler):
                 new_loc.show_in_spoiler = False
             region.locations.append(new_loc)
+            if loc_name == "Fight the Boss":
+                self.multiworld.get_location(loc_name, self.player).place_locked_item(MinitItem("Boss dead", ItemClassification.progression, None, self.player))
 
         for region_name, exit_list in region_table.items():
             region = self.multiworld.get_region(region_name, self.player)
@@ -110,8 +112,7 @@ class MinitWorld(World):
     def set_rules(self):
         miniRules = MinitRules(self)
         miniRules.set_Minit_rules()
-        self.multiworld.completion_condition[self.player] = lambda state: miniRules.region_HotelRoom(state)
-        #state.has("Boss dead", self.player)
+        self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player)
 
     #difficulty settings from Pseudoregalia, won't likely need but may want to reuse
     # def set_rules(self):
