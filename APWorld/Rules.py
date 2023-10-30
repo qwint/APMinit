@@ -198,7 +198,8 @@ class MinitRules:
                 #hidden - coffee
             "Hotel Room - ItemGrinder": lambda state:
                 #logic: Hotel Room and coffee
-                state.has("ItemCoffee", self.player) and self.has_darkroom(state),
+                state.has("ItemSwim", self.player) and state.has("ItemCoffee", self.player) and self.has_darkroom(state),
+                #tentatively adding swim as a req for left factory
             "Hotel Room - Shrub Arena Coin": lambda state:
                 #coin11
                 #logic: Hotel Room and sword
@@ -251,8 +252,9 @@ class MinitRules:
                 self.has_sword(state) and state.has("ItemBasement", self.player) and state.has("ItemSwim", self.player) and state.has("ItemCoffee", self.player),
 
         #Underground Tent
-            "Underground Tent - ItemTrophy": lambda state: True,
+            "Underground Tent - ItemTrophy": lambda state: 
                 #logic: Underground Tent
+                state.has("ItemSwim", self.player),
                 #may require shoes
 
         #Undefined
@@ -308,8 +310,8 @@ class MinitRules:
                     and (self.has_sword(state) and state.has("ItemGlove", self.player))
                     or state.has("ItemSwim", self.player))
     def region_BossFight(self, state) -> bool:
-        return state.has("ItemMegaSword", self.player) and self.has_darkroom(state) and  (self.region_HotelRoom(state) and state.has("ItemPressPass", self.player) and self.has_bridge(state))  or (self.has_drillShortcut(state))
-                                                                                          #newline                                                                                              newline
+        return state.has("ItemSwim", self.player) and state.has("ItemMegaSword", self.player) and self.has_darkroom(state) and  (self.region_HotelRoom(state) and state.has("ItemPressPass", self.player) and self.has_bridge(state))  or (self.has_drillShortcut(state))
+                          #tentatively adding swim as a req for left factory                                                     #newline                                                                                              newline
 
     def set_Minit_rules(self) -> None:
         multiworld = self.world.multiworld
