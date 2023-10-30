@@ -13,12 +13,16 @@ from aiohttp import web
 import Utils
 import settings
 #from settings import FilePath
+from .Items import item_table
 
 logger = logging.getLogger("Client")
 
 DEBUG = False
 GAMENAME = "Minit"
 ITEMS_HANDLING = 0b111
+my_locations = []
+for item_name, item_data in item_table.items():
+    my_locations.append(item_data.code)
 
 def data_path(file_name: str):
     import pkgutil
@@ -111,8 +115,11 @@ class ProxyGameContext(CommonContext):
 
     #handle POST at /Locations
     async def locationHandler(self, request: web.Request) -> web.Response:
-        response = handleLocations(self, await request.json())
+        requestjson = await request.json()
+        response = handleLocations(self, requestjson)
+        #localResponse = handleLocalLocations(self, requestjson)
         await self.send_msgs(response)
+        #return web.json_response(str(localResponse)) 
         return web.json_response(str(response)) 
     #handle POST at /Goal
     async def goalHandler(self, request: web.Request) -> web.Response:
@@ -144,6 +151,37 @@ def handleLocations(ctx: CommonContext, request: json) -> json:
     needed_updates = set(request["Locations"]).difference(ctx.locations_checked)
     locationmessage = [{"cmd": "LocationChecks", "locations": list(needed_updates)}]
     return locationmessage
+
+def handleLocalLocations(ctx: CommonContext, request: json) -> json:
+    #expecting request to be json body in the form of 
+    #{"LocationResponse": {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017} for a local item
+    #{"LocationResponse": {"Player": "OtherPlayer", "Item": "ItemGrinder"} for a remote item
+
+
+    #logger.info("trying to handle local locations")
+    #locationFound = request["Locations"][0] #confirm this works
+    logger.info("locationFound: "+str(locationFound))
+    for loc in ctx.locations_info: #locations_scouted:
+        if loc.location == locationFound:
+            logger.info("location found in info")
+            slot = loc.player #don't convert
+            player = loc.player #convert to text
+            item = loc.item #convert to text
+            code = loc.item #don't convert
+
+    if ctx.slot_concerns_self(slot): #confirm this is true if local items
+        locationmessage = {"Player": player, "Item": item}
+    else: 
+        locationmessage = {"Player": player, "Item": item, "Code": code}
+
+    logger.info("message sent: " +str(locationmessage))
+    #needed_updates = set(request["Locations"]).difference(ctx.locations_checked)
+    locationmessage = {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
+    return locationmessage
+
+#on connect somewhere
+#ctx.send_msgs([{"cmd": "LocationScouts", "locations": list(my_locations), "create_as_hint":0}])
+#potential use ctx.missing_locations instead of my_locations (esp if that doesn't work)
 
 def handleItems(ctx: CommonContext):
     #expecting request to be json body in the form of {"Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}

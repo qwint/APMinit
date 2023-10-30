@@ -62,10 +62,10 @@ class MinitRules:
                 #logic: Dog House and sword and coffee and throw
                 #alt logic: Hotel Room and sword and grinder and glove
                 #alt logic: Hotel Room and canTank(lots)
-                (self.has_sword(state) and self.can_passBoxes(state) and state.has("ItemThrow", self.player))
+                (self.can_passBoxes(state) and ((state.has("ItemThrow", self.player) and self.has_sword(state)) or state.has("ItemSwim", self.player)))
                 or (self.region_HotelRoom(state) 
                     and (self.has_sword(state) and state.has("ItemGrinder", self.player) and state.has("ItemGlove", self.player))
-                    or (self.has_sword(state) and self.get_hearts(state,2))),
+                    or (self.has_sword(state) and state.has("ItemSwim", self.player) and self.get_hearts(state,2))),
                 #you can hit the grass on the output of the toxic river and swim through, may bump to +3 life?
             "Dog House - House Pot Coin": lambda state:
                 #coin1
@@ -78,7 +78,7 @@ class MinitRules:
             "Dog House - Sewer Coin": lambda state:
                 #coin3
                 #logic: Dog House and sword and darkroom
-                self.has_sword(state) and self.has_darkroom(state) and self.can_openChest(state),
+                self.has_sword(state) and self.has_darkroom(state) and self.can_openChest(state) and state.has("ItemSwim", self.player),
             "Dog House - Land is Great Coin": lambda state:
                 #coin4
                 #logic: Dog House and sword and (coffee or swim)
@@ -258,7 +258,7 @@ class MinitRules:
         #Undefined
 
             "Hotel Room - ItemMegaSword": lambda state: 
-                self.has_sword(state) and state.has("ItemWateringCan", self.player) and self.has_bridge(state) and state.has("ItemPressPass", self.player),
+                self.has_sword(state) and state.has("ItemWateringCan", self.player) and state.has("ItemCoffee", self.player) and self.has_drillShortcut(state),
                 #logic: unwritten/unknown
             "Dog House - ItemSword": lambda state: True,
         }
