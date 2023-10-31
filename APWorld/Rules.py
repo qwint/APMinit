@@ -289,7 +289,7 @@ class MinitRules:
     def can_passBoxes(self, state) -> bool:
         return state.has("ItemCoffee", self.player) or (self.has_sword(state) and state.has("ItemGrinder", self.player))
     def can_teleport(self, state) -> bool:
-        return self.has_madeboat(state) and state.has("ItemBasement", self.player) and self.has_sword(state)
+        return self.has_madeboat(state) and state.has("ItemBasement", self.player) and self.has_sword(state) and state.has("ItemSwim", self.player) or state.has("ItemCoffee", self.player)
 
     def get_coins(self, state, count: int) -> bool:
         return state.count("Coin", self.player) >= count

@@ -40,6 +40,7 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #shrub arena not getting more enemies/dropping the coin
 #you can't walk on the belts into left factory room without swim
 #sidekick-energy guy not showing up at his dialog spawns
+#island shack softlock happens on !basement key or (!swim or !coffee)
 
 def launch_client():
     from .MinitClient import launch

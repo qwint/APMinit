@@ -24,3 +24,6 @@ Items will not be added synchronously to the player's inventory, rather the play
 ## What are recommended settings to tweak for beginners to the rando?
 Vanilla Sword is recommended to turn on for beginners as it opens up many more checks in early game and removes potential requirements for the player to use unintuitive pathing and interactions.
 Also Goal: Flush is a much quicker goal to use as it only requires Factory access and the item Broken Sword.
+
+## What is different from the vanilla game?
+Currently the only logic change from the vanilla game is that the island shack is locked until you can complete the teleporter quest to prevent softlocks

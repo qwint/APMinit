@@ -123,7 +123,7 @@ class ProxyGameContext(CommonContext):
         await self.get_username()
         await self.send_connect()
 
-    #handle POST at /Locations
+    #handle POST at /Locations that utilizes scouts to return useful info if possible
     async def locationHandler(self, request: web.Request) -> web.Response:
         requestjson = await request.json()
         response = handleLocations(self, requestjson)
@@ -131,6 +131,9 @@ class ProxyGameContext(CommonContext):
         await self.send_msgs(response)
         return web.json_response(localResponse)
         #return web.json_response({"Player": "qwint", "Item": "ItemMegaSword", "Code": 60014}) 
+        #return web.json_response({"Player": "other", "Item": "Swim"}) 
+        #return web.json_response({"Location": "Not found in scout cache"})
+
     #handle POST at /Goal
     async def goalHandler(self, request: web.Request) -> web.Response:
         response = handleGoal(self)
@@ -172,26 +175,43 @@ def handleLocalLocations(ctx: CommonContext, request: json) -> json:
     #TODO - load the datapackage so i can get translated names instead of setting their ids to strings
     #TODO - still find a way to make the scouts launch automatically
 
-    logger.info("trying to handle local locations")
-    locationFound = request["Locations"][0] #confirm this works
-    logger.info("locationFound: "+str(locationFound))
-    loc = ctx.locations_info[locationFound] #locations_scouted:
-    logger.info("location found in info")
-    slot = loc.player #don't convert
-    player = str(loc.player) #convert to text
-    item = str(loc.item) #convert to text
-    code = loc.item #don't convert
+    locations = set(request["Locations"]).difference(ctx.locations_checked)
+    if len(locations) == 1:
+        location = request["Locations"][0]
+        logger.info("location: "+str(location))
 
-    if ctx.slot_concerns_self(slot): #confirm this is true if local items
-        locationmessage = {"Player": player, "Item": item, "Code": code}
+        if (len(ctx.locations_info) > 0):
+            logger.info("trying to handle local locations")
+            if location in ctx.locations_info:
+                loc = ctx.locations_info[location] #locations_scouted:
+                logger.info("location found in info")
+                slot = loc.player #don't convert
+                player = str(loc.player) #convert to text
+                item = str(loc.item) #convert to text
+                code = loc.item #don't convert
+
+                if ctx.slot_concerns_self(slot): #confirm this is true if local items
+                    locationmessage = {"Player": player, "Item": item, "Code": code}
+                else: 
+                    locationmessage = {"Player": player, "Item": item}
+
+                logger.info("message sent: " +str(locationmessage))
+                #needed_updates = set(request["Locations"]).difference(ctx.locations_checked)
+                #locationmessage = {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
+                return locationmessage
+            else: 
+                logger.info("location not found in the scouts")
+                #not found in the scouts that do exist
+        else: 
+            logger.info("no scouts found to hint names for location pickup")
     else: 
-        locationmessage = {"Player": player, "Item": item}
+        logger.info("len(Locations) == 1 resolved to false")
+        #error handle
 
-    logger.info("message sent: " +str(locationmessage))
-    #needed_updates = set(request["Locations"]).difference(ctx.locations_checked)
-    #locationmessage = {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
-    return locationmessage
-
+    #if we couldn't handle the logic send back benign message
+    return {"Location": "Not found in scout cache"}
+    
+        
 #on connect somewhere
 #ctx.send_msgs([{"cmd": "LocationScouts", "locations": list(my_locations), "create_as_hint":0}])
 #potential use ctx.missing_locations instead of my_locations (esp if that doesn't work)
