@@ -51,6 +51,16 @@ class MinitCommandProcessor(ClientCommandProcessor):
         except ValueError:
             logger.info("Selected game is not vanilla, please reset the game and repatch")
 
+    def _cmd_scout(self):
+        """manually scouts locations for the fanfares."""
+        Utils.async_start(self.ctx.send_msgs([{"cmd": "LocationScouts", "locations": list(self.ctx.missing_locations), "create_as_hint":0}]))
+
+    def _cmd_print(self):
+        """prints cached values for debugging."""
+        logger.info("locations info: " + str(self.ctx.locations_info))
+        logger.info("missing locations: " + str(self.ctx.missing_locations))
+
+
 class RomFile(settings.UserFilePath):
     description = "Minit Vanilla File"
     md5s = ["cd676b395dc2a25df10a569c17226dde"]
@@ -117,10 +127,10 @@ class ProxyGameContext(CommonContext):
     async def locationHandler(self, request: web.Request) -> web.Response:
         requestjson = await request.json()
         response = handleLocations(self, requestjson)
-        #localResponse = handleLocalLocations(self, requestjson)
+        localResponse = handleLocalLocations(self, requestjson)
         await self.send_msgs(response)
-        #return web.json_response(str(localResponse)) 
-        return web.json_response(str(response)) 
+        return web.json_response(localResponse)
+        #return web.json_response({"Player": "qwint", "Item": "ItemMegaSword", "Code": 60014}) 
     #handle POST at /Goal
     async def goalHandler(self, request: web.Request) -> web.Response:
         response = handleGoal(self)
@@ -157,26 +167,29 @@ def handleLocalLocations(ctx: CommonContext, request: json) -> json:
     #{"LocationResponse": {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017} for a local item
     #{"LocationResponse": {"Player": "OtherPlayer", "Item": "ItemGrinder"} for a remote item
 
+    #TODO - make this not break if the sent item is not in missing locations (the things we scouted for)
+    #TODO - make the game mod not crash if something doesn't have an item value after translate
+    #TODO - load the datapackage so i can get translated names instead of setting their ids to strings
+    #TODO - still find a way to make the scouts launch automatically
 
-    #logger.info("trying to handle local locations")
-    #locationFound = request["Locations"][0] #confirm this works
+    logger.info("trying to handle local locations")
+    locationFound = request["Locations"][0] #confirm this works
     logger.info("locationFound: "+str(locationFound))
-    for loc in ctx.locations_info: #locations_scouted:
-        if loc.location == locationFound:
-            logger.info("location found in info")
-            slot = loc.player #don't convert
-            player = loc.player #convert to text
-            item = loc.item #convert to text
-            code = loc.item #don't convert
+    loc = ctx.locations_info[locationFound] #locations_scouted:
+    logger.info("location found in info")
+    slot = loc.player #don't convert
+    player = str(loc.player) #convert to text
+    item = str(loc.item) #convert to text
+    code = loc.item #don't convert
 
     if ctx.slot_concerns_self(slot): #confirm this is true if local items
-        locationmessage = {"Player": player, "Item": item}
-    else: 
         locationmessage = {"Player": player, "Item": item, "Code": code}
+    else: 
+        locationmessage = {"Player": player, "Item": item}
 
     logger.info("message sent: " +str(locationmessage))
     #needed_updates = set(request["Locations"]).difference(ctx.locations_checked)
-    locationmessage = {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
+    #locationmessage = {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
     return locationmessage
 
 #on connect somewhere

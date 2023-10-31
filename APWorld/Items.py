@@ -96,7 +96,7 @@ item_frequencies = {
     "Coin": 19,
     "HeartPiece": 6,
     "Tentacle": 8
-}
+}   #items: 17
 
 item_groups: Dict[str, Set[str]] = {
     "swords": {"ItemBrokenSword",

@@ -26,6 +26,7 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - figure out how to progressive sword
 #TODO - figure out how to add alt goal (flush broken sword)
 #TODO - add puzzleless to de-prio longer/confusing puzzles
+#TODO - add random start locations
 
 #known low prio
 #TODO - research why save file percents are inflating - the items += trigger is the count of 
@@ -37,7 +38,8 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #bug reports
 #hotel residents showing up in their rooms before being saved, potentially because the game was already completed? (toilet)
 #shrub arena not getting more enemies/dropping the coin
-#wallet resident not telling you what he means by COLD? lol
+#you can't walk on the belts into left factory room without swim
+#sidekick-energy guy not showing up at his dialog spawns
 
 def launch_client():
     from .MinitClient import launch
