@@ -63,7 +63,7 @@ class MinitCommandProcessor(ClientCommandProcessor):
 
 class RomFile(settings.UserFilePath):
     description = "Minit Vanilla File"
-    md5s = ["cd676b395dc2a25df10a569c17226dde"]
+    md5s = ["cd676b395dc2a25df10a569c17226dde","1432716643381ced3ad0195078e8e314"]
         #the hash for vanilla to be verified by the /patch command
 
 
