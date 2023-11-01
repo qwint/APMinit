@@ -186,8 +186,8 @@ def handleLocalLocations(ctx: CommonContext, request: json) -> json:
                 loc = ctx.locations_info[location] #locations_scouted:
                 logger.info("location found in info")
                 slot = loc.player #don't convert
-                player = str(loc.player) #convert to text
-                item = str(loc.item) #convert to text
+                player = ctx.slot_info[loc.player].name #convert to text
+                item = ctx.item_names[loc.item] #convert to text
                 code = loc.item #don't convert
 
                 if ctx.slot_concerns_self(slot): #confirm this is true if local items
