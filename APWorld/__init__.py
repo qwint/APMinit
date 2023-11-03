@@ -36,12 +36,15 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - clean up game mod logging to necessities
 #TODO - clean up item/location names
 #TODO - refactor code
+#TODO - add more routes for Dog Heart
 
 #bug reports
 #hotel residents showing up in their rooms before being saved, potentially because the game was already completed? (toilet)
 #shrub arena not getting more enemies/dropping the coin
 #sidekick-energy guy not showing up at his dialog spawns
 #hotel backroom coin is accessible without breaking the pot (confirm vanilla behavior or fix)
+#fanfares sometimes clip you into walls without a way out
+#generation breaks sometimes, unknown cause
 
 #release notes
 #'turned on' speedrun mode so the walk after the boss fight is not necessary, fixing both end game bugs

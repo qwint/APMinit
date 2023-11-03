@@ -22,7 +22,8 @@ class MinitRules:
         self.region_rules = {
             "Menu -> Dog House": lambda state: self.region_DogHouse(state),
             "Dog House -> Island Shack": lambda state: 
-                self.has_madeboat(state),# or state.has("ItemSwim", self.player), commenting for now, may add to skip options later
+                self.has_madeboat(state),
+                #you can swim from treasure island by baiting the shark, look into option how to add as Obscure else leave it out of logic.
             "Dog House -> Desert RV": lambda state:
                 self.region_DesertRV(state),
             "Dog House -> Hotel Room": lambda state: 
@@ -237,12 +238,10 @@ class MinitRules:
                 self.has_sword(state) and state.has("ItemGlove", self.player) and self.can_teleport(state),
                 #may add 'footing it' to logic too
                 #this logic changes if i rando the bone, don't think i will though
-            "Hotel Room - Cooler Tentacle": lambda state:
+            "Factory Main - Cooler Tentacle": lambda state:
                 #tentacle7
                 #logic: Hotel Room and sword and pressPass
-                (self.has_sword(state) and state.has("ItemPressPass", self.player))
-                or (self.region_DesertRV(state)
-                     and (self.has_sword(state) and state.has("ItemGrinder", self.player))),
+                self.has_sword(state),
                 #alt logic: through underground and loading dock without pass but likely req shoes
 
         #Island Shack
@@ -272,9 +271,9 @@ class MinitRules:
                 (self.region_HotelRoom(state) 
                     and state.has("ItemSwim", self.player) and self.total_hearts(state,7)),
                 #good movement through the toxic river can go directly south > west with only taking 6 damage
-            "Dog House - ItemFlashLight": lambda state:
-                state.has("ItemSwim", self.player),
-                #the player can collide with the itempickup while in the water visually underneath the lighthouse
+            "Island Shack - Teleporter Tentacle": lambda state:
+                self.has_sword(state) and state.has("ItemBasement", self.player) and state.has("ItemSwim", self.player),
+                #a precise attack can hit it from the right teleporter's square
         }
 
     def has_sword(self, state) -> bool:

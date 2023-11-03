@@ -237,12 +237,12 @@ location_table = {
         #this logic changes if i rando the bone, don't think i will though
         code=60643,
         region="Hotel Room",),
-    "Hotel Room - Cooler Tentacle": MinitLocationData(
+    "Factory Main - Cooler Tentacle": MinitLocationData(
         #tentacle7
         #logic: Hotel Room AND sword AND pressPass
         #alt logic: through underground and loading dock without pass but likely req shoes
         code=60644,
-        region="Hotel Room",),
+        region="Factory Main",),
 
 #Island Shack
     "Island Shack - Teleporter Tentacle": MinitLocationData(
