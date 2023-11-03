@@ -205,12 +205,12 @@ location_table = {
         #logic: Hotel Room AND sword AND grinder 
         code=60637,
         region="Hotel Room",),
-    "Hotel Room - Inside Truck": MinitLocationData(
+    "Factory Main - Inside Truck": MinitLocationData(
         #coin14 - coin
         #logic: Hotel Room AND sword AND pressPass AND bridge()
         #alt logic: Desert RV AND grinder
         code=60638,
-        region="Hotel Room",),
+        region="Factory Main",),
     "Hotel Room - Queue": MinitLocationData(
         #coin15 - coin
         #logic: Hotel Room AND (bridge() OR swim)
@@ -221,11 +221,11 @@ location_table = {
         #logic: Hotel Room AND coffee AND sword
         code=60640,
         region="Hotel Room",),
-    "Hotel Room - Drill Coin": MinitLocationData(
+    "Factory Main - Drill Coin": MinitLocationData(
         #coin18 - coin
         #logic: Hotel Room AND sword AND bridge() AND pressPass
         code=60641,
-        region="Hotel Room",),
+        region="Factory Main",),
     "Hotel Room - Crow Heart": MinitLocationData(
         #heartPiece5
         #logic: Hotel Room AND sword AND glove AND coffee
@@ -263,10 +263,10 @@ location_table = {
     #     code=60647,
     #     region="Dog House",),
 
-    "Hotel Room - ItemMegaSword": MinitLocationData(
+    "Factory Main - ItemMegaSword": MinitLocationData(
         #logic: 
         code=60648,
-        region="Hotel Room",),
+        region="Factory Main",),
     "Dog House - ItemSword": MinitLocationData(
         #logic: 
         code=60649,

@@ -10,15 +10,15 @@ from typing import Dict, Any
 from worlds.LauncherComponents import Component, components, Type, launch_subprocess
 
 #high prio
-#TODO - fix goal complete to not require the walk to toilet (speedrun mode)
 #TODO - find more places exceptions need to be handled
-#TODO - handle dumpster coin 'despawning'
-#TODO - fix boss goal again (even with broken sword gotten it doesn't allow you to flush w/o cheating it in)
 #TODO - confirm upgraded swords do the upgraded damage
+#TODO - figure out how to add tests and test for
+            #confirm a sword or swim is in the first two checks
+            #confirm prog balancing settings (min/loc/items) work
+            #confirm the options are working as intended (when added)
 
 #misc game mod TODOs
 #TODO - pull all required game mods out and reapply to clean up patch file
-#TODO - add fanfare (back)
 
 #add options
 #TODO - sword is sword option
@@ -34,14 +34,18 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - see if more factory checks can be handled with drillshortcut
 #TODO - figure out how to protect launching a non-ap save (don't think it matters because the app is different? but maybe if you use same folder??)
 #TODO - clean up game mod logging to necessities
+#TODO - clean up item/location names
+#TODO - refactor code
 
 #bug reports
 #hotel residents showing up in their rooms before being saved, potentially because the game was already completed? (toilet)
 #shrub arena not getting more enemies/dropping the coin
-#you can't walk on the belts into left factory room without swim
 #sidekick-energy guy not showing up at his dialog spawns
-#island shack softlock happens on !basement key or (!swim or !coffee)
 #hotel backroom coin is accessible without breaking the pot (confirm vanilla behavior or fix)
+
+#release notes
+#'turned on' speedrun mode so the walk after the boss fight is not necessary, fixing both end game bugs
+#confirmed left factory belts require swim to walk on, leaving logic patches in
 
 def launch_client():
     from .MinitClient import launch

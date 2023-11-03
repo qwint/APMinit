@@ -1,6 +1,6 @@
 from BaseClasses import CollectionState
 from typing import Dict, Set, Callable, TYPE_CHECKING
-from worlds.generic.Rules import set_rule
+from worlds.generic.Rules import set_rule, add_rule
 
 if TYPE_CHECKING:
     from . import MinitWorld
@@ -22,17 +22,23 @@ class MinitRules:
         self.region_rules = {
             "Menu -> Dog House": lambda state: self.region_DogHouse(state),
             "Dog House -> Island Shack": lambda state: 
-                self.has_madeboat(state),
+                self.has_madeboat(state),# or state.has("ItemSwim", self.player), commenting for now, may add to skip options later
             "Dog House -> Desert RV": lambda state:
                 self.region_DesertRV(state),
             "Dog House -> Hotel Room": lambda state: 
                 self.region_HotelRoom(state),
             "Island Shack -> Basement": lambda state:
                 self.has_sword(state) and state.has("ItemBasement", self.player),
+            "Desert RV -> Factory Main": lambda state: 
+                self.region_factory_desert(state),
             "Hotel Room -> Underground Tent": lambda state: 
                 self.has_sword(state) and self.has_darkroom(state) and state.has("ItemGrinder", self.player),
-            "Hotel Room -> Boss Fight": lambda state: 
+            "Hotel Room -> Factory Main": lambda state:
+                self.region_factory_hotel(state),
+            "Factory Main -> Boss Fight": lambda state: 
                 self.region_BossFight(state),
+            "Factory Main -> Hotel Room": lambda state: 
+                self.region_hotel_factory(state),
         }
 
         self.location_rules = {
@@ -65,7 +71,7 @@ class MinitRules:
                 (self.can_passBoxes(state) and ((state.has("ItemThrow", self.player) and self.has_sword(state)) or state.has("ItemSwim", self.player)))
                 or (self.region_HotelRoom(state) 
                     and (self.has_sword(state) and state.has("ItemGrinder", self.player) and state.has("ItemGlove", self.player))
-                    or (self.has_sword(state) and state.has("ItemSwim", self.player) and self.get_hearts(state,2))),
+                    or (self.has_sword(state) and state.has("ItemSwim", self.player) and self.total_hearts(state,4))),
                 #you can hit the grass on the output of the toxic river and swim through, may bump to +3 life?
             "Dog House - House Pot Coin": lambda state:
                 #coin1
@@ -199,7 +205,6 @@ class MinitRules:
             "Hotel Room - ItemGrinder": lambda state:
                 #logic: Hotel Room and coffee
                 state.has("ItemSwim", self.player) and state.has("ItemCoffee", self.player) and self.has_darkroom(state),
-                #tentatively adding swim as a req for left factory
             "Hotel Room - Shrub Arena Coin": lambda state:
                 #coin11
                 #logic: Hotel Room and sword
@@ -208,25 +213,20 @@ class MinitRules:
                 #coin12
                 #logic: Hotel Room and sword and grinder 
                 self.has_sword(state) and state.has("ItemGrinder", self.player) and self.can_openChest(state) and self.has_darkroom(state),
-            "Hotel Room - Inside Truck": lambda state:
+            "Factory Main - Inside Truck": lambda state: True,
                 #coin14
-                #logic: Hotel Room and sword and pressPass and bridge()
-                #alt logic: Desert RV and grinder
-                (self.has_sword(state) and state.has("ItemPressPass", self.player) and self.has_bridge(state))
-                or (self.region_DesertRV(state) 
-                        and self.has_sword(state) and state.has("ItemGrinder", self.player)),
+                #logic: Factory access
             "Hotel Room - Queue": lambda state:
                 #coin15
                 #logic: Hotel Room and (bridge() or swim)
-                self.has_bridge(state) or (self.has_drillShortcut(state) and state.has("ItemPressPass", self.player)),
+                self.has_bridge(state) or self.region_hotel_factory(state),
             "Hotel Room - Hotel Backroom Coin": lambda state:
                 #coin17
                 #logic: Hotel Room and coffee and sword
                 self.can_passBoxes(state) and self.has_sword(state),
-            "Hotel Room - Drill Coin": lambda state:
+            "Factory Main - Drill Coin": lambda state: self.has_sword(state),
                 #coin18
-                #logic: Hotel Room and sword and bridge() and pressPass
-                self.has_drillShortcut(state),
+                #logic: Factory access and a sword
             "Hotel Room - Crow Heart": lambda state:
                 #heartPiece5
                 #logic: Hotel Room and sword and glove and coffee
@@ -259,10 +259,22 @@ class MinitRules:
 
         #Undefined
 
-            "Hotel Room - ItemMegaSword": lambda state: 
-                self.has_sword(state) and state.has("ItemWateringCan", self.player) and state.has("ItemCoffee", self.player) and self.has_drillShortcut(state),
-                #logic: unwritten/unknown
-            "Dog House - ItemSword": lambda state: True,
+            "Factory Main - ItemMegaSword": lambda state:
+                state.has("ItemSwim", self.player) and self.has_sword(state) and state.has("ItemWateringCan", self.player) and state.has("ItemCoffee", self.player),
+                #drill shortcut for swordless entry assumed
+        }
+
+        self.obscure_rules = {
+            "Dog House - ItemFlashLight": lambda state:
+                #player can collide with the flashlight from below the lighthouse
+                state.has("ItemSwim", self.player),
+            "Dog House - ItemPressPass": lambda state:
+                (self.region_HotelRoom(state) 
+                    and state.has("ItemSwim", self.player) and self.total_hearts(state,7)),
+                #good movement through the toxic river can go directly south > west with only taking 6 damage
+            "Dog House - ItemFlashLight": lambda state:
+                state.has("ItemSwim", self.player),
+                #the player can collide with the itempickup while in the water visually underneath the lighthouse
         }
 
     def has_sword(self, state) -> bool:
@@ -271,17 +283,16 @@ class MinitRules:
         return state.has("ItemFlashLight", self.player)
     def has_savedResidents(self, state) -> bool:
         #can save all the residents to access the hotel roof
-        return self.has_sword(state) and state.has("ItemCoffee", self.player) and state.has("ItemGlove", self.player) and self.has_bridge(state) 
+        return self.has_sword(state) and state.has("ItemCoffee", self.player) and state.has("ItemGlove", self.player) and (self.has_bridge(state) or self.region_hotel_factory(state))
     def has_bridge(self, state) -> bool:
-        return (self.has_darkroom(state) and self.has_sword(state) and state.has("ItemThrow", self.player)) or state.has("ItemSwim", self.player)
+        return  state.has("ItemSwim", self.player) or (self.has_darkroom(state) and state.has("ItemThrow", self.player) and self.has_sword(state))
+        #this is also accessible through the factory in the case that your factory access is desert > sword + grinder and you have press pass, but those are covered by region_hotel_factory when necessary
     def has_madeboat(self, state) -> bool:
         return state.has("ItemBoat", self.player) and state.has("ItemWateringCan", self.player) and state.has("ItemGlove", self.player)
-        #needs to be revisited when i'm sure what spawns boatman                                                #throwing stuff at the wall, i couldn't get the spawn with just boatwood + water and talk to the guy
+        #boatman requires both the watering trigger and having gloves trigger to be met before he can spawn, take the boatwood and repair the boat
     def has_drillShortcut(self, state) -> bool:
-        return (self.region_HotelRoom(state) and self.has_sword(state) and self.has_bridge(state) and state.has("ItemPressPass", self.player)) or (self.region_DesertRV(state) and (self.has_sword(state) and state.has("ItemGrinder", self.player)))
-                                                                                                                                                    #newline
+        return  self.has_sword(state) and (self.region_factory_hotel(state) or self.region_factory_desert(state))
         #allows you to get into the factory with enough time to wait for queue
-        #also why can i not put a newline in here but i can in the region methods??
 
     def can_openChest(self, state) -> bool:
         return state.has("ItemWateringCan", self.player) or self.has_sword(state)
@@ -295,8 +306,8 @@ class MinitRules:
         return state.count("Coin", self.player) >= count
     def get_tentacles(self, state, count: int) -> bool:
         return state.count("Tentacle", self.player) >= count
-    def get_hearts(self, state, count: int) -> bool:
-        return state.count("HeartPiece", self.player) >= count
+    def total_hearts(self, state, count: int) -> bool:
+        return state.count("HeartPiece", self.player) + 2 >= count
 
     def region_DogHouse(self, state) -> bool: 
         return True
@@ -309,9 +320,17 @@ class MinitRules:
         return (self.region_DogHouse(state)
                     and (self.has_sword(state) and state.has("ItemGlove", self.player))
                     or state.has("ItemSwim", self.player))
+    def region_factory_hotel(self, state) -> bool:
+        return (self.has_sword(state) and state.has("ItemPressPass", self.player) and 
+                    ((self.has_darkroom(state) and state.has("ItemThrow", self.player)) or state.has("ItemSwim", self.player))) or (state.has("ItemSwim", self.player) and self.has_darkroom(state))
+
+    def region_factory_desert(self, state) -> bool:
+        return  (self.has_sword(state) and state.has("ItemGrinder", self.player)) or (state.has("ItemSwim", self.player) and state.has("ItemCoffee", self.player))
+    def region_hotel_factory(self, state) -> bool:
+        return  self.region_DesertRV(state) and self.region_factory_desert(state) and self.has_sword(state) and state.has("ItemPressPass", self.player)
+
     def region_BossFight(self, state) -> bool:
-        return state.has("ItemSwim", self.player) and state.has("ItemMegaSword", self.player) and self.has_darkroom(state) and  (self.region_HotelRoom(state) and state.has("ItemPressPass", self.player) and self.has_bridge(state))  or (self.has_drillShortcut(state))
-                          #tentatively adding swim as a req for left factory                                                     #newline                                                                                              newline
+        return state.has("ItemMegaSword", self.player) and self.has_darkroom(state)
 
     def set_Minit_rules(self) -> None:
         multiworld = self.world.multiworld
@@ -324,6 +343,8 @@ class MinitRules:
             for location in region.locations:
                 if location.name in self.location_rules:
                     set_rule(location, self.location_rules[location.name])
+                # if location.name in self.obscure_rules:
+                #     add_rule(location, self.obscure_rules[location.name])
 
         #self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player)
 
