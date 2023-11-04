@@ -94,7 +94,7 @@ item_table: Dict[str, MinitItemData] = {
 
 item_frequencies = {
     "Coin": 19,
-    "HeartPiece": 5,
+    "HeartPiece": 6,
     "Tentacle": 8
 }   #items: 17
     #note: there are 6 vanilla hearts, but the 'location' where you would get broken sword is game completion so it is not a valid item placement

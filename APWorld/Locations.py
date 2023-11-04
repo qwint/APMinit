@@ -271,7 +271,10 @@ location_table = {
         #logic: 
         code=60649,
         region="Dog House",),
-
+    "Dog House - Dolphin Heart": MinitLocationData(
+        #logic: 
+        code=60651,
+        region="Dog House",),
 
     "Fight the Boss": MinitLocationData(
  #       code=60650,

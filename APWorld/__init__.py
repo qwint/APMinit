@@ -37,6 +37,8 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - clean up item/location names
 #TODO - refactor code
 #TODO - add more routes for Dog Heart
+#TODO - add swim to the island shack door requirement (may softlock players without obscure logic, confirm the swim back is easier)
+#TODO       if above then add swim as an option for getting 1/4 of temple coin
 
 #bug reports
 #hotel residents showing up in their rooms before being saved, potentially because the game was already completed? (toilet)
@@ -46,9 +48,13 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #fanfares sometimes clip you into walls without a way out
 #generation breaks sometimes, unknown cause
 
-#release notes
-#'turned on' speedrun mode so the walk after the boss fight is not necessary, fixing both end game bugs
-#confirmed left factory belts require swim to walk on, leaving logic patches in
+#ideas to explore
+#make teleporter a item/location
+#make residents item/location
+#make boss fight require the left/right machines to be stopped (and thus swim + coffee + darkroom by default)
+#look into adding another free/wateringCan check in sphere1 to add the vanilla heart back in and expand locations
+
+
 
 def launch_client():
     from .MinitClient import launch

@@ -51,14 +51,14 @@ class MinitCommandProcessor(ClientCommandProcessor):
         except ValueError:
             logger.info("Selected game is not vanilla, please reset the game and repatch")
 
-    def _cmd_scout(self):
-        """manually scouts locations for the fanfares."""
-        Utils.async_start(self.ctx.send_msgs([{"cmd": "LocationScouts", "locations": list(self.ctx.missing_locations), "create_as_hint":0}]))
+    # def _cmd_scout(self):
+    #     """manually scouts locations for the fanfares."""
+    #     Utils.async_start(self.ctx.send_msgs([{"cmd": "LocationScouts", "locations": list(self.ctx.missing_locations), "create_as_hint":0}]))
 
-    def _cmd_print(self):
-        """prints cached values for debugging."""
-        logger.info("locations info: " + str(self.ctx.locations_info))
-        logger.info("missing locations: " + str(self.ctx.missing_locations))
+    # def _cmd_print(self):
+    #     """prints cached values for debugging."""
+    #     logger.info("locations info: " + str(self.ctx.locations_info))
+    #     logger.info("missing locations: " + str(self.ctx.missing_locations))
 
 
 class RomFile(settings.UserFilePath):
@@ -115,6 +115,10 @@ class ProxyGameContext(CommonContext):
         with open(os.path.join(source_data_win), "wb") as f:
             f.write(patchedFile)
         logger.info("patched "+source_data_win+". You can launch the .exe game to run the patched game.")
+
+    def on_package(self, cmd: str, args: dict):
+        if cmd == 'Connected':
+            Utils.async_start(self.send_msgs([{"cmd": "LocationScouts", "locations": list(self.missing_locations), "create_as_hint":0}]))
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
@@ -178,13 +182,13 @@ def handleLocalLocations(ctx: CommonContext, request: json) -> json:
     locations = set(request["Locations"]).difference(ctx.locations_checked)
     if len(locations) == 1:
         location = request["Locations"][0]
-        logger.info("location: "+str(location))
+        #logger.info("location: "+str(location))
 
         if (len(ctx.locations_info) > 0):
-            logger.info("trying to handle local locations")
+            #logger.info("trying to handle local locations")
             if location in ctx.locations_info:
                 loc = ctx.locations_info[location] #locations_scouted:
-                logger.info("location found in info")
+               # logger.info("location found in info")
                 slot = loc.player #don't convert
                 player = ctx.slot_info[loc.player].name #convert to text
                 item = ctx.item_names[loc.item] #convert to text
@@ -195,17 +199,17 @@ def handleLocalLocations(ctx: CommonContext, request: json) -> json:
                 else: 
                     locationmessage = {"Player": player, "Item": item}
 
-                logger.info("message sent: " +str(locationmessage))
+                #logger.info("message sent: " +str(locationmessage))
                 #needed_updates = set(request["Locations"]).difference(ctx.locations_checked)
                 #locationmessage = {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
                 return locationmessage
-            else: 
-                logger.info("location not found in the scouts")
+            #else: 
+                #logger.info("location not found in the scouts")
                 #not found in the scouts that do exist
-        else: 
-            logger.info("no scouts found to hint names for location pickup")
-    else: 
-        logger.info("len(Locations) == 1 resolved to false")
+        #else: 
+            #logger.info("no scouts found to hint names for location pickup")
+    #else: 
+        #logger.info("len(Locations) == 1 resolved to false")
         #error handle
 
     #if we couldn't handle the logic send back benign message
