@@ -259,7 +259,7 @@ class MinitRules:
         #Undefined
 
             "Factory Main - ItemMegaSword": lambda state:
-                state.has("ItemSwim", self.player) and self.has_sword(state) and state.has("ItemWateringCan", self.player) and state.has("ItemCoffee", self.player),
+                state.has("ItemSwim", self.player) and self.has_sword(state) and state.has("ItemWateringCan", self.player) and state.has("ItemCoffee", self.player) and self.has_darkroom(state),
                 #drill shortcut for swordless entry assumed
         }
 
