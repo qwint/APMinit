@@ -255,6 +255,9 @@ class MinitRules:
                 #logic: Underground Tent
                 state.has("ItemSwim", self.player),
                 #may require shoes
+            "Dog House - Dolphin Heart": lambda state:
+                state.has("ItemWateringCan", self.player),
+                #water the dolphin NPC south of the watering can location
 
         #Undefined
 
