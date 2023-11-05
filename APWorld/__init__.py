@@ -147,6 +147,8 @@ class MinitWorld(World):
 #    boss_fight = 0
 #    toilet_goal = 1
 #    any_goal = 2
+        if (bool(self.options.starting_sword.value) == True):
+            self.multiworld.local_early_items[self.player]['ItemSword'] = 1
 
     #difficulty settings from Pseudoregalia, won't likely need but may want to reuse
     # def set_rules(self):
