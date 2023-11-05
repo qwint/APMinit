@@ -1,6 +1,7 @@
 from BaseClasses import CollectionState
 from typing import Dict, Set, Callable, TYPE_CHECKING
 from worlds.generic.Rules import set_rule, add_rule
+from .Options import MinitGameOptions
 
 if TYPE_CHECKING:
     from . import MinitWorld
@@ -22,7 +23,7 @@ class MinitRules:
         self.region_rules = {
             "Menu -> Dog House": lambda state: self.region_DogHouse(state),
             "Dog House -> Island Shack": lambda state: 
-                self.has_madeboat(state),
+                (self.has_madeboat(state)) or (state.has("ItemSwim", self.player) and bool(self.world.options.obscure.value)),
                 #you can swim from treasure island by baiting the shark, look into option how to add as Obscure else leave it out of logic.
             "Dog House -> Desert RV": lambda state:
                 self.region_DesertRV(state),
@@ -50,7 +51,7 @@ class MinitRules:
                 self.has_sword(state),
             "Dog House - ItemFlashLight": lambda state:
                 #logic: Dog House and ItemKey
-                (self.has_sword(state) or state.has("ItemSwim", self.player)) and state.has("ItemKey", self.player),
+                ((self.has_sword(state) or state.has("ItemSwim", self.player)) and state.has("ItemKey", self.player)) or (state.has("ItemSwim", self.player) and bool(self.world.options.obscure.value)),
             "Dog House - ItemKey": lambda state:
                 #logic: Dog House and sword and coffee
                 self.has_sword(state) and self.can_passBoxes(state),
@@ -69,10 +70,10 @@ class MinitRules:
                 #logic: Dog House and sword and coffee and throw
                 #alt logic: Hotel Room and sword and grinder and glove
                 #alt logic: Hotel Room and canTank(lots)
-                (self.can_passBoxes(state) and ((state.has("ItemThrow", self.player) and self.has_sword(state)) or state.has("ItemSwim", self.player)))
+                ((self.can_passBoxes(state) and ((state.has("ItemThrow", self.player) and self.has_sword(state)) or state.has("ItemSwim", self.player)))
                 or (self.region_HotelRoom(state) 
                     and (self.has_sword(state) and state.has("ItemGrinder", self.player) and state.has("ItemGlove", self.player))
-                    or (self.has_sword(state) and state.has("ItemSwim", self.player) and self.total_hearts(state,4))),
+                    or (self.has_sword(state) and state.has("ItemSwim", self.player) and self.total_hearts(state,4)))) or ((self.region_HotelRoom(state) and state.has("ItemSwim", self.player) and self.total_hearts(state,7)) and bool(self.world.options.obscure.value)),
                 #you can hit the grass on the output of the toxic river and swim through, may bump to +3 life?
             "Dog House - House Pot Coin": lambda state:
                 #coin1
@@ -176,7 +177,7 @@ class MinitRules:
             "Desert RV - Temple Heart": lambda state:
                 #heartPiece3
                 #logic: Desert RV and shoes ?(or grinder)
-                state.has("ItemShoes", self.player) and self.has_darkroom(state),
+                state.has("ItemShoes", self.player) and (state.has("ItemFlashLight", self.player)) or (self.has_darkroom(state) and bool(self.world.options.obscure.value)),
             "Desert RV - Shop Heart": lambda state:
                 #heartPiece4
                 #logic: Desert RV and 19 "coin" and Basement
@@ -235,8 +236,8 @@ class MinitRules:
             "Hotel Room - Dog Heart": lambda state:
                 #heartPiece6
                 #logic: Hotel Room and sword and glove and basement
-                self.has_sword(state) and state.has("ItemGlove", self.player) and self.can_teleport(state),
-                #may add 'footing it' to logic too
+                (self.has_sword(state) and state.has("ItemGlove", self.player) and (self.can_teleport(state) or state.has("ItemSwim", self.player) or state.has("ItemShoes", self.player))) or (self.has_sword(state) and state.has("ItemGlove", self.player) and bool(self.world.options.obscure.value)),
+                #with good movemnt can do this in 50s with just sword glove, adding teleport/swim/shoes to give more wiggle room outside obscure logic
                 #this logic changes if i rando the bone, don't think i will though
             "Factory Main - Cooler Tentacle": lambda state:
                 #tentacle7
@@ -248,7 +249,7 @@ class MinitRules:
             "Island Shack - Teleporter Tentacle": lambda state:
                 #tentacle6
                 #logic: Island Shack and sword and basementKey and swim
-                self.has_sword(state) and state.has("ItemBasement", self.player) and state.has("ItemSwim", self.player) and state.has("ItemCoffee", self.player),
+                (self.has_sword(state) and state.has("ItemBasement", self.player) and state.has("ItemSwim", self.player) and state.has("ItemCoffee", self.player)) or (self.has_sword(state) and state.has("ItemBasement", self.player) and state.has("ItemSwim", self.player) and bool(self.world.options.obscure.value)),
 
         #Underground Tent
             "Underground Tent - ItemTrophy": lambda state: 
@@ -265,24 +266,27 @@ class MinitRules:
                 state.has("ItemSwim", self.player) and self.has_sword(state) and state.has("ItemWateringCan", self.player) and state.has("ItemCoffee", self.player) and self.has_darkroom(state),
                 #drill shortcut for swordless entry assumed
         }
-
-        self.obscure_rules = {
-            "Dog House - ItemFlashLight": lambda state:
-                #player can collide with the flashlight from below the lighthouse
-                state.has("ItemSwim", self.player),
-            "Dog House - ItemPressPass": lambda state:
-                (self.region_HotelRoom(state) 
-                    and state.has("ItemSwim", self.player) and self.total_hearts(state,7)),
-                #good movement through the toxic river can go directly south > west with only taking 6 damage
-            "Island Shack - Teleporter Tentacle": lambda state:
-                self.has_sword(state) and state.has("ItemBasement", self.player) and state.has("ItemSwim", self.player),
-                #a precise attack can hit it from the right teleporter's square
-        }
+        # or (self.has_sword(state) and state.has("ItemGlove", self.player) and bool(self.world.options.obscure.value))
+        # self.obscure_rules = {
+        #     "Dog House - ItemFlashLight": lambda state:
+        #         #player can collide with the flashlight from below the lighthouse
+        #         state.has("ItemSwim", self.player),
+        #     "Dog House - ItemPressPass": lambda state:
+        #         (self.region_HotelRoom(state) 
+        #             and state.has("ItemSwim", self.player) and self.total_hearts(state,7)),
+        #         #good movement through the toxic river can go directly south > west with only taking 6 damage
+        #     "Island Shack - Teleporter Tentacle": lambda state:
+        #         self.has_sword(state) and state.has("ItemBasement", self.player) and state.has("ItemSwim", self.player),
+        #         #a precise attack can hit it from the right teleporter's square
+        #     "Hotel Room - Dog Heart": lambda state:
+        #         self.has_sword(state) and state.has("ItemGlove", self.player),
+        #         #less obscure and more just tight timing
+        # }
 
     def has_sword(self, state) -> bool:
         return state.has_any({"ItemSword","ItemBrokenSword", "ItemMegaSword", "ProgressiveSword"}, self.player)
     def has_darkroom(self, state) -> bool:
-        return state.has("ItemFlashLight", self.player)
+        return state.has("ItemFlashLight", self.player) or bool(self.world.options.darkrooms.value)
     def has_savedResidents(self, state) -> bool:
         #can save all the residents to access the hotel roof
         return self.has_sword(state) and state.has("ItemCoffee", self.player) and state.has("ItemGlove", self.player) and (self.has_bridge(state) or self.region_hotel_factory(state))

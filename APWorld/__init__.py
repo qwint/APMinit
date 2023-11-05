@@ -1,9 +1,9 @@
 from worlds.AutoWorld import World
 from BaseClasses import Region, Location, Item, ItemClassification
-from .Items import MinitItem, MinitItemData, item_table, item_frequencies
+from .Items import MinitItem, MinitItemData, item_table, item_frequencies, item_groups
 from .Locations import location_table
 from .Regions import region_table
-#from .options import Minit_options
+from .Options import MinitGameOptions
 from worlds.generic.Rules import add_rule, set_rule, forbid_item
 from .Rules import MinitRules
 from typing import Dict, Any
@@ -69,13 +69,14 @@ class MinitItem(Item):
 class MinitWorld(World):
     game = "Minit"
     required_client_version = (0, 4, 3)
+    options_dataclass = MinitGameOptions
+    options: MinitGameOptions
+
 
     item_name_to_id = {name: data.code for name, data in item_table.items() if data.code is not None}
     location_name_to_id = {name: data.code for name, data in location_table.items() if data.code is not None}
     locked_locations = {name: data for name, data in location_table.items() if data.locked_item}
-#    item_name_groups = item_groups
-
-#    option_definitions = Minit_options
+    item_name_groups = item_groups
 
     def create_item(self, name: str) -> MinitItem:
         data = item_table[name]
@@ -135,9 +136,17 @@ class MinitWorld(World):
         return {"slot_number": self.player,}
 
     def set_rules(self):
-        miniRules = MinitRules(self)
-        miniRules.set_Minit_rules()
-        self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player)
+        minitRules = MinitRules(self)
+        minitRules.set_Minit_rules()
+        if self.options.chosen_goal == 0: 
+            self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player)
+        elif self.options.chosen_goal == 1:
+            self.multiworld.completion_condition[self.player] = lambda state: state.has("ItemBrokenSword", self.player) and (self.region_factory_desert(state) or self.region_factory_hotel(state))
+        elif self.options.chosen_goal == 2:
+            self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player) or (state.has("ItemBrokenSword", self.player) and (self.region_factory_desert(state) or self.region_factory_hotel(state)))
+#    boss_fight = 0
+#    toilet_goal = 1
+#    any_goal = 2
 
     #difficulty settings from Pseudoregalia, won't likely need but may want to reuse
     # def set_rules(self):
