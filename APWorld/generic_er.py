@@ -29,7 +29,7 @@ class ER_Entrance(Entrance):
     addresses = None
     target = None
     group_name: str
-    entrance_type: EntranceType
+    entrance_type: EntranceType = 2
     # the set of regions which must be placed prior to pairing off this entrance. used
     # for "gate and switch" use cases where there is some non-item requirement in another
     # region which much be fulfilled before the entrance is actually accessible
@@ -38,7 +38,7 @@ class ER_Entrance(Entrance):
     #             reduce the risk of generation failures due to bad entrance randomization)
     # footnote 2: this could default to empty set to make is_valid_source_transition less
     #             awkward but let's not create sets unnecessarily
-    er_required_regions: Set[str]
+    er_required_regions: Set[str] = {}
     # to be computed and stored by ER algorithm
     is_dead_end: bool
 
@@ -315,29 +315,29 @@ def randomize_entrances(
             raise RuntimeError("Ran out of valid source transitions!")
         
         # find a random valid target
-        target_groups = get_target_groups(source_exit.group)
-        for target_entrance in lookup.get_targets(target_groups, False):
+        target_groups = get_target_groups(source_exit.group_name)
+        for target_entrance in entrance_lookup.get_targets(target_groups, False):
             if source_exit.can_connect_to(target_entrance, group_one_ways, False):
                 entrance_lookup.non_dead_ends.remove(target_entrance)
                 break;
         else:
             # There were no valid non-dead-end targets for this source, that shouldn't change
             # so throw it in a list to try again later.
-            late_exits.add(source_exit)
+            late_exits.append(source_exit)
             continue
         
         # place the pair and traverse to new exits
-        results.add((source_exit, target_entrance))
+        results.append((source_exit, target_entrance))
         # apply coupling - as long as the target entrance is actually able to be used as an entrance,
         # we can couple it. it's possible that target_entrance may be ONE_WAY_IN but whether that is
         # valid is handled by group_one_ways and Entrance.can_connect_to so we don't have to worry about it
         # right at now.
         if coupled and target_entrance.entrance_type != EntranceType.ONE_WAY_OUT:
-            results.add((target_entrance, source_exit))
+            results.append((target_entrance, source_exit))
             
         for exit in traverse_regions_to_new_exits(target_entrance, True):
             entrance_lookup.remove(exit, exit.is_dead_end)
-            available_exits.add(exit)
+            available_exits.append(exit)
         
     # here is the stuff that I was too lazy to implement
     # try to place available_exits -> dead ends (ie repeat the above process). Available exits
