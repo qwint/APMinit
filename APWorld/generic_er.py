@@ -1,48 +1,11 @@
 # if you see me referencing a field of Entrance or Region that doesn't exist...
 # assume I'm proposing to add it.
-
-class EntranceLookup:
-    class GroupLookup:
-        _lookup = {}
-        
-        def __bool__(self):
-            return bool(self._lookup)
-    
-        def add(self, entrance: Entrance) -> None:
-            group = self._lookup.setdefault(entrance.group, [])
-            group.append(entrance)
-
-        def remove(self, entrance: Entrance) -> None:
-            group = self._lookup[entrance.group]
-            group.remove(entrance)
-            if not group:
-                del self._lookup[entrance.group]
-
-        def get_group(self, group_name: str) -> Iterable[Entrance]:
-            return _lookup.get(group_name, [])
-
-    random: random.Random
-    dead_ends: GroupLookup # group name to entrances
-    non_dead_ends: GroupLookup
-
-    def __init__(self, random: random.Random):
-        self.random = random
-        self.dead_ends = GroupLookup()
-        self.non_dead_ends = GroupLookup()
-        
-    def add(self, entrance: Entrance, dead_end: bool) -> None:
-        lookup = self.dead_ends if dead_end else self.non_dead_ends
-        lookup.add(entrance)
-        
-    def remove(self, entrance: Entrance, dead_end: bool) -> None:
-        lookup = self.dead_ends if dead_end else self.non_dead_ends
-        lookup.remove(entrance)
-
-    def get_targets(self, groups: List[str], dead_end: bool) -> Iterable[Entrance]:
-        lookup = self.dead_ends if dead_end else self.non_dead_ends
-        ret = [entrance for group in groups for entrance in lookup.get_group(group)]
-        self.random.shuffle(ret)
-        return ret
+import random
+import queue
+from enum import IntEnum, IntFlag
+from typing import Any, Callable, Dict, Iterable, Iterator, List, NamedTuple, Optional, Set, Tuple, TypedDict, Union, \
+    Type, ClassVar
+from BaseClasses import CollectionState, Region, MultiWorld, Entrance as BaseEntrance
 
 class EntranceType(IntEnum):
     # A transition that can be a physical exit to a scene, but is not normally an entrance 
@@ -56,8 +19,15 @@ class EntranceType(IntEnum):
     TWO_WAY = 2
     
 class Entrance:
-    # existing stuff
-    
+    access_rule: Callable[[CollectionState], bool] = staticmethod(lambda state: True)
+    hide_path: bool = False
+    player: int
+    name: str
+    parent_region: Optional[Region]
+    connected_region: Optional[Region] = None
+    # LttP specific, TODO: should make a LttPEntrance
+    addresses = None
+    target = None
     group_name: str
     entrance_type: EntranceType
     # the set of regions which must be placed prior to pairing off this entrance. used
@@ -70,7 +40,34 @@ class Entrance:
     #             awkward but let's not create sets unnecessarily
     er_required_regions: Set[str]
     # to be computed and stored by ER algorithm
-    _is_dead_end: bool
+    is_dead_end: bool
+
+    def __init__(self, player: int, name: str = '', parent: Region = None):
+        self.name = name
+        self.parent_region = parent
+        self.player = player
+
+    def can_reach(self, state: CollectionState) -> bool:
+        if self.parent_region.can_reach(state) and self.access_rule(state):
+            if not self.hide_path and not self in state.path:
+                state.path[self] = (self.name, state.path.get(self.parent_region, (self.parent_region.name, None)))
+            return True
+
+        return False
+
+    def connect(self, region: Region, addresses: Any = None, target: Any = None) -> None:
+        self.connected_region = region
+        self.target = target
+        self.addresses = addresses
+        region.entrances.append(self)
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        world = self.parent_region.multiworld if self.parent_region else None
+        return world.get_name_string_for_object(self) if world else f'{self.name} (Player {self.player})'
+    
     
     def is_valid_source_transition(self, placed_regions: Set[str]) -> bool:
         """
@@ -82,7 +79,7 @@ class Entrance:
         """
         return not self.er_required_regions or er_gate_required_regions <= placed_regions
         
-    def can_connect_to(self, other: Entrance, group_one_ways: bool, allow_self_loops: bool) -> bool:
+    def can_connect_to(self, other: "Entrance", group_one_ways: bool, allow_self_loops: bool) -> bool:
         """
         Determines whether a given Entrance is a valid target transition, that is, whether
         the entrance randomizer is allowed to pair this entrance off to that entrance
@@ -103,6 +100,55 @@ class Entrance:
                 else EntranceType.TWO_WAY)
             one_way_type_matches = other.entrance_type == required_target_type
         return one_way_type_matches and (allow_self_loops or self.name != other.name)
+
+class GroupLookup:
+    _lookup = {}
+
+    def __init__(self):
+        pass
+    
+    def __bool__(self):
+        return bool(self._lookup)
+
+    def add(self, entrance: Entrance) -> None:
+        group = self._lookup.setdefault(entrance.group_name, [])
+        group.append(entrance)
+
+    def remove(self, entrance: Entrance) -> None:
+        group = self._lookup[entrance.group_name]
+        group.remove(entrance)
+        if not group:
+            del self._lookup[entrance.group_name]
+
+    def get_group(self, group_name: str) -> Iterable[Entrance]:
+        return self._lookup.get(group_name, [])
+
+class EntranceLookup:
+
+
+    random: random.Random
+    dead_ends: GroupLookup # group name to entrances
+    non_dead_ends: GroupLookup
+
+    def __init__(self, random: random.Random):
+        self.random = random
+        self.dead_ends = GroupLookup()
+        self.non_dead_ends = GroupLookup()
+        
+    def add(self, entrance: Entrance, dead_end: bool) -> None:
+        lookup = self.dead_ends if dead_end else self.non_dead_ends
+        lookup.add(entrance)
+        
+    def remove(self, entrance: Entrance, dead_end: bool) -> None:
+        lookup = self.dead_ends if dead_end else self.non_dead_ends
+        lookup.remove(entrance)
+
+    def get_targets(self, groups: List[str], dead_end: bool) -> Iterable[Entrance]:
+        lookup = self.dead_ends if dead_end else self.non_dead_ends
+        #ret = [entrance for group in groups for entrance in lookup.get_group(group)]
+        ret = [entrance for group in groups for entrance in lookup.get_group(group)]
+        self.random.shuffle(ret)
+        return ret
         
 class DummyExit(Entrance):
     """
@@ -128,7 +174,7 @@ def example_get_target_groups(group: str) -> list[str]:
         case "Top":
             return ["Bottom"]
         case "Bottom":
-            return: ["Top"]
+            return ["Top"]
         case "Door":
             return ["Left", "Right"]
     
@@ -140,7 +186,7 @@ def randomize_entrances(
         coupled: bool, 
         group_one_ways: bool,
         get_target_groups: Callable[[str], List[str]]
-    ) -> List[(Entrance, Entrance)]:
+    ) -> List[tuple[Entrance, Entrance]]:
     """
     Randomizes Entrances for a single world in the multiworld.
     
@@ -173,7 +219,7 @@ def randomize_entrances(
     # exits we'll have to try and connect in a later step, when capping off the connected region graph
     late_exits = []
     
-    entrance_lookup = EntranceLookup()
+    entrance_lookup = EntranceLookup(random)
     
     def traverse_regions_to_new_exits(
             start: Region | Entrance,
@@ -194,28 +240,39 @@ def randomize_entrances(
         visited = set()
         q = queue.Queue()
         starting_entrance_name = None
-        if isinstance(start, Entrance):
+        #print(f"start at {start.name} handled as an entrance? {isinstance(start,(Entrance, BaseEntrance))}. type is: {type(start)}")
+        if isinstance(start, (Entrance, BaseEntrance)):
             starting_entrance_name = start.name
+            #print(f"starting instead at {start.parent_region.name} handled as an entrance? {isinstance(start.parent_region,(Entrance, BaseEntrance))}. type is: {type(start.parent_region)}")
             q.put(start.parent_region)
+            #print(f"\nstarting at an entrance's region: {start.parent_region.name}")
         else:
             q.put(start)
+            #print(f"\nstarting at region: {start.name}")
             
-        while q:
+        while not q.empty():
             region = q.get()
+            #print(f"iterating through: {region.name}")
             if place_regions:
                 placed_regions.add(region.name)
             visited.add(region.name)
             for exit in region.exits:
+                #print(f"for {region.name} the exit {exit.name} was found")
                 if not exit.connected_region: # only return unconnected (ie randomizable) exits
                     if exit.name != starting_entrance_name:
+                        #print(f"\nexit found: {exit.name}")
                         yield exit
                 elif exit.connected_region.name not in placed_regions and exit.connected_region.name not in visited:
                     # traverse unseen static connections
                     q.put(exit.connected_region)
-    
-    for entrance in entrances:
+        #print(f"\nno exit yielded")
+ 
+    for entrance in exits_to_randomize:
+        #print(f"entrance: {entrance.name} loop:")
         has_exits = any(exit for exit in traverse_regions_to_new_exits(entrance, False))
-        entrance._is_dead_end = has_exits
+        #print(f"{entrance.name} has exits: {has_exits}")
+        entrance.is_dead_end = not has_exits
+        #print(f"entrance: {type(entrance)}")
         entrance_lookup.add(entrance, has_exits)
         if not coupled:
             # in uncoupled, every TWO_WAY transition can be both a source and a target.
@@ -228,11 +285,35 @@ def randomize_entrances(
     # place the starting region. this is doubling the traversal of the start region but that's not
     # the slow part of this algorithm so I don't feel too bad about it (and couldn't figure out how to
     # do it otherwise)
+    #print(f"\nexits from Main: {traverse_regions_to_new_exits(multiworld.get_region('Menu', player), True)}")
     for exit in traverse_regions_to_new_exits(multiworld.get_region("Menu", player), True):
-        entrance_lookup.remove(exit, exit._is_dead_end)
+        print(f"menu exit found: {type(exit)}")
+
+
+    # print(access_rule)
+    # print(hide_path)
+    # print(player)
+    # print(name)
+    # print(parent_region)
+    # print(connected_region)
+    # print(addresses)
+    # print(target)
+
+    # group_name: str
+    # entrance_type: EntranceType
+    # er_required_regions: Set[str]
+    # is_dead_end: bool
+
+
+        entrance_lookup.remove(exit, False)#exit.is_dead_end)
         available_exits.add(exit)
-            
-    while available_exits and entrance_lookup.non_dead_ends:
+    
+    #print(f"\navailable_exits: {bool(available_exits)}")
+    #print(f"\nentrance_lookup.non_dead_ends: {bool(entrance_lookup.non_dead_ends)}")
+    #print(f"\nentrance_lookup.dead_ends: {bool(entrance_lookup.dead_ends)}")
+    #print(f"\nwhile initial condition: {bool(available_exits) and bool(entrance_lookup.non_dead_ends)}")
+    while bool(available_exits) and bool(entrance_lookup.non_dead_ends):
+        print(f"\navaliable_exits: {available_exits.name}")
         random.shuffle(avalable_exits)
         # find a valid source exit
         for i, source_exit in enumerate(available_exits):
@@ -261,11 +342,11 @@ def randomize_entrances(
         # we can couple it. it's possible that target_entrance may be ONE_WAY_IN but whether that is
         # valid is handled by group_one_ways and Entrance.can_connect_to so we don't have to worry about it
         # right at now.
-        if coupled and target_entrance.entrance_type != EntranceType.ONE_WAY_OUT
+        if coupled and target_entrance.entrance_type != EntranceType.ONE_WAY_OUT:
             results.add((target_entrance, source_exit))
             
         for exit in traverse_regions_to_new_exits(target_entrance, True):
-            entrance_lookup.remove(exit, exit._is_dead_end)
+            entrance_lookup.remove(exit, exit.is_dead_end)
             available_exits.add(exit)
         
     # here is the stuff that I was too lazy to implement
@@ -278,7 +359,6 @@ def randomize_entrances(
     # try to place late_exits -> late_exits (cap off anything not capped by a dead end). use a selection with replacement
     #   and allow self-loops in can_connect_to (or don't, and remove that argument, but I thought it was cute lol)
     # if there are any unpaired exits still, then throw or do some swapping to try to save it.
-    
     # actually connect regions
     for source, target in results:
         source.connect(target.parent_region)

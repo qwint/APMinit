@@ -210,7 +210,7 @@ class MinitWorld(World):
                 region = self.multiworld.get_region(er_entrance[1], self.player)
                 entrance = Entrance(self.player, er_entrance[0], region)
                 #entrance.is_dead_end = er_entrance[2]
-                entrance.group = er_entrance[3]
+                entrance.group_name = er_entrance[3]
                 entrance_list.append(entrance)
                 #region = self.multiworld.get_region(region_name, self.player)
                 region.create_exit(entrance)
