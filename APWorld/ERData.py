@@ -2,7 +2,7 @@ from typing import NamedTuple, Callable, Dict, List, Optional
 from BaseClasses import CollectionState
 
 er_static_connections: Dict[str, List[str]] = {
-    "Menu":["sword main"],
+    "Menu":["dog house west"],
     "lighthouse land":["lighthouse water"],
     "boat land":["boat water"],
     "sword main":["sword bushes","sword water"],
