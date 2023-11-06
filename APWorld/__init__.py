@@ -162,7 +162,7 @@ class MinitWorld(World):
                 region.locations.append(new_loc)
                 if loc_name == "Fight the Boss":
                     self.multiworld.get_location(loc_name, self.player).place_locked_item(MinitItem(name = "Boss dead", classification = ItemClassification.progression, code = 60021, player = self.player))
-            #visualize_regions(self.multiworld.get_region("Menu", self.player), "output/regionmap.puml")
+            visualize_regions(self.multiworld.get_region("Menu", self.player), "output/regionmap.puml")
             print(output_connections)
             #randomize_entrances(self, self, self, self, self, self, self)
 
