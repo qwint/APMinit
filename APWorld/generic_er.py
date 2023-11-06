@@ -335,7 +335,9 @@ def randomize_entrances(
         if coupled and target_entrance.entrance_type != EntranceType.ONE_WAY_OUT:
             results.append((target_entrance, source_exit))
             
-        for exit in traverse_regions_to_new_exits(target_entrance, True):
+        temp_exits = traverse_regions_to_new_exits(target_entrance, True)
+        for exit in temp_exits: # traverse_regions_to_new_exits(target_entrance, True):
+            #print(f"removing from entrance lookup {exit.name}")
             entrance_lookup.remove(exit, exit.is_dead_end)
             available_exits.append(exit)
         

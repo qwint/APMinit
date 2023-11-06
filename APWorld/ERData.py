@@ -234,7 +234,6 @@ er_entrances: List[List[any]] = [
     ["bridge water north", "bridge water", False, "water"],
     ["bridge water south", "bridge water", False, "water"],
     ["hotel outside north", "hotel outside", False, "land"],
-    ["hotel outside north", "hotel outside", False, "land"],
     ["hotel outside east", "hotel outside", False, "land"],
     ["hotel outside west", "hotel outside", False, "land"],
     ["hotel outside back entrance", "hotel outside", False, "land"],
