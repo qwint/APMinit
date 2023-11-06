@@ -38,7 +38,7 @@ class ER_Entrance(Entrance):
     #             reduce the risk of generation failures due to bad entrance randomization)
     # footnote 2: this could default to empty set to make is_valid_source_transition less
     #             awkward but let's not create sets unnecessarily
-    er_required_regions: Set[str] = {}
+    er_required_regions: Set[str]
     # to be computed and stored by ER algorithm
     is_dead_end: bool
 
@@ -46,6 +46,7 @@ class ER_Entrance(Entrance):
         self.name = name
         self.parent_region = parent
         self.player = player
+        self.er_required_regions = set()
 
     def can_reach(self, state: CollectionState) -> bool:
         if self.parent_region.can_reach(state) and self.access_rule(state):
