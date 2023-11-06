@@ -298,49 +298,62 @@ def randomize_entrances(
         entrance_lookup.remove(exit, exit.is_dead_end)
         available_exits.append(exit)
     
-    #print(f"\navailable_exits: {bool(available_exits)}")
-    #print(f"\nentrance_lookup.non_dead_ends: {bool(entrance_lookup.non_dead_ends)}")
-    #print(f"\nentrance_lookup.dead_ends: {bool(entrance_lookup.dead_ends)}")
-    #print(f"\nwhile initial condition: {bool(available_exits) and bool(entrance_lookup.non_dead_ends)}")
-    while bool(available_exits) and bool(entrance_lookup.non_dead_ends):
-        #print(f"\navaliable_exits: {available_exits.name}")
-        random.shuffle(available_exits)
-        # find a valid source exit
-        for i, source_exit in enumerate(available_exits):
-            if source_exit.is_valid_source_transition(placed_regions):
-                available_exits.pop(i)
-                break;
-        else:
-            # TODO: should implement swap for this use case to try and save it.
-            raise RuntimeError("Ran out of valid source transitions!")
-        
-        # find a random valid target
-        target_groups = get_target_groups(source_exit.group_name)
-        for target_entrance in entrance_lookup.get_targets(target_groups, False):
-            if source_exit.can_connect_to(target_entrance, group_one_ways, False):
-                entrance_lookup.non_dead_ends.remove(target_entrance)
-                break;
-        else:
-            # There were no valid non-dead-end targets for this source, that shouldn't change
-            # so throw it in a list to try again later.
-            late_exits.append(source_exit)
-            continue
-        
-        # place the pair and traverse to new exits
-        results.append((source_exit, target_entrance))
-        # apply coupling - as long as the target entrance is actually able to be used as an entrance,
-        # we can couple it. it's possible that target_entrance may be ONE_WAY_IN but whether that is
-        # valid is handled by group_one_ways and Entrance.can_connect_to so we don't have to worry about it
-        # right at now.
-        if coupled and target_entrance.entrance_type != EntranceType.ONE_WAY_OUT:
-            results.append((target_entrance, source_exit))
+    def pair_exits(
+            available_exits: List[ER_Entrance], 
+            entrance_lookup: EntranceLookup, 
+            group_lookup: GroupLookup, 
+            coupled: bool, 
+            results: List[ER_Entrance], 
+            late_exits: List[ER_Entrance], 
+            random: random
+        ):
+        while bool(available_exits) and bool(group_lookup):
+            #print(f"\navaliable_exits: {available_exits.name}")
+            random.shuffle(available_exits)
+            # find a valid source exit
+            for i, source_exit in enumerate(available_exits):
+                if source_exit.is_valid_source_transition(placed_regions):
+                    available_exits.pop(i)
+                    break;
+            else:
+                # TODO: should implement swap for this use case to try and save it.
+                raise RuntimeError("Ran out of valid source transitions!")
             
-        temp_exits = traverse_regions_to_new_exits(target_entrance, True)
-        for exit in temp_exits: # traverse_regions_to_new_exits(target_entrance, True):
-            #print(f"removing from entrance lookup {exit.name}")
-            entrance_lookup.remove(exit, exit.is_dead_end)
-            available_exits.append(exit)
-        
+            # find a random valid target
+            target_groups = get_target_groups(source_exit.group_name)
+            for target_entrance in entrance_lookup.get_targets(target_groups, False):
+                if source_exit.can_connect_to(target_entrance, group_one_ways, False):
+                    group_lookup.remove(target_entrance)
+                    break;
+            else:
+                # There were no valid non-dead-end targets for this source, that shouldn't change
+                # so throw it in a list to try again later.
+                late_exits.append(source_exit)
+                continue
+            
+            # place the pair and traverse to new exits
+            results.append((source_exit, target_entrance))
+            # apply coupling - as long as the target entrance is actually able to be used as an entrance,
+            # we can couple it. it's possible that target_entrance may be ONE_WAY_IN but whether that is
+            # valid is handled by group_one_ways and Entrance.can_connect_to so we don't have to worry about it
+            # right at now.
+            if coupled and target_entrance.entrance_type != EntranceType.ONE_WAY_OUT:
+                results.append((target_entrance, source_exit))
+                
+            temp_exits = traverse_regions_to_new_exits(target_entrance, True)
+            for exit in temp_exits: # traverse_regions_to_new_exits(target_entrance, True):
+                #print(f"removing from entrance lookup {exit.name}")
+                entrance_lookup.remove(exit, exit.is_dead_end)
+                available_exits.append(exit)
+    
+    print(f"\n\n1 - available_exits: {available_exits}")
+    pair_exits(available_exits, entrance_lookup, entrance_lookup.non_dead_ends, coupled, results, late_exits, random)
+    print(f"\n\n2 - available_exits: {available_exits}")
+    pair_exits(available_exits, entrance_lookup, entrance_lookup.dead_ends, coupled, results, late_exits, random)
+    print(f"\n\n3 - available_exits: {available_exits}")
+    print(f"\n\n4 - late_exits: {late_exits}")
+    pair_exits(late_exits, entrance_lookup, entrance_lookup.dead_ends, coupled, results, late_exits, random)
+    print(f"\n\n5 - late_exits: {late_exits}")
     # here is the stuff that I was too lazy to implement
     # try to place available_exits -> dead ends (ie repeat the above process). Available exits
     #   should be exhausted by now (moved to late exits)
