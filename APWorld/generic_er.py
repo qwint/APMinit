@@ -5,7 +5,7 @@ import queue
 from enum import IntEnum, IntFlag
 from typing import Any, Callable, Dict, Iterable, Iterator, List, NamedTuple, Optional, Set, Tuple, TypedDict, Union, \
     Type, ClassVar
-from BaseClasses import CollectionState, Region, MultiWorld, Entrance as BaseEntrance
+from BaseClasses import CollectionState, Region, MultiWorld, Entrance
 
 class EntranceType(IntEnum):
     # A transition that can be a physical exit to a scene, but is not normally an entrance 
@@ -18,7 +18,7 @@ class EntranceType(IntEnum):
     # A transition that is normally both an entrance and exit to a scene.
     TWO_WAY = 2
     
-class Entrance:
+class ER_Entrance(Entrance):
     access_rule: Callable[[CollectionState], bool] = staticmethod(lambda state: True)
     hide_path: bool = False
     player: int
@@ -110,17 +110,17 @@ class GroupLookup:
     def __bool__(self):
         return bool(self._lookup)
 
-    def add(self, entrance: Entrance) -> None:
+    def add(self, entrance: ER_Entrance) -> None:
         group = self._lookup.setdefault(entrance.group_name, [])
         group.append(entrance)
 
-    def remove(self, entrance: Entrance) -> None:
+    def remove(self, entrance: ER_Entrance) -> None:
         group = self._lookup[entrance.group_name]
         group.remove(entrance)
         if not group:
             del self._lookup[entrance.group_name]
 
-    def get_group(self, group_name: str) -> Iterable[Entrance]:
+    def get_group(self, group_name: str) -> Iterable[ER_Entrance]:
         return self._lookup.get(group_name, [])
 
 class EntranceLookup:
@@ -135,22 +135,22 @@ class EntranceLookup:
         self.dead_ends = GroupLookup()
         self.non_dead_ends = GroupLookup()
         
-    def add(self, entrance: Entrance, dead_end: bool) -> None:
+    def add(self, entrance: ER_Entrance, dead_end: bool) -> None:
         lookup = self.dead_ends if dead_end else self.non_dead_ends
         lookup.add(entrance)
         
-    def remove(self, entrance: Entrance, dead_end: bool) -> None:
+    def remove(self, entrance: ER_Entrance, dead_end: bool) -> None:
         lookup = self.dead_ends if dead_end else self.non_dead_ends
         lookup.remove(entrance)
 
-    def get_targets(self, groups: List[str], dead_end: bool) -> Iterable[Entrance]:
+    def get_targets(self, groups: List[str], dead_end: bool) -> Iterable[ER_Entrance]:
         lookup = self.dead_ends if dead_end else self.non_dead_ends
         #ret = [entrance for group in groups for entrance in lookup.get_group(group)]
         ret = [entrance for group in groups for entrance in lookup.get_group(group)]
         self.random.shuffle(ret)
         return ret
         
-class DummyExit(Entrance):
+class DummyExit(ER_Entrance):
     """
     A simple way to create an Entrance object for ONE_WAY_OUT transitions to be randomized
     by the entrance randomizer. Acts similar to how your other exits will act in the ER, but
@@ -182,11 +182,11 @@ def randomize_entrances(
         multiworld: MultiWorld, 
         player: int,
         random: random.Random,
-        exits_to_randomize: List[Entrance], 
+        exits_to_randomize: List[ER_Entrance], 
         coupled: bool, 
         group_one_ways: bool,
         get_target_groups: Callable[[str], List[str]]
-    ) -> List[tuple[Entrance, Entrance]]:
+    ) -> List[tuple[ER_Entrance, ER_Entrance]]:
     """
     Randomizes Entrances for a single world in the multiworld.
     
@@ -222,9 +222,9 @@ def randomize_entrances(
     entrance_lookup = EntranceLookup(random)
     
     def traverse_regions_to_new_exits(
-            start: Region | Entrance,
+            start: Region | ER_Entrance,
             place_regions: bool,
-        ) -> Iterable[Entrance]:
+        ) -> Iterable[ER_Entrance]:
         """
         Traverses a region's connected exits to find any newly available randomizable exits
         which stem from that region.
@@ -241,7 +241,7 @@ def randomize_entrances(
         q = queue.Queue()
         starting_entrance_name = None
         #print(f"start at {start.name} handled as an entrance? {isinstance(start,(Entrance, BaseEntrance))}. type is: {type(start)}")
-        if isinstance(start, (Entrance, BaseEntrance)):
+        if isinstance(start, (ER_Entrance)):#, BaseEntrance)):
             starting_entrance_name = start.name
             #print(f"starting instead at {start.parent_region.name} handled as an entrance? {isinstance(start.parent_region,(Entrance, BaseEntrance))}. type is: {type(start.parent_region)}")
             q.put(start.parent_region)
@@ -252,20 +252,27 @@ def randomize_entrances(
             
         while not q.empty():
             region = q.get()
-            #print(f"iterating through: {region.name}")
+            # if start.name == "Menu": 
+            #     print(f"iterating through region: {region.name}")
             if place_regions:
                 placed_regions.add(region.name)
             visited.add(region.name)
             for exit in region.exits:
+                # if start.name == "Menu": 
+                #     print(f"iterating through exit: {exit.name}")
                 #print(f"for {region.name} the exit {exit.name} was found")
-                if not exit.connected_region: # only return unconnected (ie randomizable) exits
+                if exit.connected_region == None: # only return unconnected (ie randomizable) exits
+                    # if start.name == "Menu": 
+                    #     print(f"unconnected exit found: {exit.name}")
+                #print(f"for {region.name} the exit {exit.name} was fou
                     if exit.name != starting_entrance_name:
                         #print(f"\nexit found: {exit.name}")
                         yield exit
                 elif exit.connected_region.name not in placed_regions and exit.connected_region.name not in visited:
                     # traverse unseen static connections
                     q.put(exit.connected_region)
-        #print(f"\nno exit yielded")
+        # if start.name == "Menu": 
+        #     print(f"\nno exit yielded for start: {start.name}")
  
     for entrance in exits_to_randomize:
         #print(f"entrance: {entrance.name} loop:")
@@ -287,34 +294,17 @@ def randomize_entrances(
     # do it otherwise)
     #print(f"\nexits from Main: {traverse_regions_to_new_exits(multiworld.get_region('Menu', player), True)}")
     for exit in traverse_regions_to_new_exits(multiworld.get_region("Menu", player), True):
-        print(f"menu exit found: {type(exit)}")
-
-
-    # print(access_rule)
-    # print(hide_path)
-    # print(player)
-    # print(name)
-    # print(parent_region)
-    # print(connected_region)
-    # print(addresses)
-    # print(target)
-
-    # group_name: str
-    # entrance_type: EntranceType
-    # er_required_regions: Set[str]
-    # is_dead_end: bool
-
-
-        entrance_lookup.remove(exit, False)#exit.is_dead_end)
-        available_exits.add(exit)
+        #print(f"menu exit found: {type(exit)}")
+        entrance_lookup.remove(exit, exit.is_dead_end)
+        available_exits.append(exit)
     
     #print(f"\navailable_exits: {bool(available_exits)}")
     #print(f"\nentrance_lookup.non_dead_ends: {bool(entrance_lookup.non_dead_ends)}")
     #print(f"\nentrance_lookup.dead_ends: {bool(entrance_lookup.dead_ends)}")
     #print(f"\nwhile initial condition: {bool(available_exits) and bool(entrance_lookup.non_dead_ends)}")
     while bool(available_exits) and bool(entrance_lookup.non_dead_ends):
-        print(f"\navaliable_exits: {available_exits.name}")
-        random.shuffle(avalable_exits)
+        #print(f"\navaliable_exits: {available_exits.name}")
+        random.shuffle(available_exits)
         # find a valid source exit
         for i, source_exit in enumerate(available_exits):
             if source_exit.is_valid_source_transition(placed_regions):

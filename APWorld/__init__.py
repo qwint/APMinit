@@ -7,7 +7,7 @@ from BaseClasses import (
     Entrance,
     Tutorial
 )
-from .generic_er import randomize_entrances
+from .generic_er import randomize_entrances, ER_Entrance
 from .Items import (
     MinitItem,
     MinitItemData,
@@ -202,20 +202,28 @@ class MinitWorld(World):
             for region_name, exit_list in er_static_connections.items():
                 region = self.multiworld.get_region(region_name, self.player)
                 region.add_exits(exit_list)
+                # for exit in region.exits:
+                #     print(f"for static connection: {exit.name} parent region: {exit.parent_region} and connected region: {exit.connected_region}")
 
 
             entrance_list = []
             exit_list = []
             for er_entrance in er_entrances:
                 region = self.multiworld.get_region(er_entrance[1], self.player)
-                entrance = Entrance(self.player, er_entrance[0], region)
+                entrance = ER_Entrance(self.player, er_entrance[0], region)
                 #entrance.is_dead_end = er_entrance[2]
                 entrance.group_name = er_entrance[3]
                 entrance_list.append(entrance)
+                #print(f"for exit: {entrance.name} parent region: {entrance.parent_region} and connected region: {entrance.connected_region}")
                 #region = self.multiworld.get_region(region_name, self.player)
-                region.create_exit(entrance)
-                # for exit in region.exits:
-                #     print(f"region {region.name} has exits: {exit.name}")
+                region.add_er_exits(entrance)
+                # print(f"current entrance {entrance_list[len(entrance_list) - 1].name} is type: {type(entrance_list[len(entrance_list) - 1])}")
+                # for exit in region.get_exits():
+                #     print(f"for ER connection: {exit.name} parent region: {exit.parent_region} and connected region: {exit.connected_region}")
+                    #print(f"region {region.name} has exits: {type(exit)}")
+                # for exit in region.get_exits():
+                #     print(f"region {region.name} has exits: {type(exit)}")
+
 
 
             output_connections = randomize_entrances(self.multiworld, self.player, self.random, entrance_list, True, True, minit_get_target_groups)
