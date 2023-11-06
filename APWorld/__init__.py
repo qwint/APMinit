@@ -7,6 +7,7 @@ from BaseClasses import (
     Entrance,
     Tutorial
 )
+from .generic_er import randomize_entrances
 from .Items import (
     MinitItem,
     MinitItemData,
@@ -16,9 +17,11 @@ from .Items import (
 )
 from .Locations import location_table
 from .Regions import region_table
+from .ERData import er_regions, er_entrances, minit_get_target_groups, er_static_connections
 from .Options import MinitGameOptions
 from worlds.generic.Rules import add_rule, set_rule, forbid_item
 from .Rules import MinitRules
+from .ER_Rules import ER_MinitRules
 from typing import Dict, Any
 from worlds.LauncherComponents import (
     Component,
@@ -26,6 +29,8 @@ from worlds.LauncherComponents import (
     Type,
     launch_subprocess
 )
+import random
+from Utils import visualize_regions
 
 # high prio
 # TODO - find more places exceptions need to be handled
@@ -171,32 +176,80 @@ class MinitWorld(World):
                             self.player))
 
     def create_regions(self):
-        for region_name in region_table.keys():
-            self.multiworld.regions.append(Region(
-                region_name,
-                self.player,
-                self.multiworld))
 
-        for loc_name, loc_data in location_table.items():
-            if not loc_data.can_create(self.multiworld, self.player):
-                continue
-            region = self.multiworld.get_region(loc_data.region, self.player)
-            new_loc = Location(self.player, loc_name, loc_data.code, region)
-            if (not loc_data.show_in_spoiler):
-                new_loc.show_in_spoiler = False
-            region.locations.append(new_loc)
-            if loc_name == "Fight the Boss":
-                self.multiworld.get_location(
-                        loc_name,
-                        self.player
-                    ).place_locked_item(MinitItem(
-                        name="Boss dead",
-                        classification=ItemClassification.progression,
-                        code=60021, player=self.player))
+        if self.options.er_option == 0:
+            for region_name in region_table.keys():
+                self.multiworld.regions.append(Region(region_name, self.player, self.multiworld))
 
-        for region_name, exit_list in region_table.items():
-            region = self.multiworld.get_region(region_name, self.player)
-            region.add_exits(exit_list)
+            for loc_name, loc_data in location_table.items():
+                if not loc_data.can_create(self.multiworld, self.player):
+                    continue
+                region = self.multiworld.get_region(loc_data.region, self.player)
+                new_loc = Location(self.player, loc_name, loc_data.code, region)
+                if (not loc_data.show_in_spoiler):
+                    new_loc.show_in_spoiler = False
+                region.locations.append(new_loc)
+                if loc_name == "Fight the Boss":
+                    self.multiworld.get_location(loc_name, self.player).place_locked_item(MinitItem(name = "Boss dead", classification = ItemClassification.progression, code = 60021, player = self.player))
+
+            for region_name, exit_list in region_table.items():
+                region = self.multiworld.get_region(region_name, self.player)
+                region.add_exits(exit_list)
+        elif self.options.er_option == 1:
+            for region_name in er_regions:
+                 self.multiworld.regions.append(Region(region_name, self.player, self.multiworld))
+
+            for region_name, exit_list in er_static_connections.items():
+                region = self.multiworld.get_region(region_name, self.player)
+                region.add_exits(exit_list)
+
+
+            entrance_list = []
+            exit_list = []
+            for er_entrance in er_entrances:
+                region = self.multiworld.get_region(er_entrance[1], self.player)
+                entrance = Entrance(self.player, er_entrance[0], region)
+                #entrance.is_dead_end = er_entrance[2]
+                entrance.group = er_entrance[3]
+                entrance_list.append(entrance)
+                #region = self.multiworld.get_region(region_name, self.player)
+                region.create_exit(entrance)
+                # for exit in region.exits:
+                #     print(f"region {region.name} has exits: {exit.name}")
+
+
+            output_connections = randomize_entrances(self.multiworld, self.player, self.random, entrance_list, True, True, minit_get_target_groups)
+
+
+            for loc_name, loc_data in location_table.items():
+                if not loc_data.can_create(self.multiworld, self.player):
+                    continue
+                region = self.multiworld.get_region(loc_data.er_region, self.player)
+                new_loc = Location(self.player, loc_name, loc_data.code, region)
+                if (not loc_data.show_in_spoiler):
+                    new_loc.show_in_spoiler = False
+                region.locations.append(new_loc)
+                if loc_name == "Fight the Boss":
+                    self.multiworld.get_location(loc_name, self.player).place_locked_item(MinitItem(name = "Boss dead", classification = ItemClassification.progression, code = 60021, player = self.player))
+            #visualize_regions(self.multiworld.get_region("Menu", self.player), "output/regionmap.puml")
+            print(output_connections)
+            #randomize_entrances(self, self, self, self, self, self, self)
+
+        #Locked location logic from Pseudoregalia, will likely need for sword
+        # Place locked locations.
+        # for location_name, location_data in self.locked_locations.items():
+        #     if not location_data.can_create(self.multiworld, self.player):
+        #         continue
+
+        #     # # Doing this really stupidly because breaker's locking will change after logic rework is done
+        #     # if location_name == "Dilapidated Dungeon - Dream Breaker":
+        #     #     if bool(self.multiworld.progressive_breaker[self.player]):
+        #     #         locked_item = self.create_item("Progressive Dream Breaker")
+        #     #         self.multiworld.get_location(location_name, self.player).place_locked_item(locked_item)
+        #     #         continue
+
+        #     locked_item = self.create_item(location_table[location_name].locked_item)
+        #     self.multiworld.get_location(location_name, self.player).place_locked_item(locked_item)
 
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
@@ -206,8 +259,13 @@ class MinitWorld(World):
             }
 
     def set_rules(self):
-        minitRules = MinitRules(self)
-        minitRules.set_Minit_rules()
+        if self.options.er_option == 0:
+            minitRules = MinitRules(self)
+            minitRules.set_Minit_rules()
+        elif self.options.er_option == 1:
+            minitRules = ER_MinitRules(self)
+            minitRules.set_Minit_rules()
+
         if self.options.chosen_goal == 0:  # boss fight
             self.multiworld.completion_condition[self.player] = lambda state: \
                 state.has("Boss dead", self.player)

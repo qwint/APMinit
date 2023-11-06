@@ -150,6 +150,10 @@ class TestAnyGoal(MinitTestBase):
         "chosen_goal": 2,
     }
 
+class TestER(MinitTestBase):
+    options = {
+        "er_option": 1,
+    }
 
 class TestSeed1(selectSeedMinit):
     seed = 95400472555641845910

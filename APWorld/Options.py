@@ -47,6 +47,12 @@ class Goal(Choice):
     option_any_goal = 2
     default = 0
 
+class EntranceRando(Choice):
+    """Choose if the room entrances are randomized as well."""
+    display_name = "EntranceRando"
+    option_off = 0
+    option_on = 1
+    default = 0
 
 @dataclass
 class MinitGameOptions(PerGameCommonOptions):
@@ -57,3 +63,13 @@ class MinitGameOptions(PerGameCommonOptions):
     chosen_goal: Goal
     death_link: DeathLink
     death_amnisty_total: DeathLinkAmnesty
+    er_option: EntranceRando
+
+
+#add options
+#TODO - sword is sword option
+#TODO - add a darkroom option to ignore flashlight req
+#TODO - figure out how to progressive sword
+#TODO - figure out how to add alt goal (flush broken sword)
+#TODO - add puzzleless to de-prio longer/confusing puzzles
+#TODO - add random start locations
