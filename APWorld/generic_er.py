@@ -5,7 +5,7 @@ import queue
 from enum import IntEnum, IntFlag
 from typing import Any, Callable, Dict, Iterable, Iterator, List, NamedTuple, Optional, Set, Tuple, TypedDict, Union, \
     Type, ClassVar
-from BaseClasses import CollectionState, Region, MultiWorld
+from BaseClasses import CollectionState, Region, MultiWorld, Entrance as BaseEntrance
 
 class EntranceType(IntEnum):
     # A transition that can be a physical exit to a scene, but is not normally an entrance 
@@ -28,7 +28,6 @@ class Entrance:
     # LttP specific, TODO: should make a LttPEntrance
     addresses = None
     target = None
-
     group_name: str
     entrance_type: EntranceType
     # the set of regions which must be placed prior to pairing off this entrance. used
@@ -112,14 +111,14 @@ class GroupLookup:
         return bool(self._lookup)
 
     def add(self, entrance: Entrance) -> None:
-        group = self._lookup.setdefault(entrance.group, [])
+        group = self._lookup.setdefault(entrance.group_name, [])
         group.append(entrance)
 
     def remove(self, entrance: Entrance) -> None:
-        group = self._lookup[entrance.group]
+        group = self._lookup[entrance.group_name]
         group.remove(entrance)
         if not group:
-            del self._lookup[entrance.group]
+            del self._lookup[entrance.group_name]
 
     def get_group(self, group_name: str) -> Iterable[Entrance]:
         return self._lookup.get(group_name, [])
@@ -241,10 +240,12 @@ def randomize_entrances(
         visited = set()
         q = queue.Queue()
         starting_entrance_name = None
-        if isinstance(start, Entrance):
+        #print(f"start at {start.name} handled as an entrance? {isinstance(start,(Entrance, BaseEntrance))}. type is: {type(start)}")
+        if isinstance(start, (Entrance, BaseEntrance)):
             starting_entrance_name = start.name
+            #print(f"starting instead at {start.parent_region.name} handled as an entrance? {isinstance(start.parent_region,(Entrance, BaseEntrance))}. type is: {type(start.parent_region)}")
             q.put(start.parent_region)
-            #print(f"\nstarting at region: {start.parent_region.name}")
+            #print(f"\nstarting at an entrance's region: {start.parent_region.name}")
         else:
             q.put(start)
             #print(f"\nstarting at region: {start.name}")
@@ -271,7 +272,7 @@ def randomize_entrances(
         has_exits = any(exit for exit in traverse_regions_to_new_exits(entrance, False))
         #print(f"{entrance.name} has exits: {has_exits}")
         entrance.is_dead_end = not has_exits
-        print(f"entrance: {type(entrance)}")
+        #print(f"entrance: {type(entrance)}")
         entrance_lookup.add(entrance, has_exits)
         if not coupled:
             # in uncoupled, every TWO_WAY transition can be both a source and a target.
@@ -304,7 +305,7 @@ def randomize_entrances(
     # is_dead_end: bool
 
 
-        entrance_lookup.remove(exit, exit.is_dead_end)
+        entrance_lookup.remove(exit, False)#exit.is_dead_end)
         available_exits.add(exit)
     
     #print(f"\navailable_exits: {bool(available_exits)}")
