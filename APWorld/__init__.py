@@ -1,17 +1,23 @@
 from worlds.AutoWorld import World
-from BaseClasses import Region, Location, Item, ItemClassification
+from BaseClasses import Region, Location, Item, ItemClassification, Entrance
+from .generic_er import randomize_entrances
 from .Items import MinitItem, MinitItemData, item_table, item_frequencies, item_groups
 from .Locations import location_table
 from .Regions import region_table
+from .ERData import er_regions, er_entrances, minit_get_target_groups, er_static_connections
 from .Options import MinitGameOptions
 from worlds.generic.Rules import add_rule, set_rule, forbid_item
 from .Rules import MinitRules
+from .ER_Rules import ER_MinitRules
 from typing import Dict, Any
 from worlds.LauncherComponents import Component, components, Type, launch_subprocess
+import random
+from Utils import visualize_regions
 
 #high prio
 #TODO - find more places exceptions need to be handled
 #TODO - confirm upgraded swords do the upgraded damage
+#TODO - find and squash the local heart crashing on fanfare destroy issue
 #TODO - figure out how to add tests and test for
             #confirm a sword or swim is in the first two checks
             #confirm prog balancing settings (min/loc/items) work
@@ -21,10 +27,7 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - pull all required game mods out and reapply to clean up patch file
 
 #add options
-#TODO - sword is sword option
-#TODO - add a darkroom option to ignore flashlight req
 #TODO - figure out how to progressive sword
-#TODO - figure out how to add alt goal (flush broken sword)
 #TODO - add puzzleless to de-prio longer/confusing puzzles
 #TODO - add random start locations
 
@@ -36,9 +39,7 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - clean up game mod logging to necessities
 #TODO - clean up item/location names
 #TODO - refactor code
-#TODO - add more routes for Dog Heart
-#TODO - add swim to the island shack door requirement (may softlock players without obscure logic, confirm the swim back is easier)
-#TODO       if above then add swim as an option for getting 1/4 of temple coin
+#TODO - update Temple Coin logic to take into account non-teleport swimming routes (and thus non-teleport routes for other houses)
 
 #bug reports
 #hotel residents showing up in their rooms before being saved, potentially because the game was already completed? (toilet)
@@ -98,23 +99,64 @@ class MinitWorld(World):
                                                          self.player))
 
     def create_regions(self):
-        for region_name in region_table.keys():
-            self.multiworld.regions.append(Region(region_name, self.player, self.multiworld))
 
-        for loc_name, loc_data in location_table.items():
-            if not loc_data.can_create(self.multiworld, self.player):
-                continue
-            region = self.multiworld.get_region(loc_data.region, self.player)
-            new_loc = Location(self.player, loc_name, loc_data.code, region)
-            if (not loc_data.show_in_spoiler):
-                new_loc.show_in_spoiler = False
-            region.locations.append(new_loc)
-            if loc_name == "Fight the Boss":
-                self.multiworld.get_location(loc_name, self.player).place_locked_item(MinitItem(name = "Boss dead", classification = ItemClassification.progression, code = 60021, player = self.player))
+        if self.options.er_option == 0:
+            for region_name in region_table.keys():
+                self.multiworld.regions.append(Region(region_name, self.player, self.multiworld))
 
-        for region_name, exit_list in region_table.items():
-            region = self.multiworld.get_region(region_name, self.player)
-            region.add_exits(exit_list)
+            for loc_name, loc_data in location_table.items():
+                if not loc_data.can_create(self.multiworld, self.player):
+                    continue
+                region = self.multiworld.get_region(loc_data.region, self.player)
+                new_loc = Location(self.player, loc_name, loc_data.code, region)
+                if (not loc_data.show_in_spoiler):
+                    new_loc.show_in_spoiler = False
+                region.locations.append(new_loc)
+                if loc_name == "Fight the Boss":
+                    self.multiworld.get_location(loc_name, self.player).place_locked_item(MinitItem(name = "Boss dead", classification = ItemClassification.progression, code = 60021, player = self.player))
+
+            for region_name, exit_list in region_table.items():
+                region = self.multiworld.get_region(region_name, self.player)
+                region.add_exits(exit_list)
+        elif self.options.er_option == 1:
+            for region_name in er_regions:
+                 self.multiworld.regions.append(Region(region_name, self.player, self.multiworld))
+
+            for region_name, exit_list in er_static_connections.items():
+                region = self.multiworld.get_region(region_name, self.player)
+                region.add_exits(exit_list)
+
+
+            entrance_list = []
+            exit_list = []
+            for er_entrance in er_entrances:
+                region = self.multiworld.get_region(er_entrance[1], self.player)
+                entrance = Entrance(self.player, er_entrance[0], region)
+                #entrance.is_dead_end = er_entrance[2]
+                entrance.group = er_entrance[3]
+                entrance_list.append(entrance)
+                #region = self.multiworld.get_region(region_name, self.player)
+                region.create_exit(entrance)
+                # for exit in region.exits:
+                #     print(f"region {region.name} has exits: {exit.name}")
+
+
+            output_connections = randomize_entrances(self.multiworld, self.player, self.random, entrance_list, True, True, minit_get_target_groups)
+
+
+            for loc_name, loc_data in location_table.items():
+                if not loc_data.can_create(self.multiworld, self.player):
+                    continue
+                region = self.multiworld.get_region(loc_data.er_region, self.player)
+                new_loc = Location(self.player, loc_name, loc_data.code, region)
+                if (not loc_data.show_in_spoiler):
+                    new_loc.show_in_spoiler = False
+                region.locations.append(new_loc)
+                if loc_name == "Fight the Boss":
+                    self.multiworld.get_location(loc_name, self.player).place_locked_item(MinitItem(name = "Boss dead", classification = ItemClassification.progression, code = 60021, player = self.player))
+            #visualize_regions(self.multiworld.get_region("Menu", self.player), "output/regionmap.puml")
+            print(output_connections)
+            #randomize_entrances(self, self, self, self, self, self, self)
 
         #Locked location logic from Pseudoregalia, will likely need for sword
         # Place locked locations.
@@ -136,14 +178,19 @@ class MinitWorld(World):
         return {"slot_number": self.player,}
 
     def set_rules(self):
-        minitRules = MinitRules(self)
-        minitRules.set_Minit_rules()
+        if self.options.er_option == 0:
+            minitRules = MinitRules(self)
+            minitRules.set_Minit_rules()
+        elif self.options.er_option == 1:
+            minitRules = ER_MinitRules(self)
+            minitRules.set_Minit_rules()
+
         if self.options.chosen_goal == 0: 
             self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player)
         elif self.options.chosen_goal == 1:
-            self.multiworld.completion_condition[self.player] = lambda state: state.has("ItemBrokenSword", self.player) and (self.region_factory_desert(state) or self.region_factory_hotel(state))
+            self.multiworld.completion_condition[self.player] = lambda state: state.has("ItemBrokenSword", self.player) and (minitRules.region_factory_desert(state) or minitRules.region_factory_hotel(state))
         elif self.options.chosen_goal == 2:
-            self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player) or (state.has("ItemBrokenSword", self.player) and (self.region_factory_desert(state) or self.region_factory_hotel(state)))
+            self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player) or (state.has("ItemBrokenSword", self.player) and (minitRules.region_factory_desert(state) or minitRules.region_factory_hotel(state)))
 #    boss_fight = 0
 #    toilet_goal = 1
 #    any_goal = 2

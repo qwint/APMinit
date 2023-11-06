@@ -153,6 +153,7 @@ class MinitRules:
                 #logic: Desert RV and ?
                 self.has_sword(state) and self.has_darkroom(state) and self.can_teleport(state) and self.region_HotelRoom(state),
                 #item region implies desert rv access, can teleport implies island shack access, existing implies dog house access, only need to check hotel room access
+                #need to update and refactor this for obscure logic swimming to Island shack and thus not hard requiring teleport
             "Desert RV - Fire Bat Coin": lambda state:
                 #coin9
                 #logic: Desert RV and wateringCan
