@@ -65,7 +65,7 @@ class MinitRules:
                 #can swim to the location but need sword anyway to chop the tree down
             "Dog House - ItemBasement": lambda state:
                 #logic: Dog House and sword and glove and madeboat(boatwood and watered guy?)
-                self.has_sword(state) and state.has("ItemGlove", self.player) and self.has_madeboat(state),
+                self.has_sword(state) and state.has("ItemGlove", self.player) and (self.has_madeboat(state) or (state.has("ItemSwim", self.player) and bool(self.world.options.obscure.value))),
             "Dog House - ItemPressPass": lambda state:
                 #logic: Dog House and sword and coffee and throw
                 #alt logic: Hotel Room and sword and grinder and glove
@@ -178,7 +178,7 @@ class MinitRules:
             "Desert RV - Temple Heart": lambda state:
                 #heartPiece3
                 #logic: Desert RV and shoes ?(or grinder)
-                state.has("ItemShoes", self.player) and (state.has("ItemFlashLight", self.player)) or (self.has_darkroom(state) and bool(self.world.options.obscure.value)),
+                state.has("ItemShoes", self.player) and (state.has("ItemFlashLight", self.player) or (self.has_darkroom(state) and bool(self.world.options.obscure.value))),
             "Desert RV - Shop Heart": lambda state:
                 #heartPiece4
                 #logic: Desert RV and 19 "coin" and Basement
@@ -307,7 +307,7 @@ class MinitRules:
     def can_passBoxes(self, state) -> bool:
         return state.has("ItemCoffee", self.player) or (self.has_sword(state) and state.has("ItemGrinder", self.player))
     def can_teleport(self, state) -> bool:
-        return self.has_madeboat(state) and state.has("ItemBasement", self.player) and self.has_sword(state) and state.has("ItemSwim", self.player) or state.has("ItemCoffee", self.player)
+        return self.has_madeboat(state) and state.has("ItemBasement", self.player) and self.has_sword(state) and (state.has("ItemSwim", self.player) or state.has("ItemCoffee", self.player))
 
     def get_coins(self, state, count: int) -> bool:
         return state.count("Coin", self.player) >= count
