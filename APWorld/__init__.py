@@ -125,6 +125,8 @@ class MinitWorld(World):
             for region_name, exit_list in er_static_connections.items():
                 region = self.multiworld.get_region(region_name, self.player)
                 region.add_exits(exit_list)
+                for region2 in exit_list:
+                	self.multiworld.get_region(region2, self.player).add_exits([region_name])
                 # for exit in region.exits:
                 #     print(f"for static connection: {exit.name} parent region: {exit.parent_region} and connected region: {exit.connected_region}")
 

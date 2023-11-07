@@ -103,9 +103,11 @@ class ER_Entrance(Entrance):
         return one_way_type_matches and (allow_self_loops or self.name != other.name)
 
 class GroupLookup:
-    _lookup = {}
+    _lookup: {}
 
     def __init__(self):
+
+        self._lookup = {}
         pass
     
     def __bool__(self):
@@ -125,8 +127,6 @@ class GroupLookup:
         return self._lookup.get(group_name, [])
 
 class EntranceLookup:
-
-
     random: random.Random
     dead_ends: GroupLookup # group name to entrances
     non_dead_ends: GroupLookup
@@ -142,11 +142,11 @@ class EntranceLookup:
         
     def remove(self, entrance: ER_Entrance, dead_end: bool) -> None:
         lookup = self.dead_ends if dead_end else self.non_dead_ends
+        text = "dead end" if dead_end else "non dead end"
         lookup.remove(entrance)
 
     def get_targets(self, groups: List[str], dead_end: bool) -> Iterable[ER_Entrance]:
         lookup = self.dead_ends if dead_end else self.non_dead_ends
-        #ret = [entrance for group in groups for entrance in lookup.get_group(group)]
         ret = [entrance for group in groups for entrance in lookup.get_group(group)]
         self.random.shuffle(ret)
         return ret
@@ -241,80 +241,59 @@ def randomize_entrances(
         visited = set()
         q = queue.Queue()
         starting_entrance_name = None
-        #print(f"start at {start.name} handled as an entrance? {isinstance(start,(Entrance, BaseEntrance))}. type is: {type(start)}")
-        if isinstance(start, (ER_Entrance)):#, BaseEntrance)):
+        if isinstance(start, (ER_Entrance)):
             starting_entrance_name = start.name
-            #print(f"starting instead at {start.parent_region.name} handled as an entrance? {isinstance(start.parent_region,(Entrance, BaseEntrance))}. type is: {type(start.parent_region)}")
             q.put(start.parent_region)
-            #print(f"\nstarting at an entrance's region: {start.parent_region.name}")
         else:
             q.put(start)
-            #print(f"\nstarting at region: {start.name}")
             
         while not q.empty():
             region = q.get()
-            # if start.name == "Menu": 
-            #     print(f"iterating through region: {region.name}")
             if place_regions:
                 placed_regions.add(region.name)
             visited.add(region.name)
             for exit in region.exits:
-                # if start.name == "Menu": 
-                #     print(f"iterating through exit: {exit.name}")
-                #print(f"for {region.name} the exit {exit.name} was found")
                 if exit.connected_region == None: # only return unconnected (ie randomizable) exits
-                    # if start.name == "Menu": 
-                    #     print(f"unconnected exit found: {exit.name}")
-                #print(f"for {region.name} the exit {exit.name} was fou
                     if exit.name != starting_entrance_name:
-                        #print(f"\nexit found: {exit.name}")
                         yield exit
                 elif exit.connected_region.name not in placed_regions and exit.connected_region.name not in visited:
                     # traverse unseen static connections
                     q.put(exit.connected_region)
-        # if start.name == "Menu": 
-        #     print(f"\nno exit yielded for start: {start.name}")
  
     for entrance in exits_to_randomize:
-        #print(f"entrance: {entrance.name} loop:")
         has_exits = any(exit for exit in traverse_regions_to_new_exits(entrance, False))
-        #print(f"{entrance.name} has exits: {has_exits}")
         entrance.is_dead_end = not has_exits
-        #print(f"entrance: {type(entrance)}")
-        entrance_lookup.add(entrance, has_exits)
+        entrance_lookup.add(entrance, entrance.is_dead_end)
         if not coupled:
             # in uncoupled, every TWO_WAY transition can be both a source and a target.
             # additionally, if group_one_ways is false, ONE_WAY_IN can also be a source and a target.
             # double up these transitions in the lookup so they can be randomized accordingly
             if entrance.entrance_type == EntranceType.TWO_WAY or (
                     not group_one_ways and entrance.entrance_type == EntranceType.ONE_WAY_IN):
-                entrance_lookup.add(entrance, has_exits)
+                entrance_lookup.add(entrance, entrance.is_dead_end)
     
     # place the starting region. this is doubling the traversal of the start region but that's not
     # the slow part of this algorithm so I don't feel too bad about it (and couldn't figure out how to
     # do it otherwise)
-    #print(f"\nexits from Main: {traverse_regions_to_new_exits(multiworld.get_region('Menu', player), True)}")
     for exit in traverse_regions_to_new_exits(multiworld.get_region("Menu", player), True):
-        #print(f"menu exit found: {type(exit)}")
         entrance_lookup.remove(exit, exit.is_dead_end)
         available_exits.append(exit)
     
     def pair_exits(
-            available_exits: List[ER_Entrance], 
-            entrance_lookup: EntranceLookup, 
-            group_lookup: GroupLookup, 
-            coupled: bool, 
-            results: List[ER_Entrance], 
-            late_exits: List[ER_Entrance], 
-            random: random
+            current_exits: List[ER_Entrance], 
+            deadEnd: bool,
         ):
-        while bool(available_exits) and bool(group_lookup):
-            #print(f"\navaliable_exits: {available_exits.name}")
-            random.shuffle(available_exits)
+        if deadEnd:
+            group_lookup = entrance_lookup.dead_ends
+        else:
+            group_lookup = entrance_lookup.non_dead_ends
+
+        while bool(current_exits) and bool(group_lookup):
+            random.shuffle(current_exits)
             # find a valid source exit
-            for i, source_exit in enumerate(available_exits):
+            for i, source_exit in enumerate(current_exits):
                 if source_exit.is_valid_source_transition(placed_regions):
-                    available_exits.pop(i)
+                    current_exits.pop(i)
                     break;
             else:
                 # TODO: should implement swap for this use case to try and save it.
@@ -322,9 +301,9 @@ def randomize_entrances(
             
             # find a random valid target
             target_groups = get_target_groups(source_exit.group_name)
-            for target_entrance in entrance_lookup.get_targets(target_groups, False):
+            for target_entrance in entrance_lookup.get_targets(target_groups, deadEnd):
                 if source_exit.can_connect_to(target_entrance, group_one_ways, False):
-                    group_lookup.remove(target_entrance)
+                    entrance_lookup.remove(target_entrance, deadEnd)
                     break;
             else:
                 # There were no valid non-dead-end targets for this source, that shouldn't change
@@ -340,21 +319,44 @@ def randomize_entrances(
             # right at now.
             if coupled and target_entrance.entrance_type != EntranceType.ONE_WAY_OUT:
                 results.append((target_entrance, source_exit))
-                
-            temp_exits = traverse_regions_to_new_exits(target_entrance, True)
-            for exit in temp_exits: # traverse_regions_to_new_exits(target_entrance, True):
-                #print(f"removing from entrance lookup {exit.name}")
-                entrance_lookup.remove(exit, exit.is_dead_end)
-                available_exits.append(exit)
+
+            #temp_exits = traverse_regions_to_new_exits(target_entrance, True)
+            for exit in traverse_regions_to_new_exits(target_entrance, True):
+                try:
+                    entrance_lookup.remove(exit, exit.is_dead_end)
+                    current_exits.append(exit)
+                except ValueError:
+                    print(f"tried to remove {exit.name}, a dead end? {exit.is_dead_end}")
     
-    print(f"\n\n1 - available_exits: {available_exits}")
-    pair_exits(available_exits, entrance_lookup, entrance_lookup.non_dead_ends, coupled, results, late_exits, random)
-    print(f"\n\n2 - available_exits: {available_exits}")
-    pair_exits(available_exits, entrance_lookup, entrance_lookup.dead_ends, coupled, results, late_exits, random)
-    print(f"\n\n3 - available_exits: {available_exits}")
-    print(f"\n\n4 - late_exits: {late_exits}")
-    pair_exits(late_exits, entrance_lookup, entrance_lookup.dead_ends, coupled, results, late_exits, random)
-    print(f"\n\n5 - late_exits: {late_exits}")
+    #connect all non_dead_end exits that we can
+    print(f"\n1 - available_exits: {available_exits}")
+    pair_exits(available_exits, False)
+
+    #connect all dead_end exits that we can
+    print(f"\n2 - available_exits: {available_exits}")
+    pair_exits(available_exits, True)
+
+    #connect all the previously unconnectable exits
+    for entrance in exits_to_randomize:
+        for late in late_exits:
+            if str(entrance.name) == str(late):
+                print(f"adding entrance name: {late}")
+                entrance_lookup.add(entrance, entrance.is_dead_end)
+    # print(f"\n3 - entrance_lookup DE: {entrance_lookup.get_targets(['water','land'], True)}")
+    # print(f"\n3 - entrance_lookup NDE: {entrance_lookup.get_targets(['water','land'], False)}")
+    print(f"\n3 - available_exits: {available_exits}")
+    pair_exits(available_exits, False)
+    pair_exits(available_exits, True)
+    # print(f"\n4 - entrance_lookup DE: {entrance_lookup.get_targets(['water','land'], True)}")
+    # print(f"\n4 - entrance_lookup NDE: {entrance_lookup.get_targets(['water','land'], False)}")
+    print(f"\n4 - available_exits: {available_exits}")
+    print(f"\n4 - late_exits: {late_exits}")
+    #pair_exits(available_exits, False)
+    # print(f"\n5 - entrance_lookup DE: {entrance_lookup.get_targets(['water','land'], True)}")
+    # print(f"\n5 - entrance_lookup NDE: {entrance_lookup.get_targets(['water','land'], False)}")
+    #print(f"\n5 - available_exits: {available_exits}")
+
+
     # here is the stuff that I was too lazy to implement
     # try to place available_exits -> dead ends (ie repeat the above process). Available exits
     #   should be exhausted by now (moved to late exits)
