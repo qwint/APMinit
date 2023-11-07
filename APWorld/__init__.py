@@ -141,9 +141,9 @@ class MinitWorld(World):
         if self.options.chosen_goal == 0: 
             self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player)
         elif self.options.chosen_goal == 1:
-            self.multiworld.completion_condition[self.player] = lambda state: state.has("ItemBrokenSword", self.player) and (self.region_factory_desert(state) or self.region_factory_hotel(state))
+            self.multiworld.completion_condition[self.player] = lambda state: state.has("ItemBrokenSword", self.player) and (minitRules.region_factory_desert(state) or minitRules.region_factory_hotel(state))
         elif self.options.chosen_goal == 2:
-            self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player) or (state.has("ItemBrokenSword", self.player) and (self.region_factory_desert(state) or self.region_factory_hotel(state)))
+            self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player) or (state.has("ItemBrokenSword", self.player) and (minitRules.region_factory_desert(state) or minitRules.region_factory_hotel(state)))
 #    boss_fight = 0
 #    toilet_goal = 1
 #    any_goal = 2
