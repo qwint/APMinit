@@ -1,5 +1,5 @@
-from worlds.AutoWorld import World
-from BaseClasses import Region, Location, Item, ItemClassification
+from worlds.AutoWorld import World, WebWorld
+from BaseClasses import Region, Location, Item, ItemClassification, Entrance, Tutorial
 from .Items import MinitItem, MinitItemData, item_table, item_frequencies, item_groups
 from .Locations import location_table
 from .Regions import region_table
@@ -54,6 +54,19 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #make boss fight require the left/right machines to be stopped (and thus swim + coffee + darkroom by default)
 #look into adding another free/wateringCan check in sphere1 to add the vanilla heart back in and expand locations
 
+class MinitWebWorld(WebWorld):
+    theme = "ice"
+    setup = Tutorial(
+        "Multiworld Setup Guide",
+        "A guide to setting up the Minit randomizer connected to an Archipelago Multiworld",
+        "English",
+        "docs/setup_en.md",
+        "setup/en",
+        ["qwint"]
+    )
+
+
+    tutorials = [setup]
 
 
 def launch_client():
@@ -71,6 +84,7 @@ class MinitWorld(World):
     required_client_version = (0, 4, 3)
     options_dataclass = MinitGameOptions
     options: MinitGameOptions
+    web = MinitWebWorld()
 
 
     item_name_to_id = {name: data.code for name, data in item_table.items() if data.code is not None}
