@@ -81,8 +81,3 @@ class TestAnyGoal(MinitTestBase):
     options = {
         "chosen_goal": 2,
     }
-
-class TestER(MinitTestBase):
-    options = {
-        "er_option": 1,
-    }
