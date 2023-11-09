@@ -120,8 +120,8 @@ class GroupLookup:
     def remove(self, entrance: ER_Entrance) -> None:
         group = self._lookup[entrance.group_name]
         group.remove(entrance)
-        if not group:
-            del self._lookup[entrance.group_name]
+        # if not group:
+        #     del self._lookup[entrance.group_name]
 
     def get_group(self, group_name: str) -> Iterable[ER_Entrance]:
         return self._lookup.get(group_name, [])
@@ -326,7 +326,7 @@ def randomize_entrances(
                     entrance_lookup.remove(exit, exit.is_dead_end)
                     current_exits.append(exit)
                 except ValueError:
-                    print(f"tried to remove {exit.name}, a dead end? {exit.is_dead_end}")
+                    print(f"tried to remove {exit.name}, a dead end? {exit.is_dead_end} expecting: {deadEnd}")
     
     #connect all non_dead_end exits that we can
     print(f"\n1 - available_exits: {available_exits}")
