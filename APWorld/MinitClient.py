@@ -264,6 +264,7 @@ async def main(args):
     ctx.auth = args.name
     ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
 
+    ctx.run_generator()
     if gui_enabled:
         ctx.run_gui()
     ctx.run_cli()
