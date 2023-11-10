@@ -1,4 +1,4 @@
-from . import MinitTestBase
+from . import MinitTestBase, selectSeedMinit
 
 
 class TestChestAccess(MinitTestBase):
@@ -81,3 +81,9 @@ class TestAnyGoal(MinitTestBase):
     options = {
         "chosen_goal": 2,
     }
+class TestSeed1(selectSeedMinit):
+    seed = 95400472555641845910
+class TestSeed2(selectSeedMinit):
+    seed = 20545238613336522738
+class TestSeed3(selectSeedMinit):
+    seed = 40237425953666301908

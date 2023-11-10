@@ -1,8 +1,12 @@
 #from test.test_base import WorldTestBase
 #from test.TestBase import WorldTestBase
 from test.bases import WorldTestBase
+from argparse import Namespace
+from test.general import gen_steps
+from worlds.AutoWorld import call_all
+from worlds import AutoWorld
 import typing
-from BaseClasses import CollectionState, Item
+from BaseClasses import CollectionState, Item, MultiWorld
 
 class MinitTestBase(WorldTestBase):
     game = "Minit"
@@ -38,3 +42,11 @@ class MinitTestBase(WorldTestBase):
         self.collect_all_but(all_items, state)
         for location in locations:
             self.assertTrue(state.can_reach(location, "Location", 1), f"{location} is not reachable without {all_items}")
+
+class selectSeedMinit(WorldTestBase):
+    game = "Minit"
+    player: typing.ClassVar[int] = 1
+    seed = 0
+
+    def world_setup(self, *args, **kwargs):
+        super().world_setup(self.seed)
