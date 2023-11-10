@@ -158,6 +158,9 @@ class ProxyGameContext(SuperContext):
         #     #TODO make this actually send minit a ping
         #      - or check if it can be handled with ctx.watcher_event instead
         #     logger.info("send minit a ping")
+        # if cmd == 'ReceivedItems':
+        #     #TODO make this actually send minit a ping or check if it can be handled with ctx.watcher_event instead
+        #     logger.info("send minit a ping")
 
     async def send_death(self, death_text: str = ""):
         self.death_amnisty_count += 1
@@ -174,7 +177,7 @@ class ProxyGameContext(SuperContext):
         await self.send_connect()
 
     async def locationHandler(self, request: web.Request) -> web.Response:
-        """handle POST at /Locations that uses scouts to return useful info"""
+        """handle POST at /Locations that utilizes scouts to return useful info if possible"""
         requestjson = await request.json()
         response = handleLocations(self, requestjson)
         localResponse = handleLocalLocations(self, requestjson)
@@ -336,6 +339,7 @@ def handleLocations(ctx: CommonContext, request: json) -> json:
     expecting request to be json body in the form of
     {"Locations": [123,456]}
     """
+
 
     # TODO - make this actually send the difference
     needed_updates = set(request["Locations"]).difference(

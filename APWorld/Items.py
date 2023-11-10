@@ -28,7 +28,7 @@ item_table: Dict[str, MinitItemData] = {
     "ItemFlashLight": MinitItemData(
         code=60004,
         classification=ItemClassification.progression),
-    #   potentially reclassify if darkrooms in logic
+        #potentially reclassify if darkrooms in logic
     "ItemSwim": MinitItemData(
         code=60005,
         classification=ItemClassification.progression),
