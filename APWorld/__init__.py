@@ -11,7 +11,7 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 
 #high prio
 #TODO - find more places exceptions need to be handled
-#TODO - confirm upgraded swords do the upgraded damage
+#TODO - confirm each sword does correct effects per sword (pushback, damage, etc.)
 #TODO - figure out how to add tests and test for
             #confirm a sword or swim is in the first two checks
             #confirm prog balancing settings (min/loc/items) work
@@ -19,20 +19,19 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 
 #misc game mod TODOs
 #TODO - pull all required game mods out and reapply to clean up patch file
-#TODO - save mod specific values like location_sent etc.
 
 #add options
 #TODO - figure out how to progressive sword
-#TODO - figure out how to add alt goal (flush broken sword)
 #TODO - add puzzleless to de-prio longer/confusing puzzles
 #TODO - add random start locations
 
 #known low prio
+#TODO - research why save file percents are inflating - the items += trigger is the count of 
+#TODO - add a warp back to doghouse (not really needed, but may be required for island shack logic and/or underground tent logic) (workaround: make a new save, what does that break?)
 #TODO - figure out how to protect launching a non-ap save (don't think it matters because the app is different? but maybe if you use same folder??)
 #TODO - clean up game mod logging to necessities
 #TODO - clean up item/location names
 #TODO - refactor code
-#TODO - add swim as an option for getting 1/4 of temple coin
 
 #bug reports
 #hotel residents showing up in their rooms before being saved, potentially because the game was already completed? (toilet)
@@ -47,10 +46,6 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #make residents item/location
 #make boss fight require the left/right machines to be stopped (and thus swim + coffee + darkroom by default)
 
-#release notes: 
-#now press Q to return to dog house!
-#save files should now correctly represent the % aquired
-#ap sync should no longer give you items you already have thus no longer replacing your weapon with a dupe of your most recent recieved item
 
 class MinitWebWorld(WebWorld):
     theme = "ice"
@@ -128,51 +123,20 @@ class MinitWorld(World):
             region = self.multiworld.get_region(region_name, self.player)
             region.add_exits(exit_list)
 
-        #Locked location logic from Pseudoregalia, will likely need for sword
-        # Place locked locations.
-        # for location_name, location_data in self.locked_locations.items():
-        #     if not location_data.can_create(self.multiworld, self.player):
-        #         continue
-
-        #     # # Doing this really stupidly because breaker's locking will change after logic rework is done
-        #     # if location_name == "Dilapidated Dungeon - Dream Breaker":
-        #     #     if bool(self.multiworld.progressive_breaker[self.player]):
-        #     #         locked_item = self.create_item("Progressive Dream Breaker")
-        #     #         self.multiworld.get_location(location_name, self.player).place_locked_item(locked_item)
-        #     #         continue
-
-        #     locked_item = self.create_item(location_table[location_name].locked_item)
-        #     self.multiworld.get_location(location_name, self.player).place_locked_item(locked_item)
-
     def fill_slot_data(self) -> Dict[str, Any]:
         return {"slot_number": self.player,}
 
     def set_rules(self):
         minitRules = MinitRules(self)
         minitRules.set_Minit_rules()
-        if self.options.chosen_goal == 0: 
+        if self.options.chosen_goal == 0: #boss fight
             self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player)
-        elif self.options.chosen_goal == 1:
+        elif self.options.chosen_goal == 1: #toilet
             self.multiworld.completion_condition[self.player] = lambda state: state.has("ItemBrokenSword", self.player) and (minitRules.region_factory_desert(state) or minitRules.region_factory_hotel(state))
-        elif self.options.chosen_goal == 2:
+        elif self.options.chosen_goal == 2: #any
             self.multiworld.completion_condition[self.player] = lambda state: state.has("Boss dead", self.player) or (state.has("ItemBrokenSword", self.player) and (minitRules.region_factory_desert(state) or minitRules.region_factory_hotel(state)))
-#    boss_fight = 0
-#    toilet_goal = 1
-#    any_goal = 2
         if (bool(self.options.starting_sword.value) == True):
             self.multiworld.local_early_items[self.player]['ItemSword'] = 1
-
-    #difficulty settings from Pseudoregalia, won't likely need but may want to reuse
-    # def set_rules(self):
-    #     difficulty = self.multiworld.logic_level[self.player]
-    #     if difficulty == NORMAL:
-    #         PseudoregaliaNormalRules(self).set_pseudoregalia_rules()
-    #     elif difficulty == HARD:
-    #         PseudoregaliaHardRules(self).set_pseudoregalia_rules()
-    #     elif difficulty == EXPERT:
-    #         PseudoregaliaExpertRules(self).set_pseudoregalia_rules()
-    #     elif difficulty == LUNATIC:
-    #         PseudoregaliaLunaticRules(self).set_pseudoregalia_rules()
 
     def get_filler_item_name(self) -> str:
         return "HeartPiece"
