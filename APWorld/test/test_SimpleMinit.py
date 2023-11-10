@@ -2,22 +2,6 @@ from . import MinitTestBase, selectSeedMinit
 
 
 class TestChestAccess(MinitTestBase):
-    # def test_sword_chests(self):
-    #     """Test locations that require a sword"""
-    #     locations = ["Chest1", "Chest2"]
-    #     items = [["Sword"]]
-    #     # this will test that each location can't be accessed without the "Sword", but can be accessed once obtained.
-    #     self.assertAccessDependency(locations, items)
-
-    # def test_minit_weapon_chests(self):
-    #     """Test locations that require any weapon"""
-    #     #locations = ["Dog House - House Pot Coin","Dog House - Sewer Island Coin","Dog House - Sewer Coin","Dog House - Land is Great Coin","Dog House - Hidden Snake Coin","Dog House - Waterfall Coin","Dog House - Treasure Island Coin","Desert RV - Temple Coin","Desert RV - Fire Bat Coin","Desert RV - Truck Supplies Coin","Desert RV - Broken Truck","Desert RV - Quicksand Coin","Desert RV - Dumpster","Hotel Room - Shrub Arena Coin","Hotel Room - Miner's Chest Coin","Hotel Room - Inside Truck","Hotel Room - Queue","Hotel Room - Hotel Backroom Coin","Hotel Room - Drill Coin"]
-    #     locations = ["Dog House - House Pot Coin"]
-    #     #items = [["ItemWateringCan"], ["ItemBrokenSword"], ["ItemSword"], ["ItemMegaSword"]]
-    #     items = [["ItemWateringCan"]]
-    #     # this will test that chests 3-5 can't be accessed without any weapon, but can be with just one of them.
-    #     self.assertAccessDependency(locations, items)
-
 
     def test_minit_weapon_chests1(self):
             """Test locations that require any weapon"""
@@ -38,7 +22,7 @@ class TestChestAccess(MinitTestBase):
         self.assertAccessDependency(locations, items, only_check_listed = True)
 
     # def test_minit_weapon_chests4(self):
-    #     """Test locations that require only wateringcan"""
+    #     """Test locations that do not require a held item"""
     #     locations = ["Hotel Room - Queue","Hotel Room - Inside Truck"]
     #     items = [["ItemWateringCan"]]
     #     self.assertAccessIndependency(locations, items, only_check_listed = True)

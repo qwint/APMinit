@@ -46,6 +46,7 @@ async def http_server_loop(wb: Webserver) -> None:
         await wb.run()
     finally:
         logger.info('http_server_loop ended')
+    #TODO: handle exceptions in some way like this
     # except websockets.InvalidMessage:
     #     # probably encrypted
     #     if address.startswith("ws://"):

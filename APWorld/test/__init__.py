@@ -1,5 +1,3 @@
-#from test.test_base import WorldTestBase
-#from test.TestBase import WorldTestBase
 from test.bases import WorldTestBase
 from argparse import Namespace
 from test.general import gen_steps

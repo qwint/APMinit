@@ -1,4 +1,3 @@
-# Options.py
 from dataclasses import dataclass
 
 from Options import Toggle, Choice, PerGameCommonOptions
@@ -39,12 +38,3 @@ class MinitGameOptions(PerGameCommonOptions):
     obscure: Obscure
     progressive_sword: ProgressiveSword
     chosen_goal: Goal
-
-
-#add options
-#TODO - sword is sword option
-#TODO - add a darkroom option to ignore flashlight req
-#TODO - figure out how to progressive sword
-#TODO - figure out how to add alt goal (flush broken sword)
-#TODO - add puzzleless to de-prio longer/confusing puzzles
-#TODO - add random start locations
