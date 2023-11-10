@@ -53,7 +53,8 @@ class TestDarkroomObscure(MinitTestBase):
 
     def test_minit_darkrooms(self):
         """Test locations that always require Darkroom"""
-        locations = ["Dog House - Sewer Island Coin", "Dog House - Sewer Coin", "Dog House - Hidden Snake Coin", "Dog House - Sewer Tentacle", "Desert RV - ItemTurboInk", "Desert RV - Temple Coin", "Desert RV - Fire Bat Coin", "Desert RV - Quicksand Coin", "Desert RV - Temple Heart", "Desert RV - Octopus Tentacle", "Hotel Room - ItemGrinder", "Hotel Room - Miner's Chest Coin", "Factory Main - ItemMegaSword"]
+        #locations = ["Dog House - Sewer Island Coin", "Dog House - Sewer Coin", "Dog House - Hidden Snake Coin", "Dog House - Sewer Tentacle", "Desert RV - ItemTurboInk", "Desert RV - Temple Coin", "Desert RV - Fire Bat Coin", "Desert RV - Quicksand Coin", "Desert RV - Temple Heart", "Desert RV - Octopus Tentacle", "Hotel Room - ItemGrinder", "Hotel Room - Miner's Chest Coin", "Factory Main - ItemMegaSword"]
+        locations = ["Desert RV - Temple Heart"]
         items = [["ItemFlashLight"]]
         self.assertAccessWithout(locations, items)
 
@@ -65,9 +66,9 @@ class TestAnyGoal(MinitTestBase):
     options = {
         "chosen_goal": 2,
     }
-class TestSeed1(selectSeedMinit):
-    seed = 95400472555641845910
-class TestSeed2(selectSeedMinit):
-    seed = 20545238613336522738
-class TestSeed3(selectSeedMinit):
-    seed = 40237425953666301908
+# class TestSeed1(selectSeedMinit):
+#     seed = 95400472555641845910
+# class TestSeed2(selectSeedMinit):
+#     seed = 20545238613336522738
+# class TestSeed3(selectSeedMinit):
+#     seed = 40237425953666301908

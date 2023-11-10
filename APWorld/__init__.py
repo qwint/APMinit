@@ -99,8 +99,12 @@ class MinitWorld(World):
                                                              item_data.code,
                                                              self.player))
                 else:
+                    if bool(self.options.obscure.value) and bool(self.options.darkrooms.value) and item_name == "ItemFlashLight":
+                        clas = ItemClassification.useful
+                    else:
+                        clas = item_data.classification
                     self.multiworld.itempool.append(MinitItem(item_name,
-                                                         item_data.classification,
+                                                         clas,
                                                          item_data.code,
                                                          self.player))
 
