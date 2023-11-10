@@ -14,6 +14,10 @@ import Utils
 import settings
 #from settings import FilePath
 from .Items import item_table
+try:
+    from worlds.tracker.TrackerClient import TrackerGameContext, TrackerManager
+except ModuleNotFoundError:
+    logger.info("please install the universal tracker :)")
 
 logger = logging.getLogger("Client")
 
@@ -80,10 +84,11 @@ class RomFile(settings.UserFilePath):
 #         #TODO make this actually send minit a ping
 #         logger.info("send minit a ping")
 
-class ProxyGameContext(CommonContext):
+class ProxyGameContext(TrackerGameContext):
     game = GAMENAME
     httpServer_task: typing.Optional["asyncio.Task[None]"] = None
     command_processor = MinitCommandProcessor
+    tags = CommonContext.tags
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
@@ -93,15 +98,19 @@ class ProxyGameContext(CommonContext):
         self.datapackage = []
 
     def run_gui(self):
-        from kvui import GameManager
+        # super().run_gui()
+        #from kvui import GameManager
 
-        class UTManager(GameManager):
+        class ProxyManager(TrackerManager):
+            # super().__init__()
             logging_pairs = [
                 ("Client", "Archipelago")
             ]
             base_title = "Minit Client"
 
-        self.ui = UTManager(self)
+
+        self.ui = ProxyManager(self)
+        self.load_kv()
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     def patch_game(self):
@@ -117,6 +126,7 @@ class ProxyGameContext(CommonContext):
         logger.info("patched "+source_data_win+". You can launch the .exe game to run the patched game.")
 
     def on_package(self, cmd: str, args: dict):
+        super().on_package(cmd, args)
         if cmd == 'Connected':
             Utils.async_start(self.send_msgs([{"cmd": "LocationScouts", "locations": list(self.missing_locations), "create_as_hint":0}]))
 
