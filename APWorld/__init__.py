@@ -19,26 +19,20 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 
 #misc game mod TODOs
 #TODO - pull all required game mods out and reapply to clean up patch file
+#TODO - save mod specific values like location_sent etc.
 
 #add options
-#TODO - sword is sword option
-#TODO - add a darkroom option to ignore flashlight req
 #TODO - figure out how to progressive sword
 #TODO - figure out how to add alt goal (flush broken sword)
 #TODO - add puzzleless to de-prio longer/confusing puzzles
 #TODO - add random start locations
 
 #known low prio
-#TODO - research why save file percents are inflating - the items += trigger is the count of 
-#TODO - add a warp back to doghouse (not really needed, but may be required for island shack logic and/or underground tent logic) (workaround: make a new save, what does that break?)
-#TODO - see if more factory checks can be handled with drillshortcut
 #TODO - figure out how to protect launching a non-ap save (don't think it matters because the app is different? but maybe if you use same folder??)
 #TODO - clean up game mod logging to necessities
 #TODO - clean up item/location names
 #TODO - refactor code
-#TODO - add more routes for Dog Heart
-#TODO - add swim to the island shack door requirement (may softlock players without obscure logic, confirm the swim back is easier)
-#TODO       if above then add swim as an option for getting 1/4 of temple coin
+#TODO - add swim as an option for getting 1/4 of temple coin
 
 #bug reports
 #hotel residents showing up in their rooms before being saved, potentially because the game was already completed? (toilet)
@@ -52,7 +46,11 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #make teleporter a item/location
 #make residents item/location
 #make boss fight require the left/right machines to be stopped (and thus swim + coffee + darkroom by default)
-#look into adding another free/wateringCan check in sphere1 to add the vanilla heart back in and expand locations
+
+#release notes: 
+#now press Q to return to dog house!
+#save files should now correctly represent the % aquired
+#ap sync should no longer give you items you already have thus no longer replacing your weapon with a dupe of your most recent recieved item
 
 class MinitWebWorld(WebWorld):
     theme = "ice"
