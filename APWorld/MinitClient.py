@@ -79,6 +79,7 @@ class RomFile(settings.UserFilePath):
     # the hashes for vanilla to be verified by the /patch command
 
 
+
 class ProxyGameContext(SuperContext):
     game = GAMENAME
     httpServer_task: typing.Optional["asyncio.Task[None]"] = None
