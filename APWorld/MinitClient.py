@@ -14,9 +14,13 @@ import Utils
 import settings
 #from settings import FilePath
 from .Items import item_table
+tracker_loaded = False
 try:
-    from worlds.tracker.TrackerClient import TrackerGameContext, TrackerManager
+    from worlds.tracker.TrackerClient import TrackerManager as SuperManager, TrackerGameContext as SuperContext
+    tracker_loaded = True
 except ModuleNotFoundError:
+    from CommonClient import CommonContext as SuperContext
+    from kvui import GameManager as SuperManager
     logger.info("please install the universal tracker :)")
 
 logger = logging.getLogger("Client")
@@ -84,7 +88,7 @@ class RomFile(settings.UserFilePath):
 #         #TODO make this actually send minit a ping
 #         logger.info("send minit a ping")
 
-class ProxyGameContext(TrackerGameContext):
+class ProxyGameContext(SuperContext):
     game = GAMENAME
     httpServer_task: typing.Optional["asyncio.Task[None]"] = None
     command_processor = MinitCommandProcessor
@@ -101,16 +105,17 @@ class ProxyGameContext(TrackerGameContext):
         # super().run_gui()
         #from kvui import GameManager
 
-        class ProxyManager(TrackerManager):
+        class ProxyManager(SuperManager):
             # super().__init__()
             logging_pairs = [
                 ("Client", "Archipelago")
             ]
             base_title = "Minit Client"
 
-
         self.ui = ProxyManager(self)
-        self.load_kv()
+        if tracker_loaded:
+            self.load_kv()
+
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     def patch_game(self):
@@ -264,7 +269,8 @@ async def main(args):
     ctx.auth = args.name
     ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
 
-    ctx.run_generator()
+    if tracker_loaded:
+        ctx.run_generator()
     if gui_enabled:
         ctx.run_gui()
     ctx.run_cli()
