@@ -20,7 +20,6 @@ item_table: Dict[str, MinitItemData] = {
         code=60001,
         classification=ItemClassification.useful),
     "Tentacle": MinitItemData(
-    #need to double check name
         code=60002,
         classification=ItemClassification.progression),
     "ItemCoffee": MinitItemData(
@@ -29,7 +28,7 @@ item_table: Dict[str, MinitItemData] = {
     "ItemFlashLight": MinitItemData(
         code=60004,
         classification=ItemClassification.progression),
-        #potentially reclassify if darkrooms in logic (when implemented)
+        #potentially reclassify if darkrooms in logic
     "ItemSwim": MinitItemData(
         code=60005,
         classification=ItemClassification.progression),
@@ -54,6 +53,7 @@ item_table: Dict[str, MinitItemData] = {
     # "ItemCamera": MinitItemData(
     #     code=60012,
     #     classification=ItemClassification.filler),
+    # camera will never be granted as an item for AP
     "ItemBasement": MinitItemData(
         code=60013,
         classification=ItemClassification.progression),
@@ -65,11 +65,9 @@ item_table: Dict[str, MinitItemData] = {
         classification=ItemClassification.progression),
     "ItemTurboInk": MinitItemData(
         code=60016,
-        classification=ItemClassification.filler),
-        #this could be helpful, could be filler, but i'd rather have more filler to cut out so i can add extra stuff :)
+        classification=ItemClassification.useful),
     "ItemGrinder": MinitItemData(
         code=60017,
-        #is filler? no lets you kill boxes with a sword swipe
         classification=ItemClassification.progression),
     "ItemTrophy": MinitItemData(
         code=60018,
@@ -83,21 +81,15 @@ item_table: Dict[str, MinitItemData] = {
 
    # "Boss dead": MinitItemData(
    #     classification=ItemClassification.progression),
-
-#stolen events from pseudoregalia for gomode and game completion respectivly
-#    "Unlocked Door": MinitItemData(
-#        classification=ItemClassification.useful),
-#
-#    "Something Worth Being Awake For": MinitItemData(
-#        classification=ItemClassification.progression),
+   #added manually in init
 }
 
 item_frequencies = {
     "Coin": 19,
     "HeartPiece": 6,
     "Tentacle": 8
-}   #items: 17
-    #note: there are 6 vanilla hearts, but the 'location' where you would get broken sword is game completion so it is not a valid item placement
+}
+
 
 item_groups: Dict[str, Set[str]] = {
     "swords": {"ItemBrokenSword",
