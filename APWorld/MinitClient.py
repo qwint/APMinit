@@ -12,12 +12,13 @@ import settings
 from .Items import item_table
 tracker_loaded = False
 try:
-    from worlds.tracker.TrackerClient import TrackerManager as SuperManager, TrackerGameContext as SuperContext
+    from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
     tracker_loaded = True
 except ModuleNotFoundError:
     from CommonClient import CommonContext as SuperContext
-    from kvui import GameManager as SuperManager
-    logger.info("please install the universal tracker :)")
+    #from kvui import GameManager as SuperManager
+    # logger.info("please install the universal tracker :)")
+
 
 logger = logging.getLogger("Client")
 
@@ -72,8 +73,11 @@ class ProxyGameContext(SuperContext):
         self.datapackage = []
 
     def run_gui(self):
-        # super().run_gui()
-        #from kvui import GameManager
+        if tracker_loaded:
+            from worlds.tracker.TrackerClient import TrackerManager as SuperManager
+        else:
+            from kvui import GameManager as SuperManager
+            logger.info("please install the universal tracker :)")
 
         class ProxyManager(SuperManager):
             # super().__init__()
