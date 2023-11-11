@@ -19,6 +19,7 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 
 #misc game mod TODOs
 #TODO - pull all required game mods out and reapply to clean up patch file
+#TODO - save mod specific values like location_sent etc.
 
 #add options
 #TODO - figure out how to progressive sword
@@ -26,12 +27,11 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - add random start locations
 
 #known low prio
-#TODO - research why save file percents are inflating - the items += trigger is the count of 
-#TODO - add a warp back to doghouse (not really needed, but may be required for island shack logic and/or underground tent logic) (workaround: make a new save, what does that break?)
 #TODO - figure out how to protect launching a non-ap save (don't think it matters because the app is different? but maybe if you use same folder??)
 #TODO - clean up game mod logging to necessities
 #TODO - clean up item/location names
 #TODO - refactor code
+#TODO - add swim as an option for getting 1/4 of temple coin
 
 #bug reports
 #hotel residents showing up in their rooms before being saved, potentially because the game was already completed? (toilet)
@@ -46,6 +46,10 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #make residents item/location
 #make boss fight require the left/right machines to be stopped (and thus swim + coffee + darkroom by default)
 
+#release notes: 
+#now press Q to return to dog house!
+#save files should now correctly represent the % aquired
+#ap sync should no longer give you items you already have thus no longer replacing your weapon with a dupe of your most recent recieved item
 
 class MinitWebWorld(WebWorld):
     theme = "ice"

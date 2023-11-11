@@ -10,6 +10,14 @@ from aiohttp import web
 import Utils
 import settings
 from .Items import item_table
+tracker_loaded = False
+try:
+    from worlds.tracker.TrackerClient import TrackerManager as SuperManager, TrackerGameContext as SuperContext
+    tracker_loaded = True
+except ModuleNotFoundError:
+    from CommonClient import CommonContext as SuperContext
+    from kvui import GameManager as SuperManager
+    logger.info("please install the universal tracker :)")
 
 logger = logging.getLogger("Client")
 
@@ -50,10 +58,11 @@ class RomFile(settings.UserFilePath):
 
 
 
-class ProxyGameContext(CommonContext):
+class ProxyGameContext(SuperContext):
     game = GAMENAME
     httpServer_task: typing.Optional["asyncio.Task[None]"] = None
     command_processor = MinitCommandProcessor
+    tags = CommonContext.tags
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
@@ -63,15 +72,20 @@ class ProxyGameContext(CommonContext):
         self.datapackage = []
 
     def run_gui(self):
-        from kvui import GameManager
+        # super().run_gui()
+        #from kvui import GameManager
 
-        class UTManager(GameManager):
+        class ProxyManager(SuperManager):
+            # super().__init__()
             logging_pairs = [
                 ("Client", "Archipelago")
             ]
             base_title = "Minit Client"
 
-        self.ui = UTManager(self)
+        self.ui = ProxyManager(self)
+        if tracker_loaded:
+            self.load_kv()
+
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     def patch_game(self):
@@ -87,6 +101,7 @@ class ProxyGameContext(CommonContext):
         logger.info("patched "+source_data_win+". You can launch the .exe game to run the patched game.")
 
     def on_package(self, cmd: str, args: dict):
+        super().on_package(cmd, args)
         if cmd == 'Connected':
             Utils.async_start(self.send_msgs([{"cmd": "LocationScouts", "locations": list(self.missing_locations), "create_as_hint":0}]))
         # if cmd == 'ReceivedItems':
@@ -207,6 +222,8 @@ async def main(args):
     ctx.auth = args.name
     ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
 
+    if tracker_loaded:
+        ctx.run_generator()
     if gui_enabled:
         ctx.run_gui()
     ctx.run_cli()
