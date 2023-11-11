@@ -43,6 +43,7 @@ try:
     er_loaded = True
 except ModuleNotFoundError:
     er_loaded = False
+#TODO - save mod specific values like location_sent etc.
 
 
 # high prio
