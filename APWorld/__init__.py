@@ -27,7 +27,6 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
 #TODO - add random start locations
 
 #known low prio
-#TODO - figure out how to protect launching a non-ap save (don't think it matters because the app is different? but maybe if you use same folder??)
 #TODO - clean up game mod logging to necessities
 #TODO - clean up item/location names
 #TODO - refactor code
