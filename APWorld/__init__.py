@@ -16,7 +16,6 @@ from worlds.LauncherComponents import Component, components, Type, launch_subpro
             #confirm a sword or swim is in the first two checks
             #confirm prog balancing settings (min/loc/items) work
             #confirm the options are working as intended (when added)
-#TODO - extra coins/tentacle/hearts given on local items
 #TODO - fanfares don't pause timer, and you can take damage ticks during them
 
 #misc game mod TODOs
