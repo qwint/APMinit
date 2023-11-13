@@ -17,7 +17,6 @@ try:
     tracker_loaded = True
 except ModuleNotFoundError:
     from CommonClient import CommonContext as SuperContext
-    #from kvui import GameManager as SuperManager
     # logger.info("please install the universal tracker :)")
 
 
@@ -55,7 +54,8 @@ class MinitCommandProcessor(ClientCommandProcessor):
     def _cmd_amnisty(self, total: int = 1):
         """Set the Death Amnisty value. Default 1."""
         self.ctx.death_amnisty_total = int(total)
-        logger.info(f"Amnisty set to {self.ctx.death_amnisty_total}")
+        self.ctx.death_amnisty_count = 0
+        logger.info(f"Amnisty set to {self.ctx.death_amnisty_total}. Deaths towards Amnisty reset.")
 
 class RomFile(settings.UserFilePath):
     description = "Minit Vanilla File"
@@ -83,18 +83,22 @@ class ProxyGameContext(SuperContext):
         self.death_amnisty_count = 0
 
     def run_gui(self):
-        if tracker_loaded:
-            from worlds.tracker.TrackerClient import TrackerManager as SuperManager
-        else:
-            from kvui import GameManager as SuperManager
-            logger.info("please install the universal tracker :)")
 
-        class ProxyManager(SuperManager):
+        from kvui import GameManager
+        logger.info("please install the universal tracker :)")
+
+        class ProxyManager(GameManager):
             # super().__init__()
             logging_pairs = [
                 ("Client", "Archipelago")
             ]
             base_title = "Minit Client"
+            def build(self):
+                container = super().build()
+                if tracker_loaded:
+                    self.ctx.build_gui(self)
+                
+                return container
 
         self.ui = ProxyManager(self)
         if tracker_loaded:
@@ -123,11 +127,11 @@ class ProxyGameContext(SuperContext):
         #     logger.info("send minit a ping")
 
     async def send_death(self, death_text: str = ""):
-        death_amnisty_count += 1
-        if death_amnisty_count == death_amnisty_total:
+        self.death_amnisty_count += 1
+        if self.death_amnisty_count == self.death_amnisty_total:
             await super().send_death(death_text)
             self.last_sent_death = time.time()
-            death_amnisty_count = 0
+            self.death_amnisty_count = 0
 
 
     async def server_auth(self, password_requested: bool = False):
