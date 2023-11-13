@@ -4,6 +4,7 @@ import typing
 from NetUtils import JSONtoTextParser, JSONMessagePart, ClientStatus
 from CommonClient import CommonContext, gui_enabled, logger, get_base_parser, server_loop, ClientCommandProcessor
 import json
+import time
 import os
 import bsdiff4
 from aiohttp import web
@@ -51,6 +52,10 @@ class MinitCommandProcessor(ClientCommandProcessor):
         except ValueError:
             logger.info("Selected game is not vanilla, please reset the game and repatch")
 
+    def _cmd_amnisty(self, total: int = 1):
+        """Set the Death Amnisty value. Default 1."""
+        self.ctx.death_amnisty_total = int(total)
+        logger.info(f"Amnisty set to {self.ctx.death_amnisty_total}")
 
 class RomFile(settings.UserFilePath):
     description = "Minit Vanilla File"
@@ -63,7 +68,10 @@ class ProxyGameContext(SuperContext):
     game = GAMENAME
     httpServer_task: typing.Optional["asyncio.Task[None]"] = None
     command_processor = MinitCommandProcessor
-    tags = CommonContext.tags
+    tags = {"AP", "DeathLink"}
+    last_sent_death: float = time.time()
+    death_amnisty_total: int
+    death_amnisty_count: int
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
@@ -71,6 +79,8 @@ class ProxyGameContext(SuperContext):
         self.items_handling = ITEMS_HANDLING
         self.locations_checked = []
         self.datapackage = []
+        self.death_amnisty_total = 1
+        self.death_amnisty_count = 0
 
     def run_gui(self):
         if tracker_loaded:
@@ -112,6 +122,14 @@ class ProxyGameContext(SuperContext):
         #     #TODO make this actually send minit a ping or check if it can be handled with ctx.watcher_event instead
         #     logger.info("send minit a ping")
 
+    async def send_death(self, death_text: str = ""):
+        death_amnisty_count += 1
+        if death_amnisty_count == death_amnisty_total:
+            await super().send_death(death_text)
+            self.last_sent_death = time.time()
+            death_amnisty_count = 0
+
+
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
             await super(ProxyGameContext, self).server_auth(password_requested)
@@ -131,6 +149,22 @@ class ProxyGameContext(SuperContext):
         response = handleGoal(self)
         await self.send_msgs(response)
         return web.json_response(response) 
+    async def deathHandler(self, request: web.Request) -> web.Response:
+        """handle POST at /Death"""
+        response = handleDeathlink(self)
+        await self.send_death("ran out of time")
+        return web.json_response(response) 
+    async def deathpollHandler(self, request: web.Request) -> web.Response:
+        """handle GET at /Deathpoll"""
+        cTime = 0
+        while (cTime < 20):
+            if self.last_death_link > self.last_sent_death:
+                self.last_sent_death = self.last_death_link
+                return web.json_response({"Deathlink": True})
+            else:
+                cTime +=1
+                await asyncio.sleep(1)
+        return web.json_response({"Deathlink": False})
     async def itemsHandler(self, request: web.Request) -> web.Response:
         """handle GET at /Items"""
         response = handleItems(self)
@@ -141,6 +175,10 @@ class ProxyGameContext(SuperContext):
         #response = {'datapackage':'FROM MINIT - need to figure out data'}
         #await self.send_msgs(response)
         return web.json_response(response) 
+
+def handleDeathlink(ctx: CommonContext):
+    deathlinkmessage = "death sent"
+    return deathlinkmessage
 
 def handleGoal(ctx: CommonContext):
     goalmessage = [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
