@@ -54,7 +54,6 @@ except ModuleNotFoundError:
 # - confirm a sword or swim is in the first two checks
 # - confirm prog balancing settings (min/loc/items) work
 # - confirm the options are working as intended (when added)
-#TODO - fanfares don't pause timer, and you can take damage ticks during them
 
 # misc game mod TODOs
 # TODO - pull all required game mods out and reapply to clean up patch file
