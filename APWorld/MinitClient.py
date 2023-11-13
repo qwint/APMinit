@@ -110,6 +110,10 @@ class ProxyGameContext(SuperContext):
                 ("Client", "Archipelago")
             ]
             base_title = "Minit Client"
+            def build(self):
+                container = super().build()
+                if tracker_loaded:
+                    self.ctx.build_gui(self)
 
 
             def build(self):
