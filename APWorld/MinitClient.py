@@ -259,7 +259,7 @@ def handleDatapackage(ctx: CommonContext):
     return datapackagemessage
 
 async def main(args):
-    from .testServer import Webserver, http_server_loop
+    from .proxyServer import Webserver, http_server_loop
     
     ctx = ProxyGameContext(args.connect, args.password)
     webserver = Webserver(ctx)
