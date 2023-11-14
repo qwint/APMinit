@@ -28,7 +28,7 @@ item_table: Dict[str, MinitItemData] = {
     "ItemFlashLight": MinitItemData(
         code=60004,
         classification=ItemClassification.progression),
-        #potentially reclassify if darkrooms in logic
+    #   potentially reclassify if darkrooms in logic
     "ItemSwim": MinitItemData(
         code=60005,
         classification=ItemClassification.progression),
@@ -79,9 +79,9 @@ item_table: Dict[str, MinitItemData] = {
         code=60020,
         classification=ItemClassification.progression),
 
-   # "Boss dead": MinitItemData(
-   #     classification=ItemClassification.progression),
-   #added manually in init
+    # "Boss dead": MinitItemData(
+    #     classification=ItemClassification.progression),
+    # added manually in init
 }
 
 item_frequencies = {
@@ -92,9 +92,10 @@ item_frequencies = {
 
 
 item_groups: Dict[str, Set[str]] = {
-    "swords": {"ItemBrokenSword",
-                   "ItemSword",
-                   "ItemMegaSword"},
+    "swords": {
+        "ItemBrokenSword",
+        "ItemSword",
+        "ItemMegaSword"},
     "swim": {"ItemSwim"},
     "push": {"ItemCoffee"},
     "cut": {"ItemGlove"},
