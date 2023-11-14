@@ -432,6 +432,7 @@ class MinitRules:
                     and self.has_darkroom(state))
                 or state.has("ItemSwim", self.player))
 
+
     def region_HotelRoom(self, state) -> bool:
         return (self.region_DogHouse(state)
                 and (self.has_sword(state)

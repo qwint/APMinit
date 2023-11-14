@@ -252,7 +252,8 @@ location_table = {
     #    er_region="camera house inside",),
     # itemCamera location is replaced by press pass,
     # - will be handled the same in game
-    # itemCamera location is replaced by press pass, will be handled the same in game
+    # itemCamera location is replaced by press pass,
+    # - will be handled the same in game
     # itemCamera location is replaced by press pass, will be handled the same in game
 
     "Factory Main - ItemMegaSword": MinitLocationData(

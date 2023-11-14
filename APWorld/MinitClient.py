@@ -79,7 +79,6 @@ class RomFile(settings.UserFilePath):
     # the hashes for vanilla to be verified by the /patch command
 
 
-
 class ProxyGameContext(SuperContext):
     game = GAMENAME
     httpServer_task: typing.Optional["asyncio.Task[None]"] = None
@@ -110,6 +109,7 @@ class ProxyGameContext(SuperContext):
                 ("Client", "Archipelago")
             ]
             base_title = "Minit Client"
+
             def build(self):
                 container = super().build()
                 if tracker_loaded:
@@ -185,7 +185,7 @@ class ProxyGameContext(SuperContext):
         await self.send_connect()
 
     async def locationHandler(self, request: web.Request) -> web.Response:
-        """handle POST at /Locations that utilizes scouts to return useful info if possible"""
+        """handle POST at /Locations that uses scouts to return useful info"""
         requestjson = await request.json()
         response = handleLocations(self, requestjson)
         localResponse = handleLocalLocations(self, requestjson)

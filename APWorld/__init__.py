@@ -96,7 +96,10 @@ except ModuleNotFoundError:
 #release notes: 
 #now press Q to return to dog house!
 #save files should now correctly represent the % aquired
-#ap sync should no longer give you items you already have thus no longer replacing your weapon with a dupe of your most recent recieved item
+# ap sync should no longer give you items you already have
+# - thus no longer replacing your weapon with a dupe
+# - of your most recent recieved item
+
 
 class MinitWebWorld(WebWorld):
     theme = "ice"
