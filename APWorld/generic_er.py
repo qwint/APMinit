@@ -17,17 +17,17 @@ class EntranceType(IntEnum):
     ONE_WAY_OUT = 1
     # A transition that is normally both an entrance and exit to a scene.
     TWO_WAY = 2
-    
+
 class ER_Entrance(Entrance):
-    access_rule: Callable[[CollectionState], bool] = staticmethod(lambda state: True)
-    hide_path: bool = False
-    player: int
-    name: str
-    parent_region: Optional[Region]
-    connected_region: Optional[Region] = None
-    # LttP specific, TODO: should make a LttPEntrance
-    addresses = None
-    target = None
+    # access_rule: Callable[[CollectionState], bool] = staticmethod(lambda state: True)
+    # hide_path: bool = False
+    # player: int
+    # name: str
+    # parent_region: Optional[Region]
+    # connected_region: Optional[Region] = None
+    # # LttP specific, TODO: should make a LttPEntrance
+    # addresses = None
+    # target = None
     group_name: str
     entrance_type: EntranceType = 2
     # the set of regions which must be placed prior to pairing off this entrance. used
@@ -43,48 +43,45 @@ class ER_Entrance(Entrance):
     is_dead_end: bool
 
     def __init__(self, player: int, name: str = '', parent: Region = None):
-        self.name = name
-        self.parent_region = parent
-        self.player = player
+        super().__init__(player, name, parent)
         self.er_required_regions = set()
 
-    def can_reach(self, state: CollectionState) -> bool:
-        if self.parent_region.can_reach(state) and self.access_rule(state):
-            if not self.hide_path and not self in state.path:
-                state.path[self] = (self.name, state.path.get(self.parent_region, (self.parent_region.name, None)))
-            return True
+    # def can_reach(self, state: CollectionState) -> bool:
+    #     if self.parent_region.can_reach(state) and self.access_rule(state):
+    #         if not self.hide_path and not self in state.path:
+    #             state.path[self] = (self.name, state.path.get(self.parent_region, (self.parent_region.name, None)))
+    #         return True
 
-        return False
+    #     return False
 
-    def connect(self, region: Region, addresses: Any = None, target: Any = None) -> None:
-        self.connected_region = region
-        self.target = target
-        self.addresses = addresses
-        region.entrances.append(self)
+    # def connect(self, region: Region, addresses: Any = None, target: Any = None) -> None:
+    #     self.connected_region = region
+    #     self.target = target
+    #     self.addresses = addresses
+    #     region.entrances.append(self)
 
-    def __repr__(self):
-        return self.__str__()
+    # def __repr__(self):
+    #     return self.__str__()
 
-    def __str__(self):
-        world = self.parent_region.multiworld if self.parent_region else None
-        return world.get_name_string_for_object(self) if world else f'{self.name} (Player {self.player})'
-    
-    
+    # def __str__(self):
+    #     world = self.parent_region.multiworld if self.parent_region else None
+    #     return world.get_name_string_for_object(self) if world else f'{self.name} (Player {self.player})'
+
     def is_valid_source_transition(self, placed_regions: Set[str]) -> bool:
         """
         Determines whether this is a valid source transition, that is, whether
         the entrance randomizer is allows to pair it off to any another Entrance.
-        
+
         :param placed_regions: The names of the set of regions that have already been placed
                                by the entrance randomizer.
         """
         return not self.er_required_regions or er_gate_required_regions <= placed_regions
-        
+
     def can_connect_to(self, other: "Entrance", group_one_ways: bool, allow_self_loops: bool) -> bool:
         """
         Determines whether a given Entrance is a valid target transition, that is, whether
         the entrance randomizer is allowed to pair this entrance off to that entrance
-        
+
         :param other: The proposed Entrance to connect to.
         :param group_one_ways: Whether to enforce that ONE_WAY_IN transitions must pair
                                with ONE_WAY_OUT transitions
@@ -93,7 +90,7 @@ class ER_Entrance(Entrance):
         if self.entrance_type == EntranceType.ONE_WAY_OUT:
             raise RuntimeError("can_connect_to should not be called on ONE_WAY_OUT"
                 + "Entrances as they are never valid source transitions")
-        
+
         one_way_type_matches = True
         if group_one_ways:
             required_target_type = (EntranceType.ONE_WAY_OUT 
@@ -109,7 +106,7 @@ class GroupLookup:
 
         self._lookup = {}
         pass
-    
+
     def __bool__(self):
         return bool(self._lookup)
 
@@ -135,11 +132,11 @@ class EntranceLookup:
         self.random = random
         self.dead_ends = GroupLookup()
         self.non_dead_ends = GroupLookup()
-        
+
     def add(self, entrance: ER_Entrance, dead_end: bool) -> None:
         lookup = self.dead_ends if dead_end else self.non_dead_ends
         lookup.add(entrance)
-        
+
     def remove(self, entrance: ER_Entrance, dead_end: bool) -> None:
         lookup = self.dead_ends if dead_end else self.non_dead_ends
         text = "dead end" if dead_end else "non dead end"
@@ -150,19 +147,19 @@ class EntranceLookup:
         ret = [entrance for group in groups for entrance in lookup.get_group(group)]
         self.random.shuffle(ret)
         return ret
-        
+
 class DummyExit(ER_Entrance):
     """
     A simple way to create an Entrance object for ONE_WAY_OUT transitions to be randomized
     by the entrance randomizer. Acts similar to how your other exits will act in the ER, but
     without being considered for logic by normal item fill.
     """
-    
+
     def __init__(self, name: str, region: Region):
         self.name = name
         self.entrance_type = EntranceType.ONE_WAY_OUT
         self.parent_region = region
-    
+
 # example implementation for the group pairing function for HK to demonstrate how it's supposed to work
 def example_get_target_groups(group: str) -> list[str]:
     if self.options.unmatched_room_rando:
@@ -178,7 +175,7 @@ def example_get_target_groups(group: str) -> list[str]:
             return ["Top"]
         case "Door":
             return ["Left", "Right"]
-    
+
 def randomize_entrances(
         multiworld: MultiWorld, 
         player: int,
@@ -190,17 +187,17 @@ def randomize_entrances(
     ) -> List[tuple[ER_Entrance, ER_Entrance]]:
     """
     Randomizes Entrances for a single world in the multiworld.
-    
+
     Preconditions:
     1. All of your Regions and all of their exits have been created.
     2. None of your regions' exits are mistakenly labeled as ONE_WAY_OUT
     3. Your Menu region is connected to your starting region.
     4. All the region connections you don't want to randomize are connected, usually
        this is connecting regions within the scene.
-       
+
     Postconditions:
     All randomizable transitions will have been connected.
-    
+
     :param multiworld: The multiworld, used to find the Menu region
     :param player: The slot number, used to find the Menu region
     :param random: The Random object used to shuffle entrances
@@ -213,15 +210,15 @@ def randomize_entrances(
                            allows ONE_WAY_IN transitions to be used as the entrance to the room (ie if it is
                            safe to treat them as TWO_WAY).
     """
-    
+
     results = []
     placed_regions = set()
     available_exits = []
     # exits we'll have to try and connect in a later step, when capping off the connected region graph
     late_exits = []
-    
+
     entrance_lookup = EntranceLookup(random)
-    
+
     def traverse_regions_to_new_exits(
             start: Region | ER_Entrance,
             place_regions: bool,
@@ -229,15 +226,15 @@ def randomize_entrances(
         """
         Traverses a region's connected exits to find any newly available randomizable exits
         which stem from that region.
-        
+
         This is a generator function, so if place_region is true, make sure to iterate it to completion
         for it to actually work correctly.
-        
+
         :param start: The starting region or entrance to traverse from. If an entrance,
                       doesn't put that entrance in the result
         :param place_regions: Whether to put connecting regions into placed_regions
         """
-        
+
         visited = set()
         q = queue.Queue()
         starting_entrance_name = None
@@ -246,7 +243,7 @@ def randomize_entrances(
             q.put(start.parent_region)
         else:
             q.put(start)
-            
+
         while not q.empty():
             region = q.get()
             if place_regions:
@@ -259,7 +256,7 @@ def randomize_entrances(
                 elif exit.connected_region.name not in placed_regions and exit.connected_region.name not in visited:
                     # traverse unseen static connections
                     q.put(exit.connected_region)
- 
+
     for entrance in exits_to_randomize:
         has_exits = any(exit for exit in traverse_regions_to_new_exits(entrance, False))
         entrance.is_dead_end = not has_exits
@@ -271,14 +268,14 @@ def randomize_entrances(
             if entrance.entrance_type == EntranceType.TWO_WAY or (
                     not group_one_ways and entrance.entrance_type == EntranceType.ONE_WAY_IN):
                 entrance_lookup.add(entrance, entrance.is_dead_end)
-    
+
     # place the starting region. this is doubling the traversal of the start region but that's not
     # the slow part of this algorithm so I don't feel too bad about it (and couldn't figure out how to
     # do it otherwise)
     for exit in traverse_regions_to_new_exits(multiworld.get_region("Menu", player), True):
         entrance_lookup.remove(exit, exit.is_dead_end)
         available_exits.append(exit)
-    
+
     def pair_exits(
             current_exits: List[ER_Entrance], 
             deadEnd: bool,
@@ -298,7 +295,7 @@ def randomize_entrances(
             else:
                 # TODO: should implement swap for this use case to try and save it.
                 raise RuntimeError("Ran out of valid source transitions!")
-            
+
             # find a random valid target
             target_groups = get_target_groups(source_exit.group_name)
             for target_entrance in entrance_lookup.get_targets(target_groups, deadEnd):
@@ -310,7 +307,7 @@ def randomize_entrances(
                 # so throw it in a list to try again later.
                 late_exits.append(source_exit)
                 continue
-            
+
             # place the pair and traverse to new exits
             results.append((source_exit, target_entrance))
             # apply coupling - as long as the target entrance is actually able to be used as an entrance,
@@ -327,7 +324,7 @@ def randomize_entrances(
                     current_exits.append(exit)
                 except ValueError:
                     print(f"tried to remove {exit.name}, a dead end? {exit.is_dead_end} expecting: {deadEnd}")
-    
+
     #connect all non_dead_end exits that we can
     print(f"\n1 - available_exits: {available_exits}")
     pair_exits(available_exits, False)
@@ -356,7 +353,6 @@ def randomize_entrances(
     # print(f"\n5 - entrance_lookup NDE: {entrance_lookup.get_targets(['water','land'], False)}")
     #print(f"\n5 - available_exits: {available_exits}")
 
-
     # here is the stuff that I was too lazy to implement
     # try to place available_exits -> dead ends (ie repeat the above process). Available exits
     #   should be exhausted by now (moved to late exits)
@@ -371,4 +367,3 @@ def randomize_entrances(
     for source, target in results:
         source.connect(target.parent_region)
     return results;
-        
