@@ -6,6 +6,7 @@ from aiohttp import web
 from .MinitClient import ProxyGameContext
 from CommonClient import logger
 
+
 class Webserver:
     def __init__(self, ctx: ProxyGameContext):
         self.app = web.Application()
@@ -16,12 +17,12 @@ class Webserver:
         self.connected = False
 
     async def initializer(self) -> web.Application:
-        self.app.router.add_post('/Locations',self.ctx.locationHandler)
-        self.app.router.add_post('/Goal',self.ctx.goalHandler)
-        self.app.router.add_post('/Death',self.ctx.deathHandler)
-        self.app.router.add_get('/Deathpoll',self.ctx.deathpollHandler)
-        self.app.router.add_get('/Items',self.ctx.itemsHandler)
-        self.app.router.add_get('/Datapackage',self.ctx.datapackageHandler)
+        self.app.router.add_post('/Locations', self.ctx.locationHandler)
+        self.app.router.add_post('/Goal', self.ctx.goalHandler)
+        self.app.router.add_post('/Death', self.ctx.deathHandler)
+        self.app.router.add_get('/Deathpoll', self.ctx.deathpollHandler)
+        self.app.router.add_get('/Items', self.ctx.itemsHandler)
+        self.app.router.add_get('/Datapackage', self.ctx.datapackageHandler)
         return self.app
 
     async def my_run_app(self, app, host, port):
@@ -34,13 +35,17 @@ class Webserver:
             await asyncio.sleep(3600)  # sleep forever
 
     async def run(self):
-        if self.connected != True:
-            await self.my_run_app(app=await self.initializer(),host=self.host, port=self.port)
+        if not self.connected:
+            await self.my_run_app(
+                app=await self.initializer(),
+                host=self.host, port=self.port
+                )
             self.connected = True
             return self.connected
         else:
             logger.info('Already connected')
             return
+
 
 async def http_server_loop(wb: Webserver) -> None:
     try:
@@ -48,7 +53,7 @@ async def http_server_loop(wb: Webserver) -> None:
         await wb.run()
     finally:
         logger.info('http_server_loop ended')
-    #TODO: handle exceptions in some way like this
+    # TODO: handle exceptions in some way like this
     # except websockets.InvalidMessage:
     #     # probably encrypted
     #     if address.startswith("ws://"):
@@ -76,6 +81,6 @@ async def http_server_loop(wb: Webserver) -> None:
 
 
 if __name__ == '__main__':
-    ctx = ProxyGameContext("localhost","")
+    ctx = ProxyGameContext("localhost", "")
     webserver = Webserver(ctx)
     webserver.run()

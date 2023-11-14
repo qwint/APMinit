@@ -2,7 +2,13 @@ import asyncio
 import logging
 import typing
 from NetUtils import JSONtoTextParser, JSONMessagePart, ClientStatus
-from CommonClient import CommonContext, gui_enabled, logger, get_base_parser, server_loop, ClientCommandProcessor
+from CommonClient import (
+    CommonContext,
+    gui_enabled,
+    logger, get_base_parser,
+    server_loop,
+    ClientCommandProcessor
+)
 import json
 import time
 import os
@@ -29,9 +35,11 @@ my_locations = []
 for item_name, item_data in item_table.items():
     my_locations.append(item_data.code)
 
+
 def data_path(file_name: str):
     import pkgutil
     return pkgutil.get_data(__name__, "data/" + file_name)
+
 
 class ProxyGameJSONToTextParser(JSONtoTextParser):
     def _handle_color(self, node: JSONMessagePart):
@@ -49,19 +57,24 @@ class MinitCommandProcessor(ClientCommandProcessor):
         except FileNotFoundError:
             logger.info("Patch cancelled")
         except ValueError:
-            logger.info("Selected game is not vanilla, please reset the game and repatch")
+            logger.info("Selected game is not vanilla, \
+                please reset the game and repatch")
 
     def _cmd_amnisty(self, total: int = 1):
         """Set the Death Amnisty value. Default 1."""
         self.ctx.death_amnisty_total = int(total)
         self.ctx.death_amnisty_count = 0
-        logger.info(f"Amnisty set to {self.ctx.death_amnisty_total}. Deaths towards Amnisty reset.")
+        logger.info(f"Amnisty set to {self.ctx.death_amnisty_total}. \
+            Deaths towards Amnisty reset.")
+
 
 class RomFile(settings.UserFilePath):
     description = "Minit Vanilla File"
-    md5s = ["cd676b395dc2a25df10a569c17226dde","1432716643381ced3ad0195078e8e314"]
-        #the hashes for vanilla to be verified by the /patch command
-
+    md5s = [
+        "cd676b395dc2a25df10a569c17226dde",
+        "1432716643381ced3ad0195078e8e314",
+        ]
+    # the hashes for vanilla to be verified by the /patch command
 
 
 class ProxyGameContext(SuperContext):
@@ -93,11 +106,12 @@ class ProxyGameContext(SuperContext):
                 ("Client", "Archipelago")
             ]
             base_title = "Minit Client"
+
             def build(self):
                 container = super().build()
                 if tracker_loaded:
                     self.ctx.build_gui(self)
-                
+
                 return container
 
         self.ui = ProxyManager(self)
@@ -109,21 +123,30 @@ class ProxyGameContext(SuperContext):
     def patch_game(self):
         validator = RomFile()
 
-
-        source_data_win = Utils.open_filename('Select Minit data.win', (('data.win', ('.win',)),))
+        source_data_win = Utils.open_filename(
+            'Select Minit data.win',
+            (('data.win', ('.win',)),))
         validator.validate(source_data_win)
         with open(os.path.join(source_data_win), "rb") as f:
             patchedFile = bsdiff4.patch(f.read(), data_path("patch.bsdiff"))
         with open(os.path.join(source_data_win), "wb") as f:
             f.write(patchedFile)
-        logger.info("patched "+source_data_win+". You can launch the .exe game to run the patched game.")
+        logger.info(
+            "patched " +
+            source_data_win +
+            ". You can launch the .exe game to run the patched game.")
 
     def on_package(self, cmd: str, args: dict):
         super().on_package(cmd, args)
         if cmd == 'Connected':
-            Utils.async_start(self.send_msgs([{"cmd": "LocationScouts", "locations": list(self.missing_locations), "create_as_hint":0}]))
+            Utils.async_start(self.send_msgs([{
+                "cmd": "LocationScouts",
+                "locations": list(self.missing_locations),
+                "create_as_hint": 0
+                }]))
         # if cmd == 'ReceivedItems':
-        #     #TODO make this actually send minit a ping or check if it can be handled with ctx.watcher_event instead
+        #     #TODO make this actually send minit a ping
+        #      - or check if it can be handled with ctx.watcher_event instead
         #     logger.info("send minit a ping")
 
     async def send_death(self, death_text: str = ""):
@@ -133,7 +156,6 @@ class ProxyGameContext(SuperContext):
             self.last_sent_death = time.time()
             self.death_amnisty_count = 0
 
-
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
             await super(ProxyGameContext, self).server_auth(password_requested)
@@ -142,22 +164,25 @@ class ProxyGameContext(SuperContext):
         await self.send_connect()
 
     async def locationHandler(self, request: web.Request) -> web.Response:
-        """handle POST at /Locations that utilizes scouts to return useful info if possible"""
+        """handle POST at /Locations that uses scouts to return useful info"""
         requestjson = await request.json()
         response = handleLocations(self, requestjson)
         localResponse = handleLocalLocations(self, requestjson)
         await self.send_msgs(response)
         return web.json_response(localResponse)
+
     async def goalHandler(self, request: web.Request) -> web.Response:
         """handle POST at /Goal"""
         response = handleGoal(self)
         await self.send_msgs(response)
-        return web.json_response(response) 
+        return web.json_response(response)
+
     async def deathHandler(self, request: web.Request) -> web.Response:
         """handle POST at /Death"""
         response = handleDeathlink(self)
         await self.send_death("ran out of time")
-        return web.json_response(response) 
+        return web.json_response(response)
+
     async def deathpollHandler(self, request: web.Request) -> web.Response:
         """handle GET at /Deathpoll"""
         cTime = 0
@@ -166,45 +191,61 @@ class ProxyGameContext(SuperContext):
                 self.last_sent_death = self.last_death_link
                 return web.json_response({"Deathlink": True})
             else:
-                cTime +=1
+                cTime += 1
                 await asyncio.sleep(1)
         return web.json_response({"Deathlink": False})
+
     async def itemsHandler(self, request: web.Request) -> web.Response:
         """handle GET at /Items"""
         response = handleItems(self)
-        return web.json_response(response) 
+        return web.json_response(response)
+
     async def datapackageHandler(self, request: web.Request) -> web.Response:
         """handle GET at /Datapackage"""
         response = handleDatapackage(self)
-        #response = {'datapackage':'FROM MINIT - need to figure out data'}
-        #await self.send_msgs(response)
-        return web.json_response(response) 
+        # response = {'datapackage':'FROM MINIT - need to figure out data'}
+        # await self.send_msgs(response)
+        return web.json_response(response)
+
 
 def handleDeathlink(ctx: CommonContext):
     deathlinkmessage = "death sent"
     return deathlinkmessage
 
+
 def handleGoal(ctx: CommonContext):
     goalmessage = [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
     return goalmessage
 
-def handleLocations(ctx: CommonContext, request: json) -> json:
-    #expecting request to be json body in the form of {"Locations": [123,456]}
 
-    #TODO - make this actually send the difference
-    needed_updates = set(request["Locations"]).difference(ctx.locations_checked)
-    locationmessage = [{"cmd": "LocationChecks", "locations": list(needed_updates)}]
+def handleLocations(ctx: CommonContext, request: json) -> json:
+    # expecting request to be json body in the form of {"Locations": [123,456]}
+
+    # TODO - make this actually send the difference
+    needed_updates = set(request["Locations"]).difference(
+        ctx.locations_checked)
+    locationmessage = [{
+        "cmd": "LocationChecks",
+        "locations": list(needed_updates)
+        }]
     return locationmessage
 
-def handleLocalLocations(ctx: CommonContext, request: json) -> json:
-    #expecting request to be json body in the form of 
-    #{"LocationResponse": {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017} for a local item
-    #{"LocationResponse": {"Player": "OtherPlayer", "Item": "ItemGrinder"} for a remote item
 
-    #TODO - make this not break if the sent item is not in missing locations (the things we scouted for)
-    #TODO - make the game mod not crash if something doesn't have an item value after translate
-    #TODO - load the datapackage so i can get translated names instead of setting their ids to strings
-    #TODO - still find a way to make the scouts launch automatically
+def handleLocalLocations(ctx: CommonContext, request: json) -> json:
+    # expecting request to be json body in the form of
+    # {"LocationResponse":
+    #     {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
+    # - for a local item
+    # {"LocationResponse": {"Player": "OtherPlayer", "Item": "ItemGrinder"}
+    # - for a remote item
+
+    # TODO - make this not break if the sent item is not in missing locations
+    # - (the things we scouted for)
+    # TODO - make the game mod not crash if something doesn't have
+    # - an item value after translate
+    # TODO - load the datapackage so i can get translated names
+    # - instead of setting their ids to strings
+    # TODO - still find a way to make the scouts launch automatically
 
     locations = set(request["Locations"]).difference(ctx.locations_checked)
     if len(locations) == 1:
@@ -218,25 +259,29 @@ def handleLocalLocations(ctx: CommonContext, request: json) -> json:
                 code = loc.item
 
                 if ctx.slot_concerns_self(slot):
-                    locationmessage = {"Player": player, "Item": item, "Code": code}
-                else: 
+                    locationmessage = {
+                        "Player": player,
+                        "Item": item,
+                        "Code": code}
+                else:
                     locationmessage = {"Player": player, "Item": item}
                 return locationmessage
-            #else: 
-                #logger.info("location not found in the scouts")
-                #not found in the scouts that do exist
-        #else: 
-            #logger.info("no scouts found to hint names for location pickup")
-    #else: 
-        #logger.info("len(Locations) == 1 resolved to false")
-        #error handle
+            # else:
+                # logger.info("location not found in the scouts")
+                # not found in the scouts that do exist
+        # else:
+            # logger.info("no scouts found to hint names for location pickup")
+    # else:
+        # logger.info("len(Locations) == 1 resolved to false")
+        # error handle
 
-    #if we couldn't handle the logic send back benign message
+    # if we couldn't handle the logic send back benign message
     return {"Location": "Not found in scout cache"}
 
 
 def handleItems(ctx: CommonContext):
-    #expecting request to be json body in the form of {"Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
+    # expecting request to be json body in the form of
+    # {"Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
     itemIds = []
     coins = 0
     hearts = 0
@@ -250,23 +295,38 @@ def handleItems(ctx: CommonContext):
             tentacles += 1
         else:
             itemIds.append(item[0])
-    itemmessage = {"Items": itemIds,"Coins":coins, "Hearts": hearts, "Tentacles":tentacles}
+    itemmessage = {
+        "Items": itemIds,
+        "Coins": coins,
+        "Hearts": hearts,
+        "Tentacles": tentacles
+    }
     return itemmessage
 
-#TODO update to transform the data - will eventually handle the datapackage from CommonContext.consume_network_data_package() to make them minit pretty
+
+# TODO update to transform the data
+# - will eventually handle the datapackage from
+# - CommonContext.consume_network_data_package() to make them minit pretty
 def handleDatapackage(ctx: CommonContext):
     datapackagemessage = [{"cmd": "blah", "data": "blah"}]
     return datapackagemessage
 
+
 async def main(args):
     from .proxyServer import Webserver, http_server_loop
-    
+
     ctx = ProxyGameContext(args.connect, args.password)
     webserver = Webserver(ctx)
-    ctx.httpServer_task = asyncio.create_task(http_server_loop(webserver), name="http server loop")
+    ctx.httpServer_task = asyncio.create_task(
+        http_server_loop(webserver),
+        name="http server loop"
+        )
 
     ctx.auth = args.name
-    ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
+    ctx.server_task = asyncio.create_task(
+        server_loop(ctx),
+        name="server loop"
+        )
 
     if tracker_loaded:
         ctx.run_generator()
@@ -277,11 +337,18 @@ async def main(args):
     await ctx.exit_event.wait()
     await ctx.shutdown()
 
+
 def launch():
     import colorama
 
-    parser = get_base_parser(description="Gameless Archipelago Client, for text interfacing.")
-    parser.add_argument('--name', default=None, help="Slot Name to connect as.")
+    parser = get_base_parser(
+        description="Gameless Archipelago Client, for text interfacing."
+        )
+    parser.add_argument(
+        '--name',
+        default=None,
+        help="Slot Name to connect as."
+        )
     parser.add_argument("url", nargs="?", help="Archipelago connection url")
     args = parser.parse_args()
 
