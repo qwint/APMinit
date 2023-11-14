@@ -226,10 +226,17 @@ class MinitWorld(World):
                 # for exit in region.get_exits():
                 #     print(f"region {region.name} has exits: {type(exit)}")
 
-
+            # test = ""
+            needed_region = self.multiworld.get_region('plant bushes', self.player)
+            for entrance in self.multiworld.get_region('dog house west', self.player).exits:
+                if not entrance.connected_region:
+                    self.multiworld.register_indirect_condition(entrance, needed_region)
+                # else:
+                #     test += entrance.name
+            # assert test == "garbage", f"test was {test}"
 
             output_connections = randomize_entrances(self.multiworld, self.player, self.random, entrance_list, True, True, minit_get_target_groups)
-
+            #assert output_connections == "garbage", f"test was {output_connections}"
 
             for loc_name, loc_data in location_table.items():
                 if not loc_data.can_create(self.multiworld, self.player):
