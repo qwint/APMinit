@@ -229,14 +229,15 @@ class MinitWorld(World):
             # test = ""
             needed_region = self.multiworld.get_region('plant bushes', self.player)
             for entrance in self.multiworld.get_region('dog house west', self.player).exits:
-                if not entrance.connected_region:
-                    self.multiworld.register_indirect_condition(entrance, needed_region)
+                if not entrance.connected_region and not entrance.name == 'dog house door':
+                    self.multiworld.register_indirect_condition(needed_region, entrance)
+                    entrance.access_rule = lambda state: state.can_reach(needed_region, "Region", self.player)
                 # else:
                 #     test += entrance.name
             # assert test == "garbage", f"test was {test}"
 
             output_connections = randomize_entrances(self.multiworld, self.player, self.random, entrance_list, True, True, minit_get_target_groups)
-            #assert output_connections == "garbage", f"test was {output_connections}"
+            assert output_connections == "garbage", f"test was {output_connections}"
 
             for loc_name, loc_data in location_table.items():
                 if not loc_data.can_create(self.multiworld, self.player):
