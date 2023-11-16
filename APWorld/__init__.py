@@ -50,6 +50,7 @@ from worlds.LauncherComponents import (
 # TODO - clean up item/location names
 # TODO - refactor code
 # TODO - add swim as an option for getting 1/4 of temple coin
+# TODO - add coin counter when recieving any new coins
 
 # deathlink testing
 # deaths during pause seem to dissapear
