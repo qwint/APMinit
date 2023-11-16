@@ -364,7 +364,7 @@ async def main(args):
     appCtx = quartContext(ctx)
 
     ctx.httpServer_task = asyncio.create_task(
-        appCtx.my_run_app(),
+        http_server_loop(appCtx),
         name="http server loop"
         )
 

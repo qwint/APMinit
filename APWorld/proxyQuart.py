@@ -21,57 +21,70 @@ def printLog(str: str):
         print(str)
 
 
-class quartContext2():
-    app = Quart(__name__)
+ctx = None  # : ProxyGameContext
 
-    @app.route("/")
-    def index():
-        async def _index():
-            return await something
+app = Quart(__name__)
 
-        result = asynchio.run(_index())
-        return result
+app.config["DEBUG"] = False
+app.config["PORT"] = 11311
+app.config["WAITRESS_THREADS"] = 10
+app.config["HOST_ADDRESS"] = "localhost"
+# ctx = None  # : ProxyGameContext
+
+
+async def background_task():
+    await asyncio.sleep(3600)
+# def __init__(self, ctx):
+#     self.ctx = ctx
+
+
+@app.before_serving
+async def startup() -> None:
+    app.add_background_task(background_task)
+
+
+@app.while_serving
+async def lifespan():
+    while True:
+        await asyncio.sleep(3600)
+
+
+@app.route("/Locations", methods=['POST'])
+async def Locations_api():
+    return {"Locations": {"one": "value"}}
+
+
+@app.route("/Goal", methods=['POST'])
+async def Goal_api():
+    return {"Goal": {"one": "value"}}
+
+
+@app.route("/Death", methods=['POST'])
+async def Death_api():
+    return {"Death": {"one": "value"}}
+
+
+@app.route("/Deathpoll", methods=['GET'])
+async def Deathpoll_api():
+    return {"Deathpoll": {"one": "value"}}
+
+
+@app.route("/Items", methods=['GET'])
+async def Items_api():
+    return await quartContext.ctx.itemsHandler()
+    # return {"Items": {"one": "value"}}
+
+
+@app.route("/Datapackage", methods=['GET'])
+async def Datapackage_api():
+    return {"Datapackage": {"one": "value"}}
 
 
 class quartContext():
-    # from .MinitClient import ProxyGameContext
-    ctx = None  # : ProxyGameContext
+    ctx = None
 
     def __init__(self, ctx):
         self.ctx = ctx
-
-    app = Quart(__name__)
-
-    app.config["DEBUG"] = False
-    app.config["PORT"] = 11311
-    app.config["WAITRESS_THREADS"] = 10
-    app.config["HOST_ADDRESS"] = "localhost"
-    # ctx = None  # : ProxyGameContext
-
-    @app.route("/Locations", methods=['POST'])
-    async def Locations_api():
-        return {"Locations": {"one": "value"}}
-
-    @app.route("/Goal", methods=['POST'])
-    async def Goal_api():
-        return {"Goal": {"one": "value"}}
-
-    @app.route("/Death", methods=['POST'])
-    async def Death_api():
-        return {"Death": {"one": "value"}}
-
-    @app.route("/Deathpoll", methods=['GET'])
-    async def Deathpoll_api():
-        return {"Deathpoll": {"one": "value"}}
-
-    @app.route("/Items", methods=['GET'])
-    async def Items_api():
-        return await self.ctx.itemsHandler()
-        # return {"Items": {"one": "value"}}
-
-    @app.route("/Datapackage", methods=['GET'])
-    async def Datapackage_api():
-        return {"Datapackage": {"one": "value"}}
 
     async def my_run_app(self):
         # from waitress import serve
@@ -90,9 +103,9 @@ class quartContext():
         # site = web.TCPSite(runner, host, port)
         printLog('top of myrunapp')
         # self.app.run(host="localhost", port=11311)
-        await self.app.run(
-            host=self.app.config["HOST_ADDRESS"],
-            port=self.app.config["PORT"])
+        await app.run(
+            host=app.config["HOST_ADDRESS"],
+            port=app.config["PORT"])
         printLog('awaiting run in myrunapp')
 
         while True:
@@ -116,7 +129,7 @@ async def http_server_loop(appCtx: quartContext) -> None:
         printLog('http_server_loop ended')
 
 if __name__ == '__main__':
-    quartContext.app.run(host="localhost", port=11311)
+    app.run(host="localhost", port=11311)
 
 # class Webserver:
 #     def __init__(self, ctx: ProxyGameContext):
