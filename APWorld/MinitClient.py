@@ -14,6 +14,7 @@ import time
 import os
 import bsdiff4
 from aiohttp import web
+# from .proxyFlask import app
 import Utils
 import settings
 from .Items import item_table
@@ -24,7 +25,6 @@ try:
 except ModuleNotFoundError:
     from CommonClient import CommonContext as SuperContext
     # logger.info("please install the universal tracker :)")
-
 
 logger = logging.getLogger("Client")
 
@@ -163,57 +163,101 @@ class ProxyGameContext(SuperContext):
         await self.get_username()
         await self.send_connect()
 
-    async def locationHandler(self, request: web.Request) -> web.Response:
+    async def locationHandler(self, requestjson: json) -> json:
         """handle POST at /Locations that uses scouts to return useful info"""
-        requestjson = await request.json()
+        # requestjson = await request.json()
         response = handleLocations(self, requestjson)
-        localResponse = handleLocalLocations(self, requestjson)
+        # localResponse = handleLocalLocations(self, requestjson)
         await self.send_msgs(response)
-        return web.json_response(localResponse)
+        return handleLocalLocations(self, requestjson)
 
-    async def goalHandler(self, request: web.Request) -> web.Response:
+    async def goalHandler(self) -> json:
         """handle POST at /Goal"""
         response = handleGoal(self)
         await self.send_msgs(response)
-        return web.json_response(response)
+        return response
 
-    async def deathHandler(self, request: web.Request) -> web.Response:
+    async def deathHandler(self) -> json:
         """handle POST at /Death"""
         response = handleDeathlink(self)
         await self.send_death("ran out of time")
-        return web.json_response(response)
+        return response
 
-    async def deathpollHandler(self, request: web.Request) -> web.Response:
+    async def deathpollHandler(self) -> json:
         """handle GET at /Deathpoll"""
         cTime = 0
         while (cTime < 20):
             if self.last_death_link > self.last_sent_death:
                 self.last_sent_death = self.last_death_link
-                return web.json_response({"Deathlink": True})
+                return json({"Deathlink": True})
             else:
                 cTime += 1
                 await asyncio.sleep(1)
-        return web.json_response({"Deathlink": False})
+        return json({"Deathlink": False})
 
-    async def itemsHandler(self, request: web.Request) -> web.Response:
+    async def itemsHandler(self) -> json:
         """handle GET at /Items"""
-        response = handleItems(self)
-        return web.json_response(response)
+        # response = handleItems(self)
+        return handleItems(self)
 
-    async def datapackageHandler(self, request: web.Request) -> web.Response:
+    async def datapackageHandler(self) -> json:
         """handle GET at /Datapackage"""
-        response = handleDatapackage(self)
+        # response = handleDatapackage(self)
         # response = {'datapackage':'FROM MINIT - need to figure out data'}
         # await self.send_msgs(response)
-        return web.json_response(response)
+        return handleDatapackage(self)
+
+    # async def locationHandler(self, request: web.Request) -> web.Response:
+    #     ""handle POST at /Locations that uses scouts to return useful info"""
+    #     requestjson = await request.json()
+    #     response = handleLocations(self, requestjson)
+    #     localResponse = handleLocalLocations(self, requestjson)
+    #     await self.send_msgs(response)
+    #     return web.json_response(localResponse)
+
+    # async def goalHandler(self, request: web.Request) -> web.Response:
+    #     """handle POST at /Goal"""
+    #     response = handleGoal(self)
+    #     await self.send_msgs(response)
+    #     return web.json_response(response)
+
+    # async def deathHandler(self, request: web.Request) -> web.Response:
+    #     """handle POST at /Death"""
+    #     response = handleDeathlink(self)
+    #     await self.send_death("ran out of time")
+    #     return web.json_response(response)
+
+    # async def deathpollHandler(self, request: web.Request) -> web.Response:
+    #     """handle GET at /Deathpoll"""
+    #     cTime = 0
+    #     while (cTime < 20):
+    #         if self.last_death_link > self.last_sent_death:
+    #             self.last_sent_death = self.last_death_link
+    #             return web.json_response({"Deathlink": True})
+    #         else:
+    #             cTime += 1
+    #             await asyncio.sleep(1)
+    #     return web.json_response({"Deathlink": False})
+
+    # async def itemsHandler(self, request: web.Request) -> web.Response:
+    #     """handle GET at /Items"""
+    #     response = handleItems(self)
+    #     return web.json_response(response)
+
+    # async def datapackageHandler(self, request: web.Request) -> web.Response:
+    #     """handle GET at /Datapackage"""
+    #     response = handleDatapackage(self)
+    #     # response = {'datapackage':'FROM MINIT - need to figure out data'}
+    #     # await self.send_msgs(response)
+    #     return web.json_response(response)
 
 
-def handleDeathlink(ctx: CommonContext):
+def handleDeathlink(ctx: CommonContext) -> json:
     deathlinkmessage = "death sent"
     return deathlinkmessage
 
 
-def handleGoal(ctx: CommonContext):
+def handleGoal(ctx: CommonContext) -> json:
     goalmessage = [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
     return goalmessage
 
@@ -279,7 +323,7 @@ def handleLocalLocations(ctx: CommonContext, request: json) -> json:
     return {"Location": "Not found in scout cache"}
 
 
-def handleItems(ctx: CommonContext):
+def handleItems(ctx: CommonContext) -> json:
     # expecting request to be json body in the form of
     # {"Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
     itemIds = []
@@ -307,20 +351,28 @@ def handleItems(ctx: CommonContext):
 # TODO update to transform the data
 # - will eventually handle the datapackage from
 # - CommonContext.consume_network_data_package() to make them minit pretty
-def handleDatapackage(ctx: CommonContext):
+def handleDatapackage(ctx: CommonContext) -> json:
     datapackagemessage = [{"cmd": "blah", "data": "blah"}]
     return datapackagemessage
 
 
 async def main(args):
-    from .proxyServer import Webserver, http_server_loop
-
+    # from .proxyServer import Webserver, http_server_loop
+    from .proxyQuart import quartContext, http_server_loop
     ctx = ProxyGameContext(args.connect, args.password)
-    webserver = Webserver(ctx)
+    # webserver = Webserver(ctx)
+    appCtx = quartContext(ctx)
+
     ctx.httpServer_task = asyncio.create_task(
-        http_server_loop(webserver),
+        appCtx.my_run_app(),
         name="http server loop"
         )
+
+    # httpServer_thread = threading.Thread(
+    #     target=asyncio.new_event_loop().run_forever,
+    #     name="http server loop"
+    #     )
+    # httpServer_thread.start()
 
     ctx.auth = args.name
     ctx.server_task = asyncio.create_task(
