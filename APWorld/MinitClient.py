@@ -202,7 +202,7 @@ class ProxyGameContext(SuperContext):
                     await asyncio.sleep(1)
             return web.json_response({"Deathlink": False})
         else:
-            return web.json_response({"Deathlink": None})
+            return web.json_response("deathlink disabled")
 
     async def itemsHandler(self, request: web.Request) -> web.Response:
         """handle GET at /Items"""
