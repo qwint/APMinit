@@ -35,4 +35,9 @@ Also Goal: Flush is a much quicker goal to use as it only requires Factory acces
 
 ## What is different from the vanilla game?
 
-Currently the only logic change from the vanilla game is that the island shack is locked until you can complete the teleporter quest to prevent softlocks
+* Island Shack currently has an extra lock on it so that you cannot enter if you do not have the items to turn on the teleporter and leave so you cannot softlock yourself.
+* There is an extra location available: you can water the Dolphin NPC south of the Watering Can vanilla location to spawn a heart.
+* Regardless of mode both Camera and PressPass will be treated as the same Location, but only PressPass is in the item pool.
+* The camera pickup location near your current House is an AP Item that will sync your inventory with the remote server.
+* If you have received a remote item from the Archipelago Server, it does not sync automatically into your inventory. You are expected to sync your inventory with the AP Item near the house. Local items will automatically be added to your inventory though.
+* An extra keybind has been added (currently only on keyboard Q) to respawn at the Start Location.
