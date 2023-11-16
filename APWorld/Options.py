@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Toggle, Choice, PerGameCommonOptions
+from Options import Toggle, Choice, PerGameCommonOptions, DeathLink, Range
 
 
 class EarlySword(Toggle):
@@ -16,6 +16,13 @@ class Darkrooms(Toggle):
 class Obscure(Toggle):
     """Adds Obscure logic like using only swim to access Island Shack."""
     display_name = "Obscure"
+
+
+class DeathLinkAmnesty(Range):
+    """Amount of deaths before a deathlink is sent."""
+    range_start = 0
+    range_end = 20
+    default = 10
 
 
 class ProgressiveSword(Choice):
@@ -48,3 +55,5 @@ class MinitGameOptions(PerGameCommonOptions):
     obscure: Obscure
     progressive_sword: ProgressiveSword
     chosen_goal: Goal
+    death_link: DeathLink
+    death_amnisty_total: DeathLinkAmnesty

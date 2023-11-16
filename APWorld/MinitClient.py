@@ -83,6 +83,7 @@ class ProxyGameContext(SuperContext):
     command_processor = MinitCommandProcessor
     tags = {"AP", "DeathLink"}
     last_sent_death: float = time.time()
+    slot_data: dict[str, any]
     death_amnisty_total: int
     death_amnisty_count: int
 
@@ -92,7 +93,7 @@ class ProxyGameContext(SuperContext):
         self.items_handling = ITEMS_HANDLING
         self.locations_checked = []
         self.datapackage = []
-        self.death_amnisty_total = 1
+        self.death_amnisty_total = 1  # should be rewritten by slot data
         self.death_amnisty_count = 0
 
     def run_gui(self):
@@ -139,6 +140,8 @@ class ProxyGameContext(SuperContext):
     def on_package(self, cmd: str, args: dict):
         super().on_package(cmd, args)
         if cmd == 'Connected':
+            self.slot_data = args["slot_data"]
+            self.death_amnisty_total = self.slot_data["death_amnisty_total"]
             Utils.async_start(self.send_msgs([{
                 "cmd": "LocationScouts",
                 "locations": list(self.missing_locations),
@@ -179,21 +182,27 @@ class ProxyGameContext(SuperContext):
 
     async def deathHandler(self, request: web.Request) -> web.Response:
         """handle POST at /Death"""
-        response = handleDeathlink(self)
-        await self.send_death("ran out of time")
-        return web.json_response(response)
+        if self.slot_data["death_link"]:
+            response = handleDeathlink(self)
+            await self.send_death("ran out of time")
+            return web.json_response(response)
+        else:
+            return web.json_response("deathlink disabled")
 
     async def deathpollHandler(self, request: web.Request) -> web.Response:
         """handle GET at /Deathpoll"""
-        cTime = 0
-        while (cTime < 20):
-            if self.last_death_link > self.last_sent_death:
-                self.last_sent_death = self.last_death_link
-                return web.json_response({"Deathlink": True})
-            else:
-                cTime += 1
-                await asyncio.sleep(1)
-        return web.json_response({"Deathlink": False})
+        if self.slot_data["death_link"]:
+            cTime = 0
+            while (cTime < 20):
+                if self.last_death_link > self.last_sent_death:
+                    self.last_sent_death = self.last_death_link
+                    return web.json_response({"Deathlink": True})
+                else:
+                    cTime += 1
+                    await asyncio.sleep(1)
+            return web.json_response({"Deathlink": False})
+        else:
+            return web.json_response({"Deathlink": None})
 
     async def itemsHandler(self, request: web.Request) -> web.Response:
         """handle GET at /Items"""

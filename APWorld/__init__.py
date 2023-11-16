@@ -199,7 +199,11 @@ class MinitWorld(World):
             region.add_exits(exit_list)
 
     def fill_slot_data(self) -> Dict[str, Any]:
-        return {"slot_number": self.player}
+        return {
+            "slot_number": self.player,
+            "death_link": self.options.death_link.value,
+            "death_amnisty_total": self.options.death_amnisty_total.value
+            }
 
     def set_rules(self):
         minitRules = MinitRules(self)
