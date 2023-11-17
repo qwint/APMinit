@@ -17,6 +17,7 @@ from aiohttp import web
 import Utils
 import settings
 from .Items import item_table
+from .ERData import er_entrances
 tracker_loaded = False
 try:
     from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
@@ -215,6 +216,72 @@ class ProxyGameContext(SuperContext):
         # response = {'datapackage':'FROM MINIT - need to figure out data'}
         # await self.send_msgs(response)
         return web.json_response(response)
+
+    async def erConnHandler(self, request: web.Request) -> web.Response:
+        """handle GET at /ErConnections"""
+        response = handleErConnections(self)
+        return web.json_response(response)
+
+
+def handleErConnections(ctx: CommonContext):
+    connections = ctx.slot_data["ER_connections"]
+    erMessage = {"Entrance": []}
+    if connections:
+        index = 0
+        for connection in connections:
+            erMessage["Entrance"].append({})
+            left = connection[0]
+            right = connection[1]
+            for e in er_entrances:
+                if e[0] == left:
+                    erMessage["Entrance"][index]["in"] = {
+                        "tile": e[4],
+                        "x": e[5],
+                        "y": e[6],
+                        "offset": e[7],
+                        }
+                if e[0] == right:
+                    erMessage["Entrance"][index]["out"] = {
+                        "tile": e[4],
+                        "x": e[5],
+                        "y": e[6],
+                        "offset": e[7],
+                        }
+            index += 1
+    # erMessage format:
+    # {"Entrances": [
+    #     {
+    #         "in": {
+    #             "tile": "hom10_10",
+    #             "x": 0,
+    #             "y": 0,
+    #             "offset": "x+224"
+    #         },
+    #         "out": {
+    #             "tile": "hom10_10",
+    #             "x": 0,
+    #             "y": 0,
+    #             "offset": "x+224"
+    #         }
+    #     },
+    #     {
+    #         "in": {
+    #             "tile": "hom10_10",
+    #             "x": 0,
+    #             "y": 0,
+    #             "offset": "x+224"
+    #         },
+    #         "out": {
+    #             "tile": "hom10_10",
+    #             "x": 0,
+    #             "y": 0,
+    #             "offset": "x+224"
+    #         }
+    #     }
+    # ]}
+    else:
+        erMessage = "ER Disabled"
+    return erMessage
 
 
 def handleDeathlink(ctx: CommonContext):

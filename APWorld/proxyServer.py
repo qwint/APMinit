@@ -23,6 +23,7 @@ class Webserver:
         self.app.router.add_get('/Deathpoll', self.ctx.deathpollHandler)
         self.app.router.add_get('/Items', self.ctx.itemsHandler)
         self.app.router.add_get('/Datapackage', self.ctx.datapackageHandler)
+        self.app.router.add_get('/ErConnections', self.ctx.erConnHandler)
         return self.app
 
     async def my_run_app(self, app, host, port):

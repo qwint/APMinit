@@ -214,7 +214,7 @@ er_entrances: List[List[any]] = [
     ["dog house south", "dog house west", False, "land",
         "rom10_10", 32, 224, "x+192"],
     ["dog house east", "dog house east", False, "land",
-        "rom10_10" 304, 16, "y+192"],
+        "rom10_10", 304, 16, "y+192"],
     ["dog house east lower", "dog house east", False, "land",
         "rom10_10", 256, 224, "x+16"],
     ["dog house river north", "dog house river", False, "water",

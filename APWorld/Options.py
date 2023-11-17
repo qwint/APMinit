@@ -47,12 +47,14 @@ class Goal(Choice):
     option_any_goal = 2
     default = 0
 
+
 class EntranceRando(Choice):
     """Choose if the room entrances are randomized as well."""
     display_name = "EntranceRando"
     option_off = 0
     option_on = 1
     default = 0
+
 
 @dataclass
 class MinitGameOptions(PerGameCommonOptions):

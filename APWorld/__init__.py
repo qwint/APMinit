@@ -27,7 +27,7 @@ from .Options import MinitGameOptions
 from worlds.generic.Rules import add_rule, set_rule, forbid_item
 from .Rules import MinitRules
 from .ER_Rules import ER_MinitRules
-from typing import Dict, Any
+from typing import Dict, Any, List
 from worlds.LauncherComponents import (
     Component,
     components,
@@ -137,6 +137,7 @@ class MinitWorld(World):
     options_dataclass = MinitGameOptions
     options: MinitGameOptions
     web = MinitWebWorld()
+    output_connections: List[tuple[ER_Entrance, ER_Entrance]]
 
     item_name_to_id = {
         name: data.code
@@ -183,6 +184,24 @@ class MinitWorld(World):
     def create_regions(self):
 
         if self.options.er_option == 0:
+            # self.output_connections = None
+            self.output_connections = [
+                ("dog house inside door", "dog house door",),
+                ("dog house door", "dog house inside door",),
+
+                ("dog house west", "dog house east",),
+                ("dog house east", "dog house west",),
+
+                ("dog house east lower", "dog house bushes",),
+                ("dog house bushes", "dog house east lower",),
+
+                ("dog house river north", "dog house river south",),
+                ("dog house river south", "dog house river north",),
+
+                ("dog house south", "camera river lookout",),
+                ("camera river lookout", "dog house south",),
+            ]
+
             for region_name in region_table.keys():
                 self.multiworld.regions.append(Region(
                     region_name,
@@ -261,7 +280,8 @@ class MinitWorld(World):
             for entrance in self.multiworld.get_region(
                     'dog house west',
                     self.player).exits:
-                if not entrance.connected_region and not entrance.name == 'dog house door':
+                is_dog_house = entrance.name == 'dog house door'
+                if not entrance.connected_region and not is_dog_house:
                     self.multiworld.register_indirect_condition(
                         needed_region,
                         entrance)
@@ -273,7 +293,7 @@ class MinitWorld(World):
                 #     test += entrance.name
             # assert test == "garbage", f"test was {test}"
 
-            output_connections = randomize_entrances(
+            self.output_connections = randomize_entrances(
                 self.multiworld,
                 self.player,
                 self.random,
@@ -281,7 +301,8 @@ class MinitWorld(World):
                 True,
                 True,
                 minit_get_target_groups)
-            assert output_connections == "garbage", f"test was {output_connections}"
+            # output_coordinates = transform_connections(output_connections)
+            assert self.output_connections == "garbage", f"test was {self.output_connections}"
 
             for loc_name, loc_data in location_table.items():
                 if not loc_data.can_create(self.multiworld, self.player):
@@ -332,7 +353,8 @@ class MinitWorld(World):
         return {
             "slot_number": self.player,
             "death_link": self.options.death_link.value,
-            "death_amnisty_total": self.options.death_amnisty_total.value
+            "death_amnisty_total": self.options.death_amnisty_total.value,
+            "ER_connections": self.output_connections,
             }
 
     def set_rules(self):
