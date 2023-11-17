@@ -767,6 +767,577 @@ er_entrances: List[List[any]] = [
         "rom11_8", 16, 32, "fixed"],
 ]
 
+game_entrances: Dict[str, List[Dict[str, any]]] = {
+    "rom7_10": [
+        {"CName": "lighthouse water upper west", "direction": "west", "baseCoor": 0, "offset": 224},
+        {"CName": "lighthouse water upper north", "direction": "north", "baseCoor": 0, "offset": 304},
+        {"CName": "lighthouse water upper east", "direction": "east", "baseCoor": 0, "offset": 224},
+        {"CName": "lighthouse upper door", "direction": "door", "x": 93, "y": 128},
+    ],
+    "rom7_11": [
+        {"CName": "lighthouse water lower west", "direction": "west", "baseCoor": 0, "offset": 224},
+        {"CName": "lighthouse water lower south", "direction": "south", "baseCoor": 0, "offset": 304},
+        {"CName": "lighthouse water lower east", "direction": "east", "baseCoor": 0, "offset": 224},
+        {"CName": "lighthouse lower door", "direction": "door", "x": 128, "y": 128},
+        {"CName": "lighthouse bridge", "direction": "door", "x": 304, "y": 112},
+    ],
+    "rom8_11": [
+        {"CName": "boat water south", "direction": "south", "baseCoor": 0, "offset": 304},
+        {"CName": "boat water east", "direction": "east", "baseCoor": 176, "offset": 48},
+        {"CName": "boat water north", "direction": "north", "baseCoor": 0, "offset": 48},
+        {"CName": "boat water west", "direction": "west", "baseCoor": 0, "offset": 224},
+        {"CName": "boat land north", "direction": "north", "baseCoor": 64, "offset": 224},
+        {"CName": "boat land east", "direction": "east", "baseCoor": 48, "offset": 96},
+        {"CName": "boat land west", "direction": "door", "x": 0, "y": 112},
+    ],
+    "rom9_11": [
+        {"CName": "sword west", "direction": "west", "baseCoor": 48, "offset": 96},
+        {"CName": "sword east", "direction": "east", "baseCoor": 32, "offset": 80},
+        {"CName": "sword water east", "direction": "east", "baseCoor": 144, "offset": 80},
+        {"CName": "sword water south", "direction": "south", "baseCoor": 0, "offset": 304},
+        {"CName": "sword water west", "direction": "west", "baseCoor": 176, "offset": 48},
+    ],
+    "rom10_11": [
+        {"CName": "2crab land east", "direction": "east", "baseCoor": 16, "offset": 96},
+        {"CName": "2crab land west", "direction": "west", "baseCoor": 32, "offset": 80},
+        {"CName": "2crab land north main", "direction": "north", "baseCoor": 32, "offset": 192},
+        {"CName": "2crab land north river", "direction": "door", "x": 240, "y": 0},
+        {"CName": "2crab water east", "direction": "east", "baseCoor": 144, "offset": 80},
+        {"CName": "2crab water south", "direction": "south", "baseCoor": 0, "offset": 304},
+        {"CName": "2crab water west", "direction": "west", "baseCoor": 144, "offset": 80},
+        {"CName": "2crab tree exit", "direction": "north", "baseCoor": 256, "offset": 16},
+    ],
+    "rom11_11": [
+        {"CName": "dolphin land west", "direction": "west", "baseCoor": 16, "offset": 96},
+        {"CName": "dolphin bushes", "direction": "door", "x": 272, "y": 0},
+        {"CName": "dolphin water east", "direction": "east", "baseCoor": 16, "offset": 208},
+        {"CName": "dolphin water south", "direction": "south", "baseCoor": 0, "offset": 304},
+        {"CName": "dolphin water west", "direction": "west", "baseCoor": 144, "offset": 80},
+    ],
+    "rom12_11": [
+        {"CName": "desert beach water south", "direction": "south", "baseCoor": 0, "offset": 144},
+        {"CName": "desert beach water west", "direction": "west", "baseCoor": 16, "offset": 208},
+        {"CName": "desert beach land east", "direction": "east", "baseCoor": 16, "offset": 208},
+        {"CName": "desert beach land south", "direction": "south", "baseCoor": 160, "offset": 144},
+    ],
+    "rom8_10": [
+        {"CName": "coffee shop outside north", "direction": "north", "baseCoor": 128, "offset": 160},
+        {"CName": "coffee shop outside east", "direction": "east", "baseCoor": 128, "offset": 48},
+        {"CName": "coffee shop outside south", "direction": "south", "baseCoor": 64, "offset": 224},
+        {"CName": "coffee shop door", "direction": "door", "x": 192, "y": 144},
+        {"CName": "coffee shop pot stairs", "direction": "door", "x": 288, "y": 80},
+        {"CName": "coffee shop water north", "direction": "north", "baseCoor": 0, "offset": 32},
+        {"CName": "coffee shop water west", "direction": "west", "baseCoor": 0, "offset": 224},
+        {"CName": "coffee shop water south", "direction": "south", "baseCoor": 0, "offset": 48},
+        {"CName": "coffee shop upper beach", "direction": "north", "baseCoor": 48, "offset": 32},
+    ],
+    "rom7_9": [
+        {"CName": "above lighthouse land", "direction": "east", "baseCoor": 144, "offset": 16},
+        {"CName": "above lighthouse water north", "direction": "north", "baseCoor": 0, "offset": 304},
+        {"CName": "above lighthouse water east upper", "direction": "east", "baseCoor": 0, "offset": 128},
+        {"CName": "above lighthouse water east lower", "direction": "door", "x": 304, "y": 224},
+        {"CName": "above lighthouse water south", "direction": "south", "baseCoor": 0, "offset": 304},
+        {"CName": "above lighthouse water west", "direction": "west", "baseCoor": 0, "offset": 224},
+    ],
+    "rom9_10": [
+        {"CName": "plant bushes", "direction": "west", "baseCoor": 128, "offset": 48},
+        {"CName": "plant main", "direction": "east", "baseCoor": 16, "offset": 192},
+    ],
+    "rom10_10": [
+        {"CName": "dog house door", "direction": "door", "x": 144, "y": 160},
+        {"CName": "dog house west", "direction": "west", "baseCoor": 16, "offset": 192},
+        {"CName": "dog house south", "direction": "south", "baseCoor": 32, "offset": 192},
+        {"CName": "dog house east", "direction": "east", "baseCoor": 16, "offset": 192},
+        {"CName": "dog house east lower", "direction": "south", "baseCoor": 256, "offset": 16},
+        {"CName": "dog house river north", "direction": "door", "x": 240, "y": 0},
+        {"CName": "dog house river south", "direction": "door", "x": 240, "y": 224},
+        {"CName": "dog house bushes", "direction": "north", "baseCoor": 144, "offset": 16},
+    ],
+    "rom11_10": [
+        {"CName": "glove outside east", "direction": "door", "x": 304, "y": 64},
+        {"CName": "glove outside west", "direction": "west", "baseCoor": 16, "offset": 192},
+        {"CName": "glove outside door", "direction": "door", "x": 80, "y": 112},
+        {"CName": "watering can", "direction": "door", "x": 272, "y": 224},
+    ],
+    "rom12_9": [
+        {"CName": "quicksand upper east", "direction": "east", "baseCoor": 80, "offset": 32},
+        {"CName": "quicksand upper west", "direction": "west", "baseCoor": 176, "offset": 32},
+    ],
+    "rom12_10": [
+        {"CName": "quicksand left tree", "direction": "door", "x": 0, "y": 64},
+        {"CName": "quicksand right tree", "direction": "door", "x": 304, "y": 96},
+    ],
+    "rom11_9": [
+        {"CName": "bull room left", "direction": "west", "baseCoor": 16, "offset": 80},
+        {"CName": "bull room right", "direction": "east", "baseCoor": 176, "offset": 32},
+    ],
+    "rom10_9": [
+        {"CName": "boattree main door", "direction": "door", "x": 48, "y": 160},
+        {"CName": "boattree main south", "direction": "south", "baseCoor": 144, "offset": 16},
+        {"CName": "boattree box", "direction": "door", "x": 0, "y": 48},
+        {"CName": "boattree river north", "direction": "door", "x": 240, "y": 144},
+        {"CName": "boattree river south", "direction": "door", "x": 240, "y": 224},
+        {"CName": "boattree east", "direction": "east", "baseCoor": 16, "offset": 80},
+        {"CName": "boattree east door", "direction": "door", "x": 256, "y": 32},
+    ],
+    "rom9_9": [
+        {"CName": "key room", "direction": "west", "baseCoor": 32, "offset": 112},
+        {"CName": "camera path north", "direction": "north", "baseCoor": 224, "offset": 32},
+        {"CName": "camera path east", "direction": "door", "x": 304, "y": 48},
+    ],
+    "rom9_8": [
+        {"CName": "camera river north", "direction": "north", "baseCoor": 48, "offset": 176},
+        {"CName": "camera river south", "direction": "south", "baseCoor": 224, "offset": 32},
+        {"CName": "camera river wet east", "direction": "east", "baseCoor": 112, "offset": 32},
+        {"CName": "camera river wet west", "direction": "west", "baseCoor": 128, "offset": 32},
+        {"CName": "camera river lookout", "direction": "west", "baseCoor": 80, "offset": 16},
+    ],
+    "rom9_7": [
+        {"CName": "camera house outside door", "direction": "door", "x": 160, "y": 144},
+        {"CName": "camera house outside south", "direction": "south", "baseCoor": 48, "offset": 176},
+        {"CName": "camera house tree", "direction": "door", "x": 0, "y": 80},
+    ],
+    "rom8_9": [
+        {"CName": "3crab main east", "direction": "east", "baseCoor": 32, "offset": 112},
+        {"CName": "3crab main south", "direction": "south", "baseCoor": 128, "offset": 160},
+        {"CName": "3crab trees", "direction": "north", "baseCoor": 160, "offset": 80},
+        {"CName": "3crab north water north", "direction": "north", "baseCoor": 0, "offset": 112},
+        {"CName": "3crab north water west", "direction": "west", "baseCoor": 0, "offset": 128},
+        {"CName": "3crab south water west", "direction": "door", "x": 0, "y": 224},
+        {"CName": "3crab south water south", "direction": "south", "baseCoor": 0, "offset": 32},
+        {"CName": "3crab land path west", "direction": "west", "baseCoor": 144, "offset": 16},
+        {"CName": "3crab land path south", "direction": "south", "baseCoor": 48, "offset": 32},
+    ],
+    "rom8_8": [
+        {"CName": "sewer island", "direction": "door", "x": 64, "y": 128},
+        {"CName": "sewer island water north", "direction": "north", "baseCoor": 0, "offset": 192},
+        {"CName": "sewer island water east", "direction": "east", "baseCoor": 128, "offset": 32},
+        {"CName": "sewer island water south", "direction": "south", "baseCoor": 0, "offset": 112},
+        {"CName": "sewer island water west", "direction": "west", "baseCoor": 0, "offset": 224},
+        {"CName": "sewer island mainland north", "direction": "north", "baseCoor": 208, "offset": 64},
+        {"CName": "sewer island mainland south", "direction": "south", "baseCoor": 160, "offset": 80},
+    ],
+    "rom8_7": [
+        {"CName": "throwcheck land north", "direction": "north", "baseCoor": 48, "offset": 192},
+        {"CName": "throwcheck land south", "direction": "south", "baseCoor": 208, "offset": 64},
+        {"CName": "throwcheck water south", "direction": "south", "baseCoor": 0, "offset": 192},
+        {"CName": "throwcheck water west", "direction": "west", "baseCoor": 112, "offset": 112},
+        {"CName": "throwcheck box", "direction": "door", "x": 304, "y": 80},
+    ],
+    "rom8_6": [
+        {"CName": "diver room east", "direction": "east", "baseCoor": 32, "offset": 176},
+        {"CName": "diver room south", "direction": "south", "baseCoor": 48, "offset": 192},
+    ],
+    "rom8_5": [
+        {"CName": "wallet room east", "direction": "east", "baseCoor": 32, "offset": 32},
+        {"CName": "wallet room north", "direction": "north", "baseCoor": 96, "offset": 176},
+    ],
+    "rom9_4": [
+        {"CName": "bone room north", "direction": "north", "baseCoor": 48, "offset": 208},
+        {"CName": "bone room east", "direction": "east", "baseCoor": 16, "offset": 192},
+        {"CName": "bone room south", "direction": "south", "baseCoor": 128, "offset": 80},
+        {"CName": "bone room west", "direction": "west", "baseCoor": 64, "offset": 128},
+    ],
+    "rom9_3": [
+        {"CName": "marys house", "direction": "south", "baseCoor": 48, "offset": 208},
+    ],
+    "rom9_5": [
+        {"CName": "arena tree north", "direction": "north", "baseCoor": 128, "offset": 80},
+        {"CName": "arena tree west", "direction": "west", "baseCoor": 32, "offset": 32},
+        {"CName": "arena main", "direction": "south", "baseCoor": 32, "offset": 240},
+    ],
+    "rom8_4": [
+        {"CName": "crowroom heart east", "direction": "east", "baseCoor": 64, "offset": 128},
+        {"CName": "crowroom heart south", "direction": "south", "baseCoor": 96, "offset": 176},
+    ],
+    "rom10_4": [
+        {"CName": "tree resident south", "direction": "south", "baseCoor": 112, "offset": 80},
+        {"CName": "tree resident west", "direction": "west", "baseCoor": 16, "offset": 192},
+    ],
+    "rom10_5": [
+        {"CName": "bridge switch lookout", "direction": "north", "baseCoor": 112, "offset": 80},
+        {"CName": "bridge switch right", "direction": "south", "baseCoor": 192, "offset": 80},
+        {"CName": "bridge switch left", "direction": "south", "baseCoor": 64, "offset": 48},
+        {"CName": "bridge switch water", "direction": "south", "baseCoor": 128, "offset": 48},
+    ],
+    "rom10_6": [
+        {"CName": "bridge right north", "direction": "north", "baseCoor": 192, "offset": 80},
+        {"CName": "bridge right east", "direction": "east", "baseCoor": 96, "offset": 32},
+        {"CName": "bridge right south", "direction": "door", "x": 272, "y": 224},
+        {"CName": "bridge left north", "direction": "north", "baseCoor": 64, "offset": 48},
+        {"CName": "bridge left south", "direction": "south", "baseCoor": 64, "offset": 32},
+        {"CName": "bridge left west", "direction": "west", "baseCoor": 16, "offset": 192},
+        {"CName": "bridge water north", "direction": "north", "baseCoor": 128, "offset": 48},
+        {"CName": "bridge water south", "direction": "south", "baseCoor": 144, "offset": 32},
+    ],
+    "rom9_6": [
+        {"CName": "hotel outside north", "direction": "north", "baseCoor": 32, "offset": 240},
+        {"CName": "hotel outside east", "direction": "east", "baseCoor": 16, "offset": 192},
+        {"CName": "hotel outside west", "direction": "west", "baseCoor": 32, "offset": 176},
+        {"CName": "hotel outside back entrance", "direction": "door", "x": 208, "y": 40},
+        {"CName": "hotel outside front entrance", "direction": "door", "x": 208, "y": 176},
+    ],
+    "rom10_7": [
+        {"CName": "mine entrance right north", "direction": "door", "x": 272, "y": 0},
+        {"CName": "mine entrance right door", "direction": "door", "x": 288, "y": 32},
+        {"CName": "mine entrance left north", "direction": "north", "baseCoor": 64, "offset": 32},
+        {"CName": "mine entrance left door", "direction": "door", "x": 80, "y": 96},
+        {"CName": "mine entrance river north", "direction": "north", "baseCoor": 144, "offset": 32},
+        {"CName": "mine entrance river south", "direction": "south", "baseCoor": 128, "offset": 48},
+    ],
+    "rom10_8": [
+        {"CName": "poison river corner north", "direction": "north", "baseCoor": 128, "offset": 48},
+        {"CName": "poison river corner south", "direction": "west", "baseCoor": 112, "offset": 32},
+    ],
+    "rom11_6": [
+        {"CName": "factory reception main south", "direction": "south", "baseCoor": 96, "offset": 32},
+        {"CName": "factory reception main west", "direction": "west", "baseCoor": 96, "offset": 32},
+        {"CName": "factory reception east", "direction": "east", "baseCoor": 96, "offset": 16},
+    ],
+    "rom11_7": [
+        {"CName": "factory queue", "direction": "north", "baseCoor": 96, "offset": 32},
+    ],
+    "rom12_6": [
+        {"CName": "factory cooler west", "direction": "west", "baseCoor": 96, "offset": 16},
+        {"CName": "factory cooler east", "direction": "east", "baseCoor": 160, "offset": 16},
+        {"CName": "factory cooler south", "direction": "south", "baseCoor": 144, "offset": 16},
+    ],
+    "rom13_6": [
+        {"CName": "factory toilet south", "direction": "south", "baseCoor": 96, "offset": 16},
+        {"CName": "factory toilet west", "direction": "west", "baseCoor": 160, "offset": 16},
+    ],
+    "rom12_7": [
+        {"CName": "factory central north", "direction": "north", "baseCoor": 144, "offset": 16},
+        {"CName": "factory central south", "direction": "south", "baseCoor": 144, "offset": 16},
+        {"CName": "factory central door", "direction": "door", "x": 192, "y": 16},
+    ],
+    "rom12_8": [
+        {"CName": "factory drill north", "direction": "north", "baseCoor": 144, "offset": 16},
+        {"CName": "factory drill south", "direction": "south", "baseCoor": 144, "offset": 16},
+    ],
+    "rom13_7": [
+        {"CName": "factory loading upper north", "direction": "north", "baseCoor": 96, "offset": 16},
+        {"CName": "factory loading upper east", "direction": "east", "baseCoor": 96, "offset": 32},
+        {"CName": "factory loading upper south", "direction": "south", "baseCoor": 16, "offset": 272},
+        {"CName": "factory loading upper door", "direction": "door", "x": 64, "y": 192},
+    ],
+    "rom13_8": [
+        {"CName": "factory loading lower main", "direction": "north", "baseCoor": 16, "offset": 272},
+        {"CName": "factory loading lower shortcut", "direction": "door", "x": 304, "y": 128},
+    ],
+    "rom14_7": [
+        {"CName": "factory loading deadend", "direction": "west", "baseCoor": 96, "offset": 32},
+        {"CName": "factory loading desert north", "direction": "north", "baseCoor": 16, "offset": 288},
+        {"CName": "factory loading desert east", "direction": "east", "baseCoor": 0, "offset": 256},
+    ],
+    "rom14_8": [
+        {"CName": "shoe shop outside south", "direction": "south", "baseCoor": 48, "offset": 192},
+        {"CName": "shoe shop outside door", "direction": "door", "x": 192, "y": 176},
+        {"CName": "shoe shop shortcut", "direction": "door", "x": 0, "y": 128},
+    ],
+    "rom14_10": [
+        {"CName": "temple outside north", "direction": "north", "baseCoor": 0, "offset": 304},
+        {"CName": "temple outside east", "direction": "east", "baseCoor": 0, "offset": 224},
+        {"CName": "temple outside south", "direction": "south", "baseCoor": 0, "offset": 304},
+        {"CName": "temple outside west", "direction": "west", "baseCoor": 0, "offset": 224},
+        {"CName": "temple outside door", "direction": "door", "x": 160, "y": 96},
+    ],
+    "rom13_9": [
+        {"CName": "desert RV main east", "direction": "east", "baseCoor": 48, "offset": 144},
+        {"CName": "desert RV main south", "direction": "south", "baseCoor": 32, "offset": 224},
+        {"CName": "desert RV main west", "direction": "west", "baseCoor": 80, "offset": 32},
+        {"CName": "desert RV main door", "direction": "door", "x": 144, "y": 96},
+        {"CName": "desert RV corner east", "direction": "east", "baseCoor": 208, "offset": 16},
+        {"CName": "desert RV corner south", "direction": "south", "baseCoor": 272, "offset": 32},
+    ],
+    "rom14_9": [
+        {"CName": "desert right cliffs north", "direction": "north", "baseCoor": 48, "offset": 192},
+        {"CName": "desert right cliffs east", "direction": "east", "baseCoor": 48, "offset": 176},
+        {"CName": "desert right cliffs south", "direction": "south", "baseCoor": 0, "offset": 304},
+        {"CName": "desert right cliffs upper west", "direction": "west", "baseCoor": 48, "offset": 144},
+        {"CName": "desert right cliffs lower west", "direction": "west", "baseCoor": 208, "offset": 16},
+    ],
+    "rom13_10": [
+        {"CName": "desert left cliffs upper north", "direction": "north", "baseCoor": 32, "offset": 224},
+        {"CName": "desert left cliffs lower north", "direction": "north", "baseCoor": 272, "offset": 32},
+        {"CName": "desert left cliffs east", "direction": "east", "baseCoor": 0, "offset": 224},
+        {"CName": "desert left cliffs south", "direction": "south", "baseCoor": 32, "offset": 272},
+        {"CName": "desert left cliffs west", "direction": "door", "x": 0, "y": 96},
+    ],
+
+    "rom7_7": [
+        {"CName": "Overworld wet01", "direction": "east", "baseCoor": 0, "offset": 224},
+    ],
+    "rom7_8": [
+        {"CName": "Overworld wet02", "direction": "east", "baseCoor": 0, "offset": 224},
+        {"CName": "Overworld wet03", "direction": "south", "baseCoor": 0, "offset": 304},
+    ],
+    "rom6_9": [
+        {"CName": "Overworld wet04", "direction": "east", "baseCoor": 0, "offset": 224},
+    ],
+    "rom6_10": [
+        {"CName": "Overworld wet05", "direction": "east", "baseCoor": 0, "offset": 224},
+    ],
+    "rom6_11": [
+        {"CName": "Overworld wet06", "direction": "east", "baseCoor": 0, "offset": 224},
+    ],
+    "rom7_12": [
+        {"CName": "Overworld wet07", "direction": "north", "baseCoor": 0, "offset": 304},
+    ],
+    "rom8_12": [
+        {"CName": "Overworld wet08", "direction": "north", "baseCoor": 0, "offset": 304},
+    ],
+    "rom9_12": [
+        {"CName": "Overworld wet09", "direction": "north", "baseCoor": 0, "offset": 304},
+    ],
+    "rom10_12": [
+        {"CName": "Overworld wet10", "direction": "north", "baseCoor": 0, "offset": 304},
+    ],
+    "rom11_12": [
+        {"CName": "Overworld wet11", "direction": "north", "baseCoor": 0, "offset": 304},
+    ],
+    "rom12_12": [
+        {"CName": "Overworld wet12", "direction": "north", "baseCoor": 0, "offset": 304},
+    ],
+    "rom8_15": [
+        {"CName": "Overworld island door", "direction": "door", "x": 224, "y": 160},
+    ],
+    "rom12_12": [
+        {"CName": "Overworld dry01", "direction": "north", "baseCoor": 0, "offset": 304},
+    ],
+    "rom13_11": [
+        {"CName": "Overworld dry02", "direction": "west", "baseCoor": 0, "offset": 224},
+        {"CName": "Overworld dry03", "direction": "north", "baseCoor": 0, "offset": 304},
+    ],
+    "rom14_11": [
+        {"CName": "Overworld dry04", "direction": "north", "baseCoor": 0, "offset": 304},
+    ],
+    "rom15_10": [
+        {"CName": "Overworld dry05", "direction": "west", "baseCoor": 0, "offset": 224},
+    ],
+    "rom15_9": [
+        {"CName": "Overworld dry06", "direction": "west", "baseCoor": 0, "offset": 224},
+    ],
+    "rom15_7": [
+        {"CName": "Overworld dry07", "direction": "west", "baseCoor": 0, "offset": 224},
+    ],
+    "rom14_6": [
+        {"CName": "Overworld dry08", "direction": "south", "baseCoor": 0, "offset": 304},
+    ],
+
+
+    "hom13_9": [
+        {"CName": "RV house", "direction": "door", "x": 144, "y": 96},
+    ],
+    "hom14_8": [
+        {"CName": "shoe shop inside door", "direction": "door", "x": 192, "y": 176},
+        {"CName": "shoe shop inside basement", "direction": "door", "x": 160, "y": 80},
+    ],
+    "hom9_6": [
+        {"CName": "hotel reception door", "direction": "door", "x": 208, "y": 176},
+        {"CName": "hotel reception stairs", "direction": "door", "x": 208, "y": 112},
+        {"CName": "hotel backroom", "direction": "door", "x": 192, "y": 48},
+    ],
+    "hom9_7": [
+        {"CName": "camera house inside", "direction": "door", "x": 160, "y": 144},
+    ],
+    "hom10_9": [
+        {"CName": "waterfall cave", "direction": "door", "x": 240, "y": 128},
+    ],
+    "hom10_10": [
+        {"CName": "dog house inside door", "direction": "door", "x": 144, "y": 160},
+        {"CName": "dog house inside basement", "direction": "door", "x": 192, "y": 144},
+    ],
+    "hom8_10": [
+        {"CName": "coffee shop inside", "direction": "door", "x": 192, "y": 128},
+    ],
+    "hom7_10": [
+        {"CName": "lighthouse inside upper", "direction": "door", "x": 96, "y": 128},
+    ],
+    "hom7_11": [
+        {"CName": "lighthouse inside lower", "direction": "door", "x": 128, "y": 128},
+    ],
+    "hom8_15": [
+        {"CName": "island house door", "direction": "door", "x": 224, "y": 176},
+        {"CName": "island house basement", "direction": "door", "x": 272, "y": 128},
+    ],
+    "hom12_7": [
+        {"CName": "megasword upper south", "direction": "south", "baseCoor": 96, "offset": 128},
+        {"CName": "megasword upper right", "direction": "door", "x": 260, "y": 128},
+        {"CName": "megasword upper left", "direction": "door", "x": 80, "y": 160},
+    ],
+    "hom12_8": [
+        {"CName": "megasword lower", "direction": "north", "baseCoor": 96, "offset": 128},
+    ],
+    "hom10_8": [
+        {"CName": "underground house", "direction": "door", "x": 248, "y": 152},
+    ],
+
+    "dun11_10": [
+        {"CName": "glove inside", "direction": "door", "x": 80, "y": 128},
+    ],
+    "dun14_8": [
+        {"CName": "shoe shop downstairs door", "direction": "door", "x": 160, "y": 96},
+        {"CName": "shoe shop downstairs teleport", "direction": "door", "x": 144, "y": 64},
+    ],
+    "dun14_10": [
+        {"CName": "temple main north", "direction": "north", "baseCoor": 144, "offset": 32},
+        {"CName": "temple main east", "direction": "east", "baseCoor": 104, "offset": 32},
+        {"CName": "temple main south", "direction": "south", "baseCoor": 144, "offset": 32},
+        {"CName": "temple main west", "direction": "door", "x": 0, "y": 112},
+        {"CName": "temple main door", "direction": "door", "x": 160, "y": 112},
+    ],
+    "dun13_10": [
+        {"CName": "temple octopus main", "direction": "door", "x": 304, "y": 112},
+        {"CName": "temple octopus north", "direction": "north", "baseCoor": 208, "offset": 16},
+    ],
+    "dun13_9": [
+        {"CName": "temple tentacle", "direction": "south", "baseCoor": 208, "offset": 16},
+    ],
+    "dun14_11": [
+        {"CName": "temple heart", "direction": "north", "baseCoor": 144, "offset": 32},
+    ],
+    "dun15_10": [
+        {"CName": "temple firebat test east", "direction": "door", "x": 304, "y": 32},
+        {"CName": "temple firebat test west", "direction": "west", "baseCoor": 104, "offset": 32},
+    ],
+    "dun16_10": [
+        {"CName": "temple firebat chest", "direction": "door", "x": 0, "y": 32},
+    ],
+    "dun14_9": [
+        {"CName": "temple coin test north", "direction": "door", "x": 160, "y": 0},
+        {"CName": "temple coin test south", "direction": "south", "baseCoor": 144, "offset": 32},
+    ],
+    "dun14_8": [
+        {"CName": "temple coin chest", "direction": "door", "x": 160, "y": 224},
+    ],
+    "dun9_6": [
+        {"CName": "hotel room door", "direction": "door", "x": 208, "y": 128},
+        {"CName": "hotel room teleport", "direction": "door", "x": 256, "y": 128},
+    ],
+    "dun10_7": [
+        {"CName": "mine entrance path north", "direction": "door", "x": 80, "y": 80},
+        {"CName": "mine entrance path east", "direction": "door", "x": 304, "y": 160},
+        {"CName": "mine entrance bombs", "direction": "door", "x": 304, "y": 96},
+        {"CName": "mine entrance pipe", "direction": "door", "x": 288, "y": 16},
+    ],
+    "dun11_7": [
+        {"CName": "mine main north", "direction": "door", "x": 208, "y": 0},
+        {"CName": "mine main west upper", "direction": "door", "x": 0, "y": 96},
+        {"CName": "mine main west lower", "direction": "door", "x": 0, "y": 160},
+        {"CName": "mine main box", "direction": "door", "x": 176, "y": 224},
+    ],
+    "dun10_10": [
+        {"CName": "dog house basement shop", "direction": "door", "x": 208, "y": 96},
+        {"CName": "dog house basement stairs", "direction": "door", "x": 192, "y": 128},
+        {"CName": "dog house basement teleporter", "direction": "door", "x": 144, "y": 160},
+        {"CName": "dog house basement hotel", "direction": "door", "x": 80, "y": 96},
+    ],
+    "dun10_9": [
+        {"CName": "snake east upper", "direction": "door", "x": 256, "y": 64},
+        {"CName": "snake east lower", "direction": "door", "x": 48, "y": 192},
+    ],
+    "dun9_9": [
+        {"CName": "snake west", "direction": "door", "x": 304, "y": 64},
+    ],
+    "dun8_10": [
+        {"CName": "sewer main right north", "direction": "north", "baseCoor": 192, "offset": 16},
+        {"CName": "sewer main right door", "direction": "door", "x": 288, "y": 96},
+        {"CName": "sewer main left", "direction": "door", "x": 0, "y": 192},
+    ],
+    "dun8_9": [
+        {"CName": "sewer bat arena south", "direction": "south", "baseCoor": 192, "offset": 16},
+        {"CName": "sewer bat gate", "direction": "north", "baseCoor": 112, "offset": 16},
+    ],
+    "dun8_8": [
+        {"CName": "sewer upper door", "direction": "door", "x": 64, "y": 112},
+        {"CName": "sewer upper south", "direction": "south", "baseCoor": 112, "offset": 16},
+    ],
+    "dun7_10": [
+        {"CName": "sewer tentacle", "direction": "door", "x": 304, "y": 192},
+    ],
+    "dun8_15": [
+        {"CName": "island teleporter tile", "direction": "door", "x": 192, "y": 48},
+        {"CName": "island teleporter east", "direction": "door", "x": 304, "y": 80},
+        {"CName": "island teleporter south", "direction": "door", "x": 272, "y": 144},
+    ],
+    "dun9_15": [
+        {"CName": "submarine east", "direction": "door", "x": 304, "y": 80},
+        {"CName": "submarine west", "direction": "door", "x": 0, "y": 80},
+    ],
+    "dun11_15": [
+        {"CName": "teleporter switch1", "direction": "door", "x": 0, "y": 16},
+    ],
+    "dun10_15": [
+        {"CName": "teleporter maze east", "direction": "door", "x": 304, "y": 16},
+        {"CName": "teleporter maze south", "direction": "door", "x": 240, "y": 224},
+        {"CName": "teleporter maze west", "direction": "door", "x": 0, "y": 80},
+    ],
+    "dun10_16": [
+        {"CName": "teleporter tentacle", "direction": "door", "x": 240, "y": 0},
+    ],
+    "dun11_6": [
+        {"CName": "grinder south", "direction": "door", "x": 208, "y": 224},
+        {"CName": "grinder east", "direction": "door", "x": 304, "y": 80},
+    ],
+    "dun12_6": [
+        {"CName": "factory machine generator", "direction": "south", "baseCoor": 128, "offset": 48},
+        {"CName": "factory machine catwalk east", "direction": "door", "x": 304, "y": 80},
+        {"CName": "factory machine catwalk west", "direction": "door", "x": 0, "y": 80},
+    ],
+    "dun13_6": [
+        {"CName": "factory switch test west", "direction": "door", "x": 0, "y": 80},
+        {"CName": "factory switch test south", "direction": "door", "x": 80, "y": 224},
+    ],
+    "dun12_7": [
+        {"CName": "factory mega entrance north", "direction": "north", "baseCoor": 128, "offset": 48},
+        {"CName": "factory mega entrance door", "direction": "door", "x": 192, "y": 32},
+        {"CName": "factory mega entrance right", "direction": "door", "x": 160, "y": 128},
+        {"CName": "factory mega entrance left", "direction": "door", "x": 80, "y": 176},
+    ],
+    "dun13_7": [
+        {"CName": "factory snakehall north", "direction": "door", "x": 80, "y": 0},
+        {"CName": "factory snakehall south", "direction": "door", "x": 64, "y": 208},
+    ],
+    "dun11_8": [
+        {"CName": "miner chest belts", "direction": "door", "x": 176, "y": 0},
+        {"CName": "miner chest pipe entrance", "direction": "door", "x": 288, "y": 224},
+        {"CName": "miner chest pipe L south", "direction": "door", "x": 16, "y": 224},
+        {"CName": "miner chest pipe L west", "direction": "door", "x": 0, "y": 192},
+    ],
+    "dun11_9": [
+        {"CName": "trophy pipe hall right", "direction": "door", "x": 288, "y": 0},
+        {"CName": "trophy pipe hall left", "direction": "door", "x": 16, "y": 0},
+    ],
+    "dun10_8": [
+        {"CName": "tent room main right", "direction": "door", "x": 304, "y": 192},
+        {"CName": "tent room main left", "direction": "door", "x": 0, "y": 64},
+        {"CName": "tent room pipe O", "direction": "door", "x": 0, "y": 160},
+        {"CName": "tent room pipe I right", "direction": "door", "x": 304, "y": 32},
+        {"CName": "tent room pipe I left", "direction": "door", "x": 0, "y": 32},
+    ],
+    "dun9_8": [
+        {"CName": "trophy maze lower main north right", "direction": "door", "x": 112, "y": 0},
+        {"CName": "trophy maze lower main north left", "direction": "door", "x": 16, "y": 0},
+        {"CName": "trophy maze lower main east right", "direction": "door", "x": 304, "y": 64},
+        {"CName": "trophy maze lower main east left", "direction": "door", "x": 304, "y": 160},
+        {"CName": "trophy maze lower hall left", "direction": "door", "x": 144, "y": 0},
+        {"CName": "trophy maze lower hall right", "direction": "door", "x": 304, "y": 32},
+    ],
+    "dun9_7": [
+        {"CName": "trophy maze upper main right", "direction": "door", "x": 144, "y": 224},
+        {"CName": "trophy maze upper main left", "direction": "door", "x": 112, "y": 224},
+        {"CName": "trophy maze upper hall south", "direction": "door", "x": 16, "y": 224},
+        {"CName": "trophy maze upper hall west", "direction": "door", "x": 0, "y": 144},
+    ],
+    "dun8_7": [
+        {"CName": "trophy maze deadend", "direction": "door", "x": 304, "y": 144},
+    ],
+    "rom11_8": [
+        {"CName": "trophy room", "direction": "door", "x": 16, "y": 32},
+    ],
+}
+
 
 def minit_get_target_groups(group: str) -> list[str]:
     # if self.options.unmatched_room_rando:

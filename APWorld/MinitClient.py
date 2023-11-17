@@ -17,7 +17,7 @@ from aiohttp import web
 import Utils
 import settings
 from .Items import item_table
-from .ERData import er_entrances
+from .ERData import er_entrances, game_entrances
 tracker_loaded = False
 try:
     from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
@@ -225,29 +225,58 @@ class ProxyGameContext(SuperContext):
 
 def handleErConnections(ctx: CommonContext):
     connections = ctx.slot_data["ER_connections"]
-    erMessage = {"Entrance": []}
+    erMessage = {"Entrances": game_entrances}
     if connections:
-        index = 0
         for connection in connections:
-            erMessage["Entrance"].append({})
             left = connection[0]
             right = connection[1]
             for e in er_entrances:
                 if e[0] == left:
-                    erMessage["Entrance"][index]["in"] = {
-                        "tile": e[4],
-                        "x": e[5],
-                        "y": e[6],
-                        "offset": e[7],
-                        }
+                    left_entrance = e
                 if e[0] == right:
-                    erMessage["Entrance"][index]["out"] = {
-                        "tile": e[4],
-                        "x": e[5],
-                        "y": e[6],
-                        "offset": e[7],
+                    right_entrance = e
+
+            print(f"left_entrance: {left_entrance}")
+            print(f"right_entrance: {right_entrance}")
+            left_tile = left_entrance[4]
+            print(f"left_tile: {left_tile}")
+            left_name = left_entrance[0]
+            print(f"left_name: {left_name}")
+
+            index = 0
+            for entrance in erMessage["Entrances"][left_tile]:
+                if left_name == entrance["CName"]:
+                    erMessage["Entrances"][left_tile][index]["out"] = {
+                        "tile": right_entrance[4],
+                        "x": right_entrance[5],
+                        "y": right_entrance[6],
+                        "offset": right_entrance[7],
                         }
-            index += 1
+                index += 1
+
+            # left = connection[0]
+            # right = connection[1]
+            # for key, value in game_entrances[left]:
+            #     if erMessage[key]:
+            #         erMessage[key].append(value)
+
+            # erMessage["Entrance"].append(game_entrances[left])
+            # for e in er_entrances:
+            #     if e[0] == left:
+            #         erMessage["Entrance"][index]["in"] = {
+            #             "tile": e[4],
+            #             "x": e[5],
+            #             "y": e[6],
+            #             "offset": e[7],
+            #             }
+            #     if e[0] == right:
+            #         erMessage["Entrance"][index]["out"] = {
+            #             "tile": e[4],
+            #             "x": e[5],
+            #             "y": e[6],
+            #             "offset": e[7],
+            #             }
+            # index += 1
     # erMessage format:
     # {"Entrances": [
     #     {
