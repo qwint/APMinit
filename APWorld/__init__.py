@@ -17,7 +17,12 @@ from .Items import (
 )
 from .Locations import location_table
 from .Regions import region_table
-from .ERData import er_regions, er_entrances, minit_get_target_groups, er_static_connections
+from .ERData import (
+    er_regions,
+    er_entrances,
+    minit_get_target_groups,
+    er_static_connections
+)
 from .Options import MinitGameOptions
 from worlds.generic.Rules import add_rule, set_rule, forbid_item
 from .Rules import MinitRules
@@ -179,81 +184,135 @@ class MinitWorld(World):
 
         if self.options.er_option == 0:
             for region_name in region_table.keys():
-                self.multiworld.regions.append(Region(region_name, self.player, self.multiworld))
+                self.multiworld.regions.append(Region(
+                    region_name,
+                    self.player,
+                    self.multiworld))
 
             for loc_name, loc_data in location_table.items():
                 if not loc_data.can_create(self.multiworld, self.player):
                     continue
-                region = self.multiworld.get_region(loc_data.region, self.player)
-                new_loc = Location(self.player, loc_name, loc_data.code, region)
+                region = self.multiworld.get_region(
+                    loc_data.region,
+                    self.player)
+                new_loc = Location(
+                    self.player,
+                    loc_name,
+                    loc_data.code,
+                    region)
                 if (not loc_data.show_in_spoiler):
                     new_loc.show_in_spoiler = False
                 region.locations.append(new_loc)
                 if loc_name == "Fight the Boss":
-                    self.multiworld.get_location(loc_name, self.player).place_locked_item(MinitItem(name = "Boss dead", classification = ItemClassification.progression, code = 60021, player = self.player))
+                    self.multiworld.get_location(
+                        loc_name,
+                        self.player
+                    ).place_locked_item(MinitItem(
+                        name="Boss dead",
+                        classification=ItemClassification.progression,
+                        code=60021,
+                        player=self.player))
 
             for region_name, exit_list in region_table.items():
                 region = self.multiworld.get_region(region_name, self.player)
                 region.add_exits(exit_list)
         elif self.options.er_option == 1:
             for region_name in er_regions:
-                 self.multiworld.regions.append(Region(region_name, self.player, self.multiworld))
+                self.multiworld.regions.append(Region(
+                    region_name,
+                    self.player,
+                    self.multiworld))
 
             for region_name, exit_list in er_static_connections.items():
                 region = self.multiworld.get_region(region_name, self.player)
                 region.add_exits(exit_list)
                 for region2 in exit_list:
-                	self.multiworld.get_region(region2, self.player).add_exits([region_name])
+                    self.multiworld.get_region(
+                        region2,
+                        self.player
+                    ).add_exits([region_name])
                 # for exit in region.exits:
                 #     print(f"for static connection: {exit.name} parent region: {exit.parent_region} and connected region: {exit.connected_region}")
-
 
             entrance_list = []
             exit_list = []
             for er_entrance in er_entrances:
-                region = self.multiworld.get_region(er_entrance[1], self.player)
+                region = self.multiworld.get_region(
+                    er_entrance[1],
+                    self.player)
                 entrance = ER_Entrance(self.player, er_entrance[0], region)
-                #entrance.is_dead_end = er_entrance[2]
+                # entrance.is_dead_end = er_entrance[2]
                 entrance.group_name = er_entrance[3]
                 entrance_list.append(entrance)
-                #print(f"for exit: {entrance.name} parent region: {entrance.parent_region} and connected region: {entrance.connected_region}")
-                #region = self.multiworld.get_region(region_name, self.player)
+                # print(f"for exit: {entrance.name} parent region: {entrance.parent_region} and connected region: {entrance.connected_region}")
+                # region = self.multiworld.get_region(region_name, self.player)
                 region.add_er_exits(entrance)
                 # print(f"current entrance {entrance_list[len(entrance_list) - 1].name} is type: {type(entrance_list[len(entrance_list) - 1])}")
                 # for exit in region.get_exits():
                 #     print(f"for ER connection: {exit.name} parent region: {exit.parent_region} and connected region: {exit.connected_region}")
-                    #print(f"region {region.name} has exits: {type(exit)}")
+                #     print(f"region {region.name} has exits: {type(exit)}")
                 # for exit in region.get_exits():
                 #     print(f"region {region.name} has exits: {type(exit)}")
 
             # test = ""
-            needed_region = self.multiworld.get_region('plant bushes', self.player)
-            for entrance in self.multiworld.get_region('dog house west', self.player).exits:
+            needed_region = self.multiworld.get_region(
+                'plant bushes',
+                self.player)
+            for entrance in self.multiworld.get_region(
+                    'dog house west',
+                    self.player).exits:
                 if not entrance.connected_region and not entrance.name == 'dog house door':
-                    self.multiworld.register_indirect_condition(needed_region, entrance)
-                    entrance.access_rule = lambda state: state.can_reach(needed_region, "Region", self.player)
+                    self.multiworld.register_indirect_condition(
+                        needed_region,
+                        entrance)
+                    entrance.access_rule = lambda state: state.can_reach(
+                        needed_region,
+                        "Region",
+                        self.player)
                 # else:
                 #     test += entrance.name
             # assert test == "garbage", f"test was {test}"
 
-            output_connections = randomize_entrances(self.multiworld, self.player, self.random, entrance_list, True, True, minit_get_target_groups)
+            output_connections = randomize_entrances(
+                self.multiworld,
+                self.player,
+                self.random,
+                entrance_list,
+                True,
+                True,
+                minit_get_target_groups)
             assert output_connections == "garbage", f"test was {output_connections}"
 
             for loc_name, loc_data in location_table.items():
                 if not loc_data.can_create(self.multiworld, self.player):
                     continue
-                region = self.multiworld.get_region(loc_data.er_region, self.player)
-                new_loc = Location(self.player, loc_name, loc_data.code, region)
+                region = self.multiworld.get_region(
+                    loc_data.er_region,
+                    self.player)
+                new_loc = Location(
+                    self.player,
+                    loc_name,
+                    loc_data.code,
+                    region)
                 if (not loc_data.show_in_spoiler):
                     new_loc.show_in_spoiler = False
                 region.locations.append(new_loc)
                 if loc_name == "Fight the Boss":
-                    self.multiworld.get_location(loc_name, self.player).place_locked_item(MinitItem(name = "Boss dead", classification = ItemClassification.progression, code = 60021, player = self.player))
-            visualize_regions(self.multiworld.get_region("Menu", self.player), "output/regionmap.puml")
-            #print(output_connections)
-            #randomize_entrances(self, self, self, self, self, self, self)
+                    self.multiworld.get_location(
+                        loc_name,
+                        self.player
+                    ).place_locked_item(MinitItem(
+                        name="Boss dead",
+                        classification=ItemClassification.progression,
+                        code=60021,
+                        player=self.player))
+            visualize_regions(
+                self.multiworld.get_region("Menu", self.player),
+                "output/regionmap.puml")
+            # print(output_connections)
+            # randomize_entrances(self, self, self, self, self, self, self)
 
-        #Locked location logic from Pseudoregalia, will likely need for sword
+        # Locked location logic from Pseudoregalia, will likely need for sword
         # Place locked locations.
         # for location_name, location_data in self.locked_locations.items():
         #     if not location_data.can_create(self.multiworld, self.player):
