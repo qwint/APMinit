@@ -279,6 +279,54 @@ def handleErConnections(ctx: CommonContext):
     #         }
     #     }
     # ]}
+
+    # new erMessage format:
+    # {"Entrances": [
+    #     "hom10_10": [
+    #         {
+    #             "direction": "south",
+    #             "baseCoor": 0,
+    #             "offset": 224,
+    #             "out": {
+    #                 "room": "hom10_10",
+    #                 "x": 0,
+    #                 "y": 0,
+    #             }
+    #         },
+    #         {
+    #             "direction": "north",
+    #             "baseCoor": 0,
+    #             "offset": 224,
+    #             "out": {
+    #                 "room": "hom10_10",
+    #                 "x": 0,
+    #                 "y": 0,
+    #             }
+    #         }
+    #     ],
+    #     "rom10_10": [
+    #         {
+    #             "direction": "south",
+    #             "baseCoor": 0,
+    #             "offset": 224,
+    #             "out": {
+    #                 "room": "hom10_10",
+    #                 "x": 0,
+    #                 "y": 0,
+    #             }
+    #         },
+    #         {
+    #             "direction": "door",
+    #             "x": 0,
+    #             "y": 224,
+    #             "out": {
+    #                 "room": "hom10_10",
+    #                 "x": 0,
+    #                 "y": 0,
+    #             }
+    #         }
+    #     ]
+    # ]}
     else:
         erMessage = "ER Disabled"
     return erMessage
