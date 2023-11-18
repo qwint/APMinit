@@ -21,7 +21,8 @@ from .ERData import (
     er_regions,
     er_entrances,
     minit_get_target_groups,
-    er_static_connections
+    er_static_connections,
+    door_names,
 )
 from .Options import MinitGameOptions
 from worlds.generic.Rules import add_rule, set_rule, forbid_item
@@ -181,10 +182,27 @@ class MinitWorld(World):
                             item_data.code,
                             self.player))
 
+    def make_bad_map(self) -> List[tuple[str, str]]:
+        unconnected = []
+        output = []
+        for entrance in er_entrances:
+            if entrance[0] not in door_names:
+                unconnected.append(entrance[0])
+        self.random.shuffle(unconnected)
+        try:
+            while unconnected:
+                left = unconnected.pop()
+                right = unconnected.pop()
+                output.append((left, right))
+                output.append((right, left))
+        except IndexError:
+            print("too many connections, leaving 1 unconnected")
+        return output
+
     def create_regions(self):
 
         if self.options.er_option == 0:
-            self.output_connections = None
+            # self.output_connections = None
             # self.output_connections = [
             #     ("dog house inside door", "dog house door",),
             #     ("dog house door", "dog house inside door",),
@@ -201,6 +219,7 @@ class MinitWorld(World):
             #     ("dog house south", "coffee shop inside",),
             #     ("coffee shop inside", "dog house south",),
             # ]
+            self.output_connections = self.make_bad_map()
 
             for region_name in region_table.keys():
                 self.multiworld.regions.append(Region(
@@ -236,6 +255,45 @@ class MinitWorld(World):
                 region = self.multiworld.get_region(region_name, self.player)
                 region.add_exits(exit_list)
         elif self.options.er_option == 1:
+            # current map gen is pure random, so make regions/connections vanilla
+            self.output_connections = self.make_bad_map()
+
+            for region_name in region_table.keys():
+                self.multiworld.regions.append(Region(
+                    region_name,
+                    self.player,
+                    self.multiworld))
+
+            for loc_name, loc_data in location_table.items():
+                if not loc_data.can_create(self.multiworld, self.player):
+                    continue
+                region = self.multiworld.get_region(
+                    loc_data.region,
+                    self.player)
+                new_loc = Location(
+                    self.player,
+                    loc_name,
+                    loc_data.code,
+                    region)
+                if (not loc_data.show_in_spoiler):
+                    new_loc.show_in_spoiler = False
+                region.locations.append(new_loc)
+                if loc_name == "Fight the Boss":
+                    self.multiworld.get_location(
+                        loc_name,
+                        self.player
+                    ).place_locked_item(MinitItem(
+                        name="Boss dead",
+                        classification=ItemClassification.progression,
+                        code=60021,
+                        player=self.player))
+
+            for region_name, exit_list in region_table.items():
+                region = self.multiworld.get_region(region_name, self.player)
+                region.add_exits(exit_list)
+        elif self.options.er_option == 3:
+            # current code for using the Generic ER randomizer, but as it isn't
+            # finished yet delegating to an impossible option
             for region_name in er_regions:
                 self.multiworld.regions.append(Region(
                     region_name,
