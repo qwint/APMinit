@@ -198,8 +198,8 @@ class MinitWorld(World):
                 ("dog house river north", "dog house river south",),
                 ("dog house river south", "dog house river north",),
 
-                ("dog house south", "camera river lookout",),
-                ("camera river lookout", "dog house south",),
+                ("dog house south", "coffee shop inside",),
+                ("coffee shop inside", "dog house south",),
             ]
 
             for region_name in region_table.keys():

@@ -250,66 +250,12 @@ def handleErConnections(ctx: CommonContext):
                         "tile": right_entrance[4],
                         "x": right_entrance[5],
                         "y": right_entrance[6],
-                        "offset": right_entrance[7],
+                        "offDir": right_entrance[7],
+                        "offNum": right_entrance[8],
                         }
                 index += 1
 
-            # left = connection[0]
-            # right = connection[1]
-            # for key, value in game_entrances[left]:
-            #     if erMessage[key]:
-            #         erMessage[key].append(value)
-
-            # erMessage["Entrance"].append(game_entrances[left])
-            # for e in er_entrances:
-            #     if e[0] == left:
-            #         erMessage["Entrance"][index]["in"] = {
-            #             "tile": e[4],
-            #             "x": e[5],
-            #             "y": e[6],
-            #             "offset": e[7],
-            #             }
-            #     if e[0] == right:
-            #         erMessage["Entrance"][index]["out"] = {
-            #             "tile": e[4],
-            #             "x": e[5],
-            #             "y": e[6],
-            #             "offset": e[7],
-            #             }
-            # index += 1
     # erMessage format:
-    # {"Entrances": [
-    #     {
-    #         "in": {
-    #             "tile": "hom10_10",
-    #             "x": 0,
-    #             "y": 0,
-    #             "offset": "x+224"
-    #         },
-    #         "out": {
-    #             "tile": "hom10_10",
-    #             "x": 0,
-    #             "y": 0,
-    #             "offset": "x+224"
-    #         }
-    #     },
-    #     {
-    #         "in": {
-    #             "tile": "hom10_10",
-    #             "x": 0,
-    #             "y": 0,
-    #             "offset": "x+224"
-    #         },
-    #         "out": {
-    #             "tile": "hom10_10",
-    #             "x": 0,
-    #             "y": 0,
-    #             "offset": "x+224"
-    #         }
-    #     }
-    # ]}
-
-    # new erMessage format:
     # {"Entrances": [
     #     "hom10_10": [
     #         {
