@@ -420,6 +420,9 @@ class MinitWorld(World):
             minitRules = MinitRules(self)
             minitRules.set_Minit_rules()
         elif self.options.er_option == 1:
+            minitRules = MinitRules(self)
+            minitRules.set_Minit_rules()
+        elif self.options.er_option == 3:
             minitRules = ER_MinitRules(self)
             minitRules.set_Minit_rules()
 
