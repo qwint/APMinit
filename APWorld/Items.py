@@ -59,10 +59,14 @@ item_table: Dict[str, MinitItemData] = {
         classification=ItemClassification.progression),
     "ItemMegaSword": MinitItemData(
         code=60014,
-        classification=ItemClassification.progression),
+        classification=ItemClassification.progression,
+        can_create=lambda multiworld, player:
+        multiworld.worlds[player].options.progressive_sword.value == 2),
     "ItemBrokenSword": MinitItemData(
         code=60015,
-        classification=ItemClassification.progression),
+        classification=ItemClassification.progression,
+        can_create=lambda multiworld, player:
+        multiworld.worlds[player].options.progressive_sword.value == 2),
     "ItemTurboInk": MinitItemData(
         code=60016,
         classification=ItemClassification.useful),
@@ -77,7 +81,19 @@ item_table: Dict[str, MinitItemData] = {
         classification=ItemClassification.progression),
     "ItemSword": MinitItemData(
         code=60020,
-        classification=ItemClassification.progression),
+        classification=ItemClassification.progression,
+        can_create=lambda multiworld, player:
+        multiworld.worlds[player].options.progressive_sword.value == 2),
+    "Progressive Sword": MinitItemData(
+        code=60021,
+        classification=ItemClassification.progression,
+        can_create=lambda multiworld, player:
+        multiworld.worlds[player].options.progressive_sword.value == 0),
+    "Reverse Progressive Sword": MinitItemData(
+        code=60022,
+        classification=ItemClassification.progression,
+        can_create=lambda multiworld, player:
+        multiworld.worlds[player].options.progressive_sword.value == 1),
 
     # "Boss dead": MinitItemData(
     #     classification=ItemClassification.progression),
@@ -87,7 +103,9 @@ item_table: Dict[str, MinitItemData] = {
 item_frequencies = {
     "Coin": 19,
     "HeartPiece": 6,
-    "Tentacle": 8
+    "Tentacle": 8,
+    "Progressive Sword": 3,
+    "Reverse Progressive Sword": 3,
 }
 
 
@@ -95,7 +113,10 @@ item_groups: Dict[str, Set[str]] = {
     "swords": {
         "ItemBrokenSword",
         "ItemSword",
-        "ItemMegaSword"},
+        "ItemMegaSword",
+        "Progressive Sword",
+        "Reverse Progressive Sword",
+        },
     "swim": {"ItemSwim"},
     "push": {"ItemCoffee"},
     "cut": {"ItemGlove"},
