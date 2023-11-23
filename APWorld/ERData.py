@@ -322,7 +322,7 @@ er_entrances: List[List[any]] = [
     ["desert left cliffs south", "desert left cliffs", False, "land", "rom13_10", 32, 224, "x", 272],
     ["desert left cliffs west", "desert left cliffs", False, "land", "rom13_10", 0, 96, "fixed", 0],
 
-    ["Overworld wet01", "Overworld", False, "water", "rom7_7", 304, 0, "y", 224],
+    ["Overworld wet01", "Overworld", False, "water", "rom7_7", 304, 112, "y", 112],
     ["Overworld wet02", "Overworld", False, "water", "rom7_8", 304, 0, "y", 224],
     ["Overworld wet03", "Overworld", False, "water", "rom7_8", 0, 224, "x", 304],
     ["Overworld wet04", "Overworld", False, "water", "rom6_9", 304, 0, "y", 224],
@@ -379,7 +379,7 @@ er_entrances: List[List[any]] = [
     ["temple tentacle", "temple tentacle", True, "water", "dun13_9", 208, 224, "x", 16],
     ["temple heart", "temple heart", True, "land", "dun14_11", 144, 0, "x", 32],
     ["temple firebat test east", "temple firebat test", False, "land", "dun15_10", 304, 32, "fixed", 0],  # consider smushing together
-    ["temple firebat test west", "temple firebat test", False, "land", "dun15_10", 0, 104, "y", 32],
+    ["temple firebat test west", "temple firebat test", False, "land", "dun15_10", 0, 96, "y", 32],
     ["temple firebat chest", "temple firebat chest", True, "land", "dun16_10", 0, 32, "fixed", 0],
     ["temple coin test north", "temple coin test", False, "land", "dun14_9", 160, 0, "fixed", 0],
     ["temple coin test south", "temple coin test", False, "land", "dun14_9", 144, 224, "x", 32],
@@ -458,7 +458,7 @@ er_entrances: List[List[any]] = [
     ["trophy maze upper hall south", "trophy maze upper hall", False, "land", "dun9_7", 16, 224, "fixed", 0],
     ["trophy maze upper hall west", "trophy maze upper hall", False, "land", "dun9_7", 0, 144, "fixed", 0],
     ["trophy maze deadend", "trophy maze deadend", True, "land", "dun8_7", 304, 144, "fixed", 0],
-    ["trophy room", "trophy room", True, "land", "rom11_8", 0, 32, "fixed", 0],
+    ["trophy room", "trophy room", True, "land", "dun11_8", 0, 32, "fixed", 0],
 ]
 
 game_entrances: Dict[str, List[Dict[str, any]]] = {
@@ -761,7 +761,7 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
     ],
 
     "rom7_7": [
-        {"CName": "Overworld wet01", "direction": "east", "baseCoor": 0, "offset": 240},
+        {"CName": "Overworld wet01", "direction": "east", "baseCoor": 112, "offset": 128},
     ],
     "rom7_8": [
         {"CName": "Overworld wet02", "direction": "east", "baseCoor": 0, "offset": 240},
@@ -894,7 +894,7 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
     ],
     "dun15_10": [
         {"CName": "temple firebat test east", "direction": "east", "baseCoor": 32, "offset": 16},
-        {"CName": "temple firebat test west", "direction": "west", "baseCoor": 104, "offset": 48},
+        {"CName": "temple firebat test west", "direction": "west", "baseCoor": 94, "offset": 48},
     ],
     "dun16_10": [
         {"CName": "temple firebat chest", "direction": "west", "baseCoor": 32, "offset": 16},
@@ -1029,7 +1029,7 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
     "dun8_7": [
         {"CName": "trophy maze deadend", "direction": "east", "baseCoor": 144, "offset": 16},
     ],
-    "rom11_8": [
+    "dun11_8": [
         {"CName": "trophy room", "direction": "west", "baseCoor": 32, "offset": 16},
     ],
 }
