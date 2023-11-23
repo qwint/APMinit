@@ -7,6 +7,7 @@ from BaseClasses import (
     Entrance,
     Tutorial
 )
+from .generic_er import randomize_entrances, ER_Entrance
 from .Items import (
     MinitItem,
     MinitItemData,
@@ -254,6 +255,9 @@ class MinitWorld(World):
                     other_region.connect(region)
             else:
                 region.add_exits(exit_list)
+        elif self.options.er_option == 1:
+            # current map gen is pure random, so make regions/connections vanilla
+            self.output_connections = self.make_bad_map()
 
     def create_regions(self):
 

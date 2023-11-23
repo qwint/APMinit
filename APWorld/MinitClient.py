@@ -110,9 +110,13 @@ class ProxyGameContext(SuperContext):
             ]
             base_title = "Minit Client"
 
+
             def build(self):
                 container = super().build()
                 if tracker_loaded:
+                    self.tabs.do_default_tab = True
+                    self.tabs.current_tab.height = 40
+                    self.tabs.tab_height = 40
                     self.ctx.build_gui(self)
 
 
