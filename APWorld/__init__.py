@@ -58,7 +58,6 @@ except ModuleNotFoundError:
 
 # misc game mod TODOs
 # TODO - pull all required game mods out and reapply to clean up patch file
-#TODO - save mod specific values like location_sent etc.
 
 # add options
 # TODO - figure out how to progressive sword
@@ -94,13 +93,6 @@ except ModuleNotFoundError:
 # make boss fight require the left/right machines
 # - to be stopped (and thus swim + coffee + darkroom by default)
 # set item_sent flags on connect / full sync
-
-#release notes: 
-#now press Q to return to dog house!
-#save files should now correctly represent the % aquired
-# ap sync should no longer give you items you already have
-# - thus no longer replacing your weapon with a dupe
-# - of your most recent recieved item
 
 
 class MinitWebWorld(WebWorld):
