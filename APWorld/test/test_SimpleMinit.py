@@ -1,17 +1,64 @@
 from . import MinitTestBase, selectSeedMinit
 
+can_open_chest = [
+    "Dog House - Land is Great Coin",
+    "Dog House - Hidden Snake Coin",
+    "Dog House - Waterfall Coin",
+    "Dog House - Treasure Island Coin",
+    "Desert RV - Broken Truck",
+    ]
+
+sword_only = [
+    "Dog House - House Pot Coin",
+    "Dog House - Sewer Island Coin",
+    "Dog House - Sewer Coin",
+    "Desert RV - Temple Coin",
+    "Desert RV - Truck Supplies Coin",
+    "Desert RV - Quicksand Coin",
+    "Desert RV - Dumpster",
+    "Hotel Room - Shrub Arena Coin",
+    "Hotel Room - Miner's Chest Coin",
+    "Hotel Room - Hotel Backroom Coin",
+    "Factory Main - Drill Coin",
+    ]
+
+pure_darkrooms = [
+    "Dog House - Sewer Island Coin",
+    "Dog House - Sewer Coin",
+    "Dog House - Hidden Snake Coin",
+    "Dog House - Sewer Tentacle",
+    "Desert RV - ItemTurboInk",
+    "Desert RV - Temple Coin",
+    "Desert RV - Fire Bat Coin",
+    "Desert RV - Quicksand Coin",
+    "Desert RV - Temple Heart",
+    "Desert RV - Octopus Tentacle",
+    "Hotel Room - ItemGrinder",
+    "Hotel Room - Miner's Chest Coin",
+    "Factory Main - ItemMegaSword",
+    ]
+
+simple_darkrooms = [
+    "Dog House - Sewer Island Coin",
+    "Dog House - Sewer Coin",
+    "Dog House - Hidden Snake Coin",
+    "Dog House - Sewer Tentacle",
+    "Desert RV - ItemTurboInk",
+    "Desert RV - Temple Coin",
+    "Desert RV - Fire Bat Coin",
+    "Desert RV - Quicksand Coin",
+    "Desert RV - Octopus Tentacle",
+    "Hotel Room - ItemGrinder",
+    "Hotel Room - Miner's Chest Coin",
+    "Factory Main - ItemMegaSword",
+    ]
+
 
 class TestChestAccess(MinitTestBase):
 
     def test_minit_weapon_chests1(self):
         """Test locations that require any weapon"""
-        locations = [
-            "Dog House - Land is Great Coin",
-            "Dog House - Hidden Snake Coin",
-            "Dog House - Waterfall Coin",
-            "Dog House - Treasure Island Coin",
-            "Desert RV - Broken Truck",
-            ]
+        locations = can_open_chest
         items = [
             ["ItemWateringCan"],
             ["ItemBrokenSword"],
@@ -22,19 +69,7 @@ class TestChestAccess(MinitTestBase):
 
     def test_minit_weapon_chests2(self):
         """Test locations that require any sword"""
-        locations = [
-            "Dog House - House Pot Coin",
-            "Dog House - Sewer Island Coin",
-            "Dog House - Sewer Coin",
-            "Desert RV - Temple Coin",
-            "Desert RV - Truck Supplies Coin",
-            "Desert RV - Quicksand Coin",
-            "Desert RV - Dumpster",
-            "Hotel Room - Shrub Arena Coin",
-            "Hotel Room - Miner's Chest Coin",
-            "Hotel Room - Hotel Backroom Coin",
-            "Factory Main - Drill Coin",
-            ]
+        locations = sword_only
         items = [
             ["ItemBrokenSword"],
             ["ItemSword"],
@@ -62,21 +97,7 @@ class TestChestAccess(MinitTestBase):
 
     def test_minit_darkrooms(self):
         """Test locations that always require Darkroom"""
-        locations = [
-            "Dog House - Sewer Island Coin",
-            "Dog House - Sewer Coin",
-            "Dog House - Hidden Snake Coin",
-            "Dog House - Sewer Tentacle",
-            "Desert RV - ItemTurboInk",
-            "Desert RV - Temple Coin",
-            "Desert RV - Fire Bat Coin",
-            "Desert RV - Quicksand Coin",
-            "Desert RV - Temple Heart",
-            "Desert RV - Octopus Tentacle",
-            "Hotel Room - ItemGrinder",
-            "Hotel Room - Miner's Chest Coin",
-            "Factory Main - ItemMegaSword",
-            ]
+        locations = pure_darkrooms
         items = [
             ["ItemFlashLight"],
             ]
@@ -90,20 +111,7 @@ class TestDarkroomOption(MinitTestBase):
 
     def test_minit_darkrooms(self):
         """Test locations that always require Darkroom"""
-        locations = [
-            "Dog House - Sewer Island Coin",
-            "Dog House - Sewer Coin",
-            "Dog House - Hidden Snake Coin",
-            "Dog House - Sewer Tentacle",
-            "Desert RV - ItemTurboInk",
-            "Desert RV - Temple Coin",
-            "Desert RV - Fire Bat Coin",
-            "Desert RV - Quicksand Coin",
-            "Desert RV - Octopus Tentacle",
-            "Hotel Room - ItemGrinder",
-            "Hotel Room - Miner's Chest Coin",
-            "Factory Main - ItemMegaSword",
-            ]
+        locations = simple_darkrooms
         items = [
             ["ItemFlashLight"],
             ]
@@ -118,21 +126,7 @@ class TestDarkroomObscure(MinitTestBase):
 
     def test_minit_darkrooms(self):
         """Test locations that always require Darkroom"""
-        locations = [
-            "Dog House - Sewer Island Coin",
-            "Dog House - Sewer Coin",
-            "Dog House - Hidden Snake Coin",
-            "Dog House - Sewer Tentacle",
-            "Desert RV - ItemTurboInk",
-            "Desert RV - Temple Coin",
-            "Desert RV - Fire Bat Coin",
-            "Desert RV - Quicksand Coin",
-            "Desert RV - Temple Heart",
-            "Desert RV - Octopus Tentacle",
-            "Hotel Room - ItemGrinder",
-            "Hotel Room - Miner's Chest Coin",
-            "Factory Main - ItemMegaSword",
-            ]
+        locations = pure_darkrooms
         items = [
             ["ItemFlashLight"],
         ]
@@ -150,10 +144,58 @@ class TestAnyGoal(MinitTestBase):
         "chosen_goal": 2,
     }
 
+
 class TestER(MinitTestBase):
     options = {
         "er_option": 1,
     }
+
+
+class TestProgressiveChestAccess(MinitTestBase):
+    options = {
+        "progressive_sword": 0,
+    }
+
+    def test_minit_weapon_chests1(self):
+        """Test locations that require any weapon"""
+        locations = can_open_chest
+        items = [
+            ["ItemWateringCan"],
+            ["Progressive Sword"],
+            ]
+        self.assertAccessDependency(locations, items, only_check_listed=True)
+
+    def test_minit_weapon_chests2(self):
+        """Test locations that require any sword"""
+        locations = sword_only
+        items = [
+            ["Progressive Sword"],
+            ]
+        self.assertAccessDependency(locations, items, only_check_listed=True)
+
+
+class TestProgressiveChestAccess(MinitTestBase):
+    options = {
+        "progressive_sword": 1,
+    }
+
+    def test_minit_weapon_chests1(self):
+        """Test locations that require any weapon"""
+        locations = can_open_chest
+        items = [
+            ["ItemWateringCan"],
+            ["Reverse Progressive Sword"],
+            ]
+        self.assertAccessDependency(locations, items, only_check_listed=True)
+
+    def test_minit_weapon_chests2(self):
+        """Test locations that require any sword"""
+        locations = sword_only
+        items = [
+            ["Reverse Progressive Sword"],
+            ]
+        self.assertAccessDependency(locations, items, only_check_listed=True)
+
 
 class TestSeed1(selectSeedMinit):
     seed = 95400472555641845910
