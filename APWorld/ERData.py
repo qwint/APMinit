@@ -2,7 +2,7 @@ from typing import NamedTuple, Callable, Dict, List, Optional
 # from BaseClasses import CollectionState
 
 er_static_connections: Dict[str, List[str]] = {
-    "Menu": ["dog house west"],
+    "Menu": ["sword main"],
     "lighthouse land": ["lighthouse water"],
     "boat land": ["boat water"],
     "sword main": ["sword bushes", "sword water"],
@@ -41,7 +41,27 @@ er_static_connections: Dict[str, List[str]] = {
     "grinder east": ["grinder main"],
     "factory machine generator": ["factory machine catwalk"],
     "miner chest belts": ["miner chest pipe entrance"],
-    "sewer bat arena": ["sewer bat gate"],
+    "lighthouse inside": ["lighthouse land", "lighthouse lookout"],
+    "coffee shop outside": ["coffee shop inside"],
+    "coffee shop pot stairs": ["sewer main right"],
+    "dog house inside": ["dog house west", "dog house basement"],
+    "glove outside": ["glove inside"],
+    "snake east": ["boattree east", "boattree main"],
+    "boattree river": ["waterfall cave"],
+    "camera house outside": ["camera house inside"],
+    "sewer island": ["sewer upper"],
+    "hotel outside": ["hotel reception", "hotel backroom"],
+    "hotel reception": ["hotel room"],
+    "mine entrance right": ["mine entrance pipe"],
+    "mine entrance left": ["mine entrance path"],
+    "factory loading upper": ["factory snakehall"],
+    "shoe shop inside": ["shoe shop outside", "shoe shop downstairs"],
+    "temple outside": ["temple main"],
+    "desert RV main": ["RV house"],
+    "island house": ["Overworld", "island teleporter"],
+    "tent room main": ["underground house"],
+    "factory mega entrance": ["factory central", "megasword upper"],
+    # connects both megasword upper left and right
 }
 
 er_regions: List[str] = [
@@ -103,8 +123,8 @@ er_entrances: List[List[any]] = [
     ["lighthouse water lower west", "lighthouse water", False, "water", "rom7_11", 0, 0, "y", 224],
     ["lighthouse water lower south", "lighthouse water", False, "water", "rom7_11", 0, 224, "x", 304],
     ["lighthouse water lower east", "lighthouse water", False, "water", "rom7_11", 304, 0, "y", 224],
-    ["lighthouse upper door", "lighthouse lookout", True, "land", "rom7_10", 93, 128, "fixed", 0],
-    ["lighthouse lower door", "lighthouse land", False, "land", "rom7_11", 128, 128, "fixed", 0],
+    # ["lighthouse upper door", "lighthouse lookout", True, "land", "rom7_10", 93, 128, "fixed", 0],
+    # ["lighthouse lower door", "lighthouse land", False, "land", "rom7_11", 128, 128, "fixed", 0],
     ["lighthouse bridge", "lighthouse land", False, "land", "rom7_11", 304, 112, "fixed", 0],
     ["boat water south", "boat water", False, "water", "rom8_11", 0, 224, "x", 304],
     ["boat water east", "boat water", False, "water", "rom8_11", 304, 176, "y", 48],
@@ -138,8 +158,8 @@ er_entrances: List[List[any]] = [
     ["coffee shop outside north", "coffee shop outside", False, "land", "rom8_10", 128, 0, "x", 160],
     ["coffee shop outside east", "coffee shop outside", False, "land", "rom8_10", 304, 128, "y", 48],
     ["coffee shop outside south", "coffee shop outside", False, "land", "rom8_10", 64, 224, "x", 224],
-    ["coffee shop door", "coffee shop outside", False, "land", "rom8_10", 192, 144, "fixed", 0],  # doorup
-    ["coffee shop pot stairs", "coffee shop pot stairs", False, "land", "rom8_10", 288, 80, "fixed", 0],
+    # ["coffee shop door", "coffee shop outside", False, "land", "rom8_10", 192, 144, "fixed", 0],  # doorup
+    # ["coffee shop pot stairs", "coffee shop pot stairs", False, "land", "rom8_10", 288, 80, "fixed", 0],
     ["coffee shop water north", "coffee shop water", False, "water", "rom8_10", 0, 0, "x", 32],
     ["coffee shop water west", "coffee shop water", False, "water", "rom8_10", 0, 0, "y", 224],
     ["coffee shop water south", "coffee shop water", False, "water", "rom8_10", 0, 224, "x", 48],
@@ -152,7 +172,7 @@ er_entrances: List[List[any]] = [
     ["above lighthouse water west", "above lighthouse water", False, "water", "rom7_9", 0, 0, "y", 224],
     ["plant bushes", "plant bushes", False, "land", "rom9_10", 0, 128, "y", 48],
     ["plant main", "plant main", False, "land", "rom9_10", 304, 16, "y", 192],
-    ["dog house door", "dog house west", False, "land", "rom10_10", 144, 172, "fixed", 0],  # doorup
+    # ["dog house door", "dog house west", False, "land", "rom10_10", 144, 172, "fixed", 0],  # doorup
     ["dog house west", "dog house west", False, "land", "rom10_10", 0, 16, "y", 192],
     ["dog house south", "dog house west", False, "land", "rom10_10", 32, 224, "x", 192],
     ["dog house east", "dog house east", False, "land", "rom10_10", 304, 16, "y", 192],
@@ -162,23 +182,22 @@ er_entrances: List[List[any]] = [
     ["dog house bushes", "dog house bushes", False, "land", "rom10_10", 144, 0, "x", 16],
     ["glove outside east", "glove outside", False, "land", "rom11_10", 304, 64, "fixed", 0],
     ["glove outside west", "glove outside", False, "land", "rom11_10", 0, 16, "y", 192],
-    ["glove outside door", "glove outside", False, "land", "rom11_10", 80, 112, "fixed", 0],
+    # ["glove outside door", "glove outside", False, "land", "rom11_10", 80, 112, "fixed", 0],
     ["watering can", "watering can", True, "land", "rom11_10", 272, 224, "fixed", 0],
     ["quicksand upper east", "quicksand main", False, "land", "rom12_9", 304, 80, "y", 32],
     ["quicksand upper west", "quicksand main", False, "land", "rom12_9", 0, 176, "y", 32],
-    # ["quicksand upper north", "quicksand main", False, "land",
-    #     "rom12_9", -1, -1, "z+null"],
+    ["quicksand upper north", "quicksand main", False, "land", "rom12_9", 999, 0, "x", 32],
     ["quicksand left tree", "quicksand left tree", False, "land", "rom12_10", 0, 64, "fixed", 0],
     ["quicksand right tree", "quicksand right tree", False, "land", "rom12_10", 304, 96, "fixed", 0],
     ["bull room left", "bull room", False, "land", "rom11_9", 0, 16, "y", 80],
     ["bull room right", "bull room", False, "land", "rom11_9", 304, 176, "y", 32],
-    ["boattree main door", "boattree main", False, "land", "rom10_9", 48, 160, "fixed", 0],
+    # ["boattree main door", "boattree main", False, "land", "rom10_9", 48, 160, "fixed", 0],
     ["boattree main south", "boattree main", False, "land", "rom10_9", 144, 224, "x", 16],
     ["boattree box", "boattree box", False, "land", "rom10_9", 0, 48, "fixed", 0],
-    ["boattree river north", "boattree river", False, "water", "rom10_9", 240, 144, "fixed", 0],
+    # ["boattree river north", "boattree river", False, "water", "rom10_9", 240, 144, "fixed", 0],
     ["boattree river south", "boattree river", False, "water", "rom10_9", 240, 224, "fixed", 0],
     ["boattree east", "boattree east", False, "land", "rom10_9", 304, 16, "y", 80],
-    ["boattree east door", "boattree east", False, "land", "rom10_9", 256, 32, "fixed", 0],
+    # ["boattree east door", "boattree east", False, "land", "rom10_9", 256, 32, "fixed", 0],
     ["key room", "key room", False, "land", "rom9_9", 0, 32, "y", 112],
     ["camera path north", "camera path", False, "land", "rom9_9", 224, 0, "x", 32],
     ["camera path east", "camera path", False, "land", "rom9_9", 304, 48, "fixed", 0],
@@ -187,7 +206,7 @@ er_entrances: List[List[any]] = [
     ["camera river wet east", "camera river wet", False, "water", "rom9_8", 304, 112, "y", 32],
     ["camera river wet west", "camera river wet", False, "water", "rom9_8", 0, 128, "y", 32],
     ["camera river lookout", "camera river lookout", False, "land", "rom9_8", 0, 80, "y", 16],
-    ["camera house outside door", "camera house outside", False, "land", "rom9_7", 160, 144, "fixed", 0],  # doorup
+    # ["camera house outside door", "camera house outside", False, "land", "rom9_7", 160, 144, "fixed", 0],  # doorup
     ["camera house outside south", "camera house outside", False, "land", "rom9_7", 48, 224, "x", 176],
     ["camera house tree", "camera house tree", False, "land", "rom9_7", 0, 80, "fixed", 0],
     ["3crab main east", "3crab main", False, "land", "rom8_9", 304, 32, "y", 112],
@@ -199,7 +218,7 @@ er_entrances: List[List[any]] = [
     ["3crab south water south", "3crab south water", False, "water", "rom8_9", 0, 224, "x", 32],
     ["3crab land path west", "3crab land path", False, "land", "rom8_9", 0, 144, "y", 16],
     ["3crab land path south", "3crab land path", False, "land", "rom8_9", 48, 224, "x", 32],
-    ["sewer island", "sewer island", True, "land", "rom8_8", 64, 128, "fixed", 0],
+    # ["sewer island", "sewer island", True, "land", "rom8_8", 64, 128, "fixed", 0],
     ["sewer island water north", "sewer island water", False, "water", "rom8_8", 0, 0, "x", 192],
     ["sewer island water east", "sewer island water", False, "water", "rom8_8", 304, 128, "y", 32],
     ["sewer island water south", "sewer island water", False, "water", "rom8_8", 0, 224, "x", 112],
@@ -243,12 +262,12 @@ er_entrances: List[List[any]] = [
     ["hotel outside north", "hotel outside", False, "land", "rom9_6", 32, 0, "x", 240],
     ["hotel outside east", "hotel outside", False, "land", "rom9_6", 304, 16, "y", 192],
     ["hotel outside west", "hotel outside", False, "land", "rom9_6", 0, 32, "y", 176],
-    ["hotel outside back entrance", "hotel outside", False, "land", "rom9_6", 208, 40, "fixed", 0],  # doordown
-    ["hotel outside front entrance", "hotel outside", False, "land", "rom9_6", 208, 176, "fixed", 0],  # doorup
+    # ["hotel outside back entrance", "hotel outside", False, "land", "rom9_6", 208, 40, "fixed", 0],  # doordown
+    # ["hotel outside front entrance", "hotel outside", False, "land", "rom9_6", 208, 176, "fixed", 0],  # doorup
     ["mine entrance right north", "mine entrance right", False, "land", "rom10_7", 272, 0, "fixed", 0],
-    ["mine entrance right door", "mine entrance right", False, "land", "rom10_7", 288, 32, "fixed", 0],
+    # ["mine entrance right door", "mine entrance right", False, "land", "rom10_7", 288, 32, "fixed", 0],
     ["mine entrance left north", "mine entrance left", False, "land", "rom10_7", 64, 0, "x", 32],
-    ["mine entrance left door", "mine entrance left", False, "land", "rom10_7", 80, 96, "fixed", 0],
+    # ["mine entrance left door", "mine entrance left", False, "land", "rom10_7", 80, 96, "fixed", 0],
     ["mine entrance river north", "mine entrance river", False, "water", "rom10_7", 144, 0, "x", 32],
     ["mine entrance river south", "mine entrance river", False, "water", "rom10_7", 128, 224, "x", 48],
     ["poison river corner north", "poison river corner", False, "water", "rom10_8", 128, 0, "x", 48],
@@ -264,30 +283,30 @@ er_entrances: List[List[any]] = [
     ["factory toilet west", "factory toilet", False, "land", "rom13_6", 0, 160, "y", 16],
     ["factory central north", "factory central", False, "land", "rom12_7", 144, 0, "x", 16],
     ["factory central south", "factory central", False, "land", "rom12_7", 144, 224, "x", 16],
-    ["factory central door", "factory central", False, "land", "rom12_7", 192, 16, "fixed", 0],
+    # ["factory central door", "factory central", False, "land", "rom12_7", 192, 16, "fixed", 0],
     ["factory drill north", "factory drill", False, "land", "rom12_8", 144, 0, "x", 16],
     ["factory drill south", "factory drill", False, "land", "rom12_8", 144, 224, "x", 16],
     ["factory loading upper north", "factory loading upper", False, "land", "rom13_7", 96, 0, "x", 16],
     ["factory loading upper east", "factory loading upper", False, "land", "rom13_7", 304, 96, "y", 32],
     ["factory loading upper south", "factory loading upper", False, "land", "rom13_7", 16, 224, "x", 272],
-    ["factory loading upper door", "factory loading upper", False, "land", "rom13_7", 64, 192, "fixed", 0],
+    # ["factory loading upper door", "factory loading upper", False, "land", "rom13_7", 64, 192, "fixed", 0],
     ["factory loading lower main", "factory loading lower main", False, "land", "rom13_8", 16, 0, "x", 272],
     ["factory loading lower shortcut", "factory loading lower shortcut", False, "land", "rom13_8", 304, 128, "fixed", 0],
     ["factory loading deadend", "factory loading deadend", True, "land", "rom14_7", 0, 96, "y", 32],
     ["factory loading desert north", "factory loading desert", True, "land", "rom14_7", 16, 0, "x", 288],
     ["factory loading desert east", "factory loading desert", True, "land", "rom14_7", 304, 0, "y", 256],
     ["shoe shop outside south", "shoe shop outside", False, "land", "rom14_8", 48, 224, "x", 192],
-    ["shoe shop outside door", "shoe shop outside", False, "land", "rom14_8", 192, 176, "fixed", 0],  # doorup
+    # ["shoe shop outside door", "shoe shop outside", False, "land", "rom14_8", 192, 176, "fixed", 0],  # doorup
     ["shoe shop shortcut", "shoe shop shortcut", False, "land", "rom14_8", 0, 128, "fixed", 0],
     ["temple outside north", "temple outside", False, "land", "rom14_10", 0, 0, "x", 304],
     ["temple outside east", "temple outside", False, "land", "rom14_10", 304, 0, "y", 224],
     ["temple outside south", "temple outside", False, "land", "rom14_10", 0, 224, "x", 304],
     ["temple outside west", "temple outside", False, "land", "rom14_10", 0, 0, "y", 224],
-    ["temple outside door", "temple outside", False, "land", "rom14_10", 160, 96, "fixed", 0],
+    # ["temple outside door", "temple outside", False, "land", "rom14_10", 160, 96, "fixed", 0],
     ["desert RV main east", "desert RV main", False, "land", "rom13_9", 304, 48, "y", 144],
     ["desert RV main south", "desert RV main", False, "land", "rom13_9", 32, 224, "x", 224],
     ["desert RV main west", "desert RV main", False, "land", "rom13_9", 0, 80, "y", 32],
-    ["desert RV main door", "desert RV main", False, "land", "rom13_9", 144, 96, "fixed", 0],  # doorup
+    # ["desert RV main door", "desert RV main", False, "land", "rom13_9", 144, 96, "fixed", 0],  # doorup
     ["desert RV corner east", "desert RV corner", False, "land", "rom13_9", 304, 208, "y", 16],
     ["desert RV corner south", "desert RV corner", False, "land", "rom13_9", 272, 224, "x", 32],
     ["desert right cliffs north", "desert right cliffs", False, "land", "rom14_9", 48, 0, "x", 192],
@@ -313,7 +332,7 @@ er_entrances: List[List[any]] = [
     ["Overworld wet10", "Overworld", False, "water", "rom10_12", 0, 0, "x", 304],
     ["Overworld wet11", "Overworld", False, "water", "rom11_12", 0, 0, "x", 304],
     ["Overworld wet12", "Overworld", False, "water", "rom12_12", 0, 0, "x", 304],
-    ["Overworld island door", "Overworld", False, "land", "rom8_15", 224, 160, "fixed", 0],
+    # ["Overworld island door", "Overworld", False, "land", "rom8_15", 224, 160, "fixed", 0],
     ["Overworld dry01", "Overworld", False, "land", "rom12_12", 0, 0, "x", 304],
     ["Overworld dry02", "Overworld", False, "land", "rom13_11", 0, 0, "y", 224],
     ["Overworld dry03", "Overworld", False, "land", "rom13_11", 0, 0, "x", 304],
@@ -324,35 +343,35 @@ er_entrances: List[List[any]] = [
     ["Overworld dry08", "Overworld", False, "land", "rom14_6", 0, 224, "x", 304],
 
 
-    ["RV house", "RV house", True, "land", "hom13_9", 144, 96, "fixed", 0],
-    ["shoe shop inside door", "shoe shop inside", False, "land", "hom14_8", 192, 176, "fixed", 0],  # doorup
-    ["shoe shop inside basement", "shoe shop inside", False, "land", "hom14_8", 160, 80, "fixed", 0],
-    ["hotel reception door", "hotel reception", False, "land", "hom9_6", 208, 176, "fixed", 0],  # doorup
-    ["hotel reception stairs", "hotel reception", False, "land", "hom9_6", 208, 112, "fixed", 0],
-    ["hotel backroom", "hotel backroom", True, "land", "hom9_6", 192, 48, "fixed", 0],
-    ["camera house inside", "camera house inside", True, "land", "hom9_7", 160, 144, "fixed", 0],  # doorup (below this i didn't mark)
-    ["waterfall cave", "waterfall cave", True, "water", "hom10_9", 240, 128, "fixed", 0],
-    ["dog house inside door", "dog house inside", False, "land", "hom10_10", 144, 148, "fixed", 0],
-    ["dog house inside basement", "dog house inside", False, "land", "hom10_10", 192, 144, "fixed", 0],  # to confirm
-    ["coffee shop inside", "coffee shop inside", True, "land", "hom8_10", 192, 128, "fixed", 0],
-    ["lighthouse inside upper", "lighthouse inside", False, "land", "hom7_10", 96, 128, "fixed", 0],
-    ["lighthouse inside lower", "lighthouse inside", False, "land", "hom7_11", 128, 128, "fixed", 0],
-    ["island house door", "island house", False, "land", "hom8_15", 224, 176, "fixed", 0],
-    ["island house basement", "island house", False, "land", "hom8_15", 272, 128, "fixed", 0],
+    # ["RV house", "RV house", True, "land", "hom13_9", 144, 96, "fixed", 0],
+    # ["shoe shop inside door", "shoe shop inside", False, "land", "hom14_8", 192, 176, "fixed", 0],  # doorup
+    # ["shoe shop inside basement", "shoe shop inside", False, "land", "hom14_8", 160, 80, "fixed", 0],
+    # ["hotel reception door", "hotel reception", False, "land", "hom9_6", 208, 176, "fixed", 0],  # doorup
+    # ["hotel reception stairs", "hotel reception", False, "land", "hom9_6", 208, 112, "fixed", 0],
+    # ["hotel backroom", "hotel backroom", True, "land", "hom9_6", 192, 48, "fixed", 0],
+    # ["camera house inside", "camera house inside", True, "land", "hom9_7", 160, 144, "fixed", 0],  # doorup (below this i didn't mark)
+    # ["waterfall cave", "waterfall cave", True, "water", "hom10_9", 240, 128, "fixed", 0],
+    # ["dog house inside door", "dog house inside", False, "land", "hom10_10", 144, 148, "fixed", 0],
+    # ["dog house inside basement", "dog house inside", False, "land", "hom10_10", 192, 144, "fixed", 0],  # to confirm
+    # ["coffee shop inside", "coffee shop inside", True, "land", "hom8_10", 192, 128, "fixed", 0],
+    # ["lighthouse inside upper", "lighthouse inside", False, "land", "hom7_10", 96, 128, "fixed", 0],
+    # ["lighthouse inside lower", "lighthouse inside", False, "land", "hom7_11", 128, 128, "fixed", 0],
+    # ["island house door", "island house", False, "land", "hom8_15", 224, 176, "fixed", 0],
+    # ["island house basement", "island house", False, "land", "hom8_15", 272, 128, "fixed", 0],
     ["megasword upper south", "megasword upper", False, "land", "hom12_7", 96, 224, "x", 128],
-    ["megasword upper right", "megasword upper", False, "land", "hom12_7", 260, 128, "fixed", 0],
-    ["megasword upper left", "megasword upper", False, "land", "hom12_7", 80, 160, "fixed", 0],
+    # ["megasword upper right", "megasword upper", False, "land", "hom12_7", 260, 128, "fixed", 0],
+    # ["megasword upper left", "megasword upper", False, "land", "hom12_7", 80, 160, "fixed", 0],
     ["megasword lower", "megasword lower", True, "land", "hom12_8", 96, 0, "x", 128],
-    ["underground house", "underground house", True, "land", "hom10_8", 248, 152, "fixed", 0],
+    # ["underground house", "underground house", True, "land", "hom10_8", 248, 152, "fixed", 0],
 
-    ["glove inside", "glove inside", True, "land", "dun11_10", 80, 128, "fixed", 0],
-    ["shoe shop downstairs door", "shoe shop downstairs", False, "land", "dun14_8", 160, 96, "fixed", 0],
+    # ["glove inside", "glove inside", True, "land", "dun11_10", 80, 128, "fixed", 0],
+    # ["shoe shop downstairs door", "shoe shop downstairs", False, "land", "dun14_8", 160, 96, "fixed", 0],
     ["shoe shop downstairs teleport", "shoe shop downstairs", False, "land", "dun14_8", 144, 64, "fixed", 0],
     ["temple main north", "temple main", False, "land", "dun14_10", 144, 0, "x", 32],
     ["temple main east", "temple main", False, "land", "dun14_10", 304, 104, "y", 32],
     ["temple main south", "temple main", False, "land", "dun14_10", 144, 224, "x", 32],
     ["temple main west", "temple main", False, "land", "dun14_10", 0, 112, "fixed", 0],
-    ["temple main door", "temple main", False, "land", "dun14_10", 160, 112, "fixed", 0],
+    # ["temple main door", "temple main", False, "land", "dun14_10", 160, 112, "fixed", 0],
     ["temple octopus main", "temple octopus", False, "land", "dun13_10", 304, 112, "fixed", 0],
     ["temple octopus north", "temple octopus", False, "water", "dun13_10", 208, 0, "x", 16],
     ["temple tentacle", "temple tentacle", True, "water", "dun13_9", 208, 224, "x", 16],
@@ -363,36 +382,36 @@ er_entrances: List[List[any]] = [
     ["temple coin test north", "temple coin test", False, "land", "dun14_9", 160, 0, "fixed", 0],
     ["temple coin test south", "temple coin test", False, "land", "dun14_9", 144, 224, "x", 32],
     ["temple coin chest", "temple coin chest", True, "land", "dun14_8", 160, 224, "fixed", 0],
-    ["hotel room door", "hotel room", False, "land", "dun9_6", 208, 128, "fixed", 0],
+    # ["hotel room door", "hotel room", False, "land", "dun9_6", 208, 128, "fixed", 0],
     ["hotel room teleport", "hotel room", False, "land", "dun9_6", 256, 128, "fixed", 0],
-    ["mine entrance path north", "mine entrance path", False, "land", "dun10_7", 80, 80, "fixed", 0],
+    # ["mine entrance path north", "mine entrance path", False, "land", "dun10_7", 80, 80, "fixed", 0],
     ["mine entrance path east", "mine entrance path", False, "land", "dun10_7", 304, 160, "fixed", 0],
     ["mine entrance bombs", "mine entrance bombs", False, "land", "dun10_7", 304, 96, "fixed", 0],
-    ["mine entrance pipe", "mine entrance pipe", False, "land", "dun10_7", 288, 16, "fixed", 0],  # oneway
+    # ["mine entrance pipe", "mine entrance pipe", False, "land", "dun10_7", 288, 16, "fixed", 0],  # oneway
     ["mine main north", "mine main", False, "land", "dun11_7", 208, 0, "fixed", 0],
     ["mine main west upper", "mine main", False, "land", "dun11_7", 0, 96, "fixed", 0],
     ["mine main west lower", "mine main", False, "land", "dun11_7", 0, 160, "fixed", 0],
     ["mine main box", "mine main box", False, "land", "dun11_7", 176, 224, "fixed", 0],
-    ["dog house basement shop", "dog house basement", False, "land", "dun10_10", 208, 96, "fixed", 0],  # g ate switch and/or oneway
-    ["dog house basement stairs", "dog house basement", False, "land", "dun10_10", 192, 128, "fixed", 0],
-    ["dog house basement teleporter", "dog house basement", False, "land", "dun10_10", 144, 160, "fixed", 0],  # gate switch and/or oneway
-    ["dog house basement hotel", "dog house basement", False, "land", "dun10_10", 80, 96, "fixed", 0],  # gate switch and/or oneway
-    ["snake east upper", "snake east", False, "land", "dun10_9", 256, 64, "fixed", 0],
-    ["snake east lower", "snake east", False, "land", "dun10_9", 48, 192, "fixed", 0],
+    # ["dog house basement shop", "dog house basement", False, "land", "dun10_10", 208, 96, "fixed", 0],  # g ate switch and/or oneway
+    # ["dog house basement stairs", "dog house basement", False, "land", "dun10_10", 192, 128, "fixed", 0],
+    # ["dog house basement teleporter", "dog house basement", False, "land", "dun10_10", 144, 160, "fixed", 0],  # gate switch and/or oneway
+    # ["dog house basement hotel", "dog house basement", False, "land", "dun10_10", 80, 96, "fixed", 0],  # gate switch and/or oneway
+    # ["snake east upper", "snake east", False, "land", "dun10_9", 256, 64, "fixed", 0],
+    # ["snake east lower", "snake east", False, "land", "dun10_9", 48, 192, "fixed", 0],
     ["snake west", "snake west", True, "land", "dun9_9", 304, 64, "fixed", 0],
     ["sewer main right north", "sewer main right", False, "land", "dun8_10", 192, 0, "x", 16],
-    ["sewer main right door", "sewer main right", False, "land", "dun8_10", 288, 96, "fixed", 0],
+    # ["sewer main right door", "sewer main right", False, "land", "dun8_10", 288, 96, "fixed", 0],
     ["sewer main left", "sewer main left", False, "water", "dun8_10", 0, 192, "fixed", 0],
     # ["sewer bat arena north", "sewer bat arena", False, "land",
     #     "dun8_9", -1, -1, "z+null"],
     ["sewer bat arena south", "sewer bat arena", False, "land", "dun8_9", 192, 224, "x", 16],
     ["sewer bat gate", "sewer bat gate", False, "land", "dun8_9", 112, 0, "x", 16],  # oneway
-    ["sewer upper door", "sewer upper", False, "land", "dun8_8", 64, 112, "fixed", 0],
+    # ["sewer upper door", "sewer upper", False, "land", "dun8_8", 64, 112, "fixed", 0],
     ["sewer upper south", "sewer upper", False, "land", "dun8_8", 112, 224, "x", 16],
     ["sewer tentacle", "sewer tentacle", True, "land", "dun7_10", 304, 192, "fixed", 0],
     ["island teleporter tile", "island teleporter", False, "land", "dun8_15", 192, 48, "fixed", 0],
     ["island teleporter east", "island teleporter", False, "land", "dun8_15", 304, 80, "fixed", 0],
-    ["island teleporter south", "island teleporter", False, "land", "dun8_15", 272, 144, "fixed", 0],
+    # ["island teleporter south", "island teleporter", False, "land", "dun8_15", 272, 144, "fixed", 0],
     ["submarine east", "submarine", False, "land", "dun9_15", 304, 80, "fixed", 0],
     ["submarine west", "submarine", False, "land", "dun9_15", 0, 80, "fixed", 0],
     ["teleporter switch1", "teleporter switch1", True, "land", "dun11_15", 0, 16, "fixed", 0],  # gate
@@ -408,11 +427,11 @@ er_entrances: List[List[any]] = [
     ["factory switch test west", "factory switch test", False, "land", "dun13_6", 0, 80, "fixed", 0],
     ["factory switch test south", "factory switch test", False, "land", "dun13_6", 80, 224, "fixed", 0],
     ["factory mega entrance north", "factory mega entrance", False, "land", "dun12_7", 128, 0, "x", 48],  # consider lock and key shenanagins
-    ["factory mega entrance door", "factory mega entrance", False, "land", "dun12_7", 192, 32, "fixed", 0],
-    ["factory mega entrance right", "factory mega entrance", False, "land", "dun12_7", 160, 128, "fixed", 0],  # confusing in the code, double check this
-    ["factory mega entrance left", "factory mega entrance", False, "land", "dun12_7", 80, 176, "fixed", 0],
+    # ["factory mega entrance door", "factory mega entrance", False, "land", "dun12_7", 192, 32, "fixed", 0],
+    # ["factory mega entrance right", "factory mega entrance", False, "land", "dun12_7", 160, 128, "fixed", 0],  # confusing in the code, double check this
+    # ["factory mega entrance left", "factory mega entrance", False, "land", "dun12_7", 80, 176, "fixed", 0],
     ["factory snakehall north", "factory snakehall", False, "land", "dun13_7", 80, 0, "fixed", 0],
-    ["factory snakehall south", "factory snakehall", False, "land", "dun13_7", 64, 208, "fixed", 0],
+    # ["factory snakehall south", "factory snakehall", False, "land", "dun13_7", 64, 208, "fixed", 0],
     ["miner chest belts", "miner chest belts", False, "land", "dun11_8", 176, 0, "fixed", 0],
     ["miner chest pipe entrance", "miner chest pipe entrance", False, "land", "dun11_8", 288, 224, "fixed", 0],
     ["miner chest pipe L south", "miner chest pipe L", False, "land", "dun11_8", 16, 224, "fixed", 0],
@@ -421,6 +440,7 @@ er_entrances: List[List[any]] = [
     ["trophy pipe hall left", "trophy pipe hall", False, "land", "dun11_9", 16, 0, "fixed", 0],
     ["tent room main right", "tent room main", False, "land", "dun10_8", 304, 192, "fixed", 0],
     ["tent room main left", "tent room main", False, "land", "dun10_8", 0, 64, "fixed", 0],
+    # ["tent room door", "tent room main"]
     ["tent room pipe O", "tent room pipe O", True, "land", "dun10_8", 0, 160, "fixed", 0],
     ["tent room pipe I right", "tent room pipe I", False, "land", "dun10_8", 304, 32, "fixed", 0],
     ["tent room pipe I left", "tent room pipe I", False, "land", "dun10_8", 0, 32, "fixed", 0],
@@ -1084,3 +1104,5 @@ def minit_get_target_groups(group: str) -> list[str]:
             return ["land"]
         case "water":
             return ["water"]
+        case "Default":
+            return ["Default"]

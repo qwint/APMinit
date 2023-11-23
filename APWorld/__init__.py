@@ -7,7 +7,6 @@ from BaseClasses import (
     Entrance,
     Tutorial
 )
-from .generic_er import randomize_entrances, ER_Entrance
 from .Items import (
     MinitItem,
     MinitItemData,
@@ -37,6 +36,7 @@ from worlds.LauncherComponents import (
 )
 import random
 from Utils import visualize_regions
+from EntranceRando import randomize_entrances  # , ER_Entrance
 
 # high prio
 # TODO - find more places exceptions need to be handled
@@ -138,7 +138,7 @@ class MinitWorld(World):
     options_dataclass = MinitGameOptions
     options: MinitGameOptions
     web = MinitWebWorld()
-    output_connections: List[tuple[ER_Entrance, ER_Entrance]]
+    output_connections: List[tuple[str, str]]
 
     item_name_to_id = {
         name: data.code
@@ -254,76 +254,88 @@ class MinitWorld(World):
             for region_name, exit_list in region_table.items():
                 region = self.multiworld.get_region(region_name, self.player)
                 region.add_exits(exit_list)
+        # elif self.options.er_option == 3:
+        #     # current map gen is pure random, so make regions/connections vanilla
+        #     self.output_connections = self.make_bad_map()
+
+        #     for region_name in region_table.keys():
+        #         self.multiworld.regions.append(Region(
+        #             region_name,
+        #             self.player,
+        #             self.multiworld))
+
+        #     for loc_name, loc_data in location_table.items():
+        #         if not loc_data.can_create(self.multiworld, self.player):
+        #             continue
+        #         region = self.multiworld.get_region(
+        #             loc_data.region,
+        #             self.player)
+        #         new_loc = Location(
+        #             self.player,
+        #             loc_name,
+        #             loc_data.code,
+        #             region)
+        #         if (not loc_data.show_in_spoiler):
+        #             new_loc.show_in_spoiler = False
+        #         region.locations.append(new_loc)
+        #         if loc_name == "Fight the Boss":
+        #             self.multiworld.get_location(
+        #                 loc_name,
+        #                 self.player
+        #             ).place_locked_item(MinitItem(
+        #                 name="Boss dead",
+        #                 classification=ItemClassification.progression,
+        #                 code=60021,
+        #                 player=self.player))
+
+        #     for region_name, exit_list in region_table.items():
+        #         region = self.multiworld.get_region(region_name, self.player)
+        #         region.add_exits(exit_list)
         elif self.options.er_option == 1:
-            # current map gen is pure random, so make regions/connections vanilla
-            self.output_connections = self.make_bad_map()
-
-            for region_name in region_table.keys():
-                self.multiworld.regions.append(Region(
-                    region_name,
-                    self.player,
-                    self.multiworld))
-
-            for loc_name, loc_data in location_table.items():
-                if not loc_data.can_create(self.multiworld, self.player):
-                    continue
-                region = self.multiworld.get_region(
-                    loc_data.region,
-                    self.player)
-                new_loc = Location(
-                    self.player,
-                    loc_name,
-                    loc_data.code,
-                    region)
-                if (not loc_data.show_in_spoiler):
-                    new_loc.show_in_spoiler = False
-                region.locations.append(new_loc)
-                if loc_name == "Fight the Boss":
-                    self.multiworld.get_location(
-                        loc_name,
-                        self.player
-                    ).place_locked_item(MinitItem(
-                        name="Boss dead",
-                        classification=ItemClassification.progression,
-                        code=60021,
-                        player=self.player))
-
-            for region_name, exit_list in region_table.items():
-                region = self.multiworld.get_region(region_name, self.player)
-                region.add_exits(exit_list)
-        elif self.options.er_option == 3:
             # current code for using the Generic ER randomizer, but as it isn't
             # finished yet delegating to an impossible option
+            region_list = []
             for region_name in er_regions:
-                self.multiworld.regions.append(Region(
+                region = Region(
                     region_name,
                     self.player,
-                    self.multiworld))
+                    self.multiworld)
+                self.multiworld.regions.append(region)
+                region_list.append(region)
 
             for region_name, exit_list in er_static_connections.items():
                 region = self.multiworld.get_region(region_name, self.player)
-                region.add_exits(exit_list)
-                for region2 in exit_list:
-                    self.multiworld.get_region(
-                        region2,
-                        self.player
-                    ).add_exits([region_name])
+                for other_region_name in exit_list:
+                    other_region = self.multiworld.get_region(other_region_name, self.player)
+                    region.connect(other_region)
+                # region = self.multiworld.get_region(region_name, self.player)
+                # region_list.append(region)
+                # region.add_exits(exit_list)
+                # for region2 in exit_list:
+                #     self.multiworld.get_region(
+                #         region2,
+                #         self.player
+                #     ).add_exits([region_name])
                 # for exit in region.exits:
                 #     print(f"for static connection: {exit.name} parent region: {exit.parent_region} and connected region: {exit.connected_region}")
 
-            entrance_list = []
-            exit_list = []
+            # entrance_list = []
+            # exit_list = []
             for er_entrance in er_entrances:
                 region = self.multiworld.get_region(
                     er_entrance[1],
                     self.player)
-                entrance = ER_Entrance(self.player, er_entrance[0], region)
+                # entrance = ER_Entrance(self.player, er_entrance[0], region)
                 # entrance.is_dead_end = er_entrance[2]
-                entrance.group_name = er_entrance[3]
-                entrance_list.append(entrance)
+                # entrance.group_name = er_entrance[3]
+                # entrance_list.append(entrance)
                 # print(f"for exit: {entrance.name} parent region: {entrance.parent_region} and connected region: {entrance.connected_region}")
                 # region = self.multiworld.get_region(region_name, self.player)
-                region.add_er_exits(entrance)
+                en1 = region.create_exit(er_entrance[0])
+                en2 = region.create_er_entrance(er_entrance[0])
+                # en1.er_group = er_entrance[3]
+                # en2.er_group = er_entrance[3]
+
                 # print(f"current entrance {entrance_list[len(entrance_list) - 1].name} is type: {type(entrance_list[len(entrance_list) - 1])}")
                 # for exit in region.get_exits():
                 #     print(f"for ER connection: {exit.name} parent region: {exit.parent_region} and connected region: {exit.connected_region}")
@@ -332,35 +344,39 @@ class MinitWorld(World):
                 #     print(f"region {region.name} has exits: {type(exit)}")
 
             # test = ""
-            needed_region = self.multiworld.get_region(
-                'plant bushes',
-                self.player)
-            for entrance in self.multiworld.get_region(
-                    'dog house west',
-                    self.player).exits:
-                is_dog_house = entrance.name == 'dog house door'
-                if not entrance.connected_region and not is_dog_house:
-                    self.multiworld.register_indirect_condition(
-                        needed_region,
-                        entrance)
-                    entrance.access_rule = lambda state: state.can_reach(
-                        needed_region,
-                        "Region",
-                        self.player)
+            # needed_region = self.multiworld.get_region(
+            #     'plant bushes',
+            #     self.player)
+            # for entrance in self.multiworld.get_region(
+            #         'dog house west',
+            #         self.player).exits:
+            #     is_dog_house = entrance.name == 'dog house door'
+            #     if not entrance.connected_region and not is_dog_house:
+            #         self.multiworld.register_indirect_condition(
+            #             needed_region,
+            #             entrance)
+            #         entrance.access_rule = lambda state: state.can_reach(
+            #             needed_region,
+            #             "Region",
+            #             self.player)
                 # else:
                 #     test += entrance.name
             # assert test == "garbage", f"test was {test}"
+            # print("region_list: " + str(region_list))
 
             self.output_connections = randomize_entrances(
-                self.multiworld,
-                self.player,
+                self,
+                # self.player,
                 self.random,
-                entrance_list,
+                # entrance_list,
+                region_list,
                 True,
-                True,
-                minit_get_target_groups)
+                minit_get_target_groups,
+                # True,
+                )
+            # print("output_connections: " + str(output_connections))
             # output_coordinates = transform_connections(output_connections)
-            assert self.output_connections == "garbage", f"test was {self.output_connections}"
+            # assert self.output_connections == "garbage", f"test was {self.output_connections}"
 
             for loc_name, loc_data in location_table.items():
                 if not loc_data.can_create(self.multiworld, self.player):
@@ -419,10 +435,10 @@ class MinitWorld(World):
         if self.options.er_option == 0:
             minitRules = MinitRules(self)
             minitRules.set_Minit_rules()
+        # elif self.options.er_option == 3:
+        #     minitRules = MinitRules(self)
+        #     minitRules.set_Minit_rules()
         elif self.options.er_option == 1:
-            minitRules = MinitRules(self)
-            minitRules.set_Minit_rules()
-        elif self.options.er_option == 3:
             minitRules = ER_MinitRules(self)
             minitRules.set_Minit_rules()
 
