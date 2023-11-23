@@ -262,12 +262,26 @@ class MinitRules:
         }
 
     def has_sword(self, state) -> bool:
-        return state.has_any({
-            "ItemSword",
-            "ItemBrokenSword",
-            "ItemMegaSword",
-            "ProgressiveSword"
-            }, self.player)
+        return (state.has_any({
+                    "ItemSword",
+                    "ItemBrokenSword",
+                    "ItemMegaSword",
+                    }, self.player)
+                or (state.count("Progressive Sword", self.player) >= 1)
+                or (state.count("Reverse Progressive Sword", self.player) >= 1)
+                )
+
+    def has_megasword(self, state) -> bool:
+        return (state.has("ItemMegaSword", self.player)
+                or (state.count("Progressive Sword", self.player) >= 3)
+                or (state.count("Reverse Progressive Sword", self.player) >= 1)
+                )
+
+    def has_brokensword(self, state) -> bool:
+        return (state.has("ItemBrokenSword", self.player)
+                or (state.count("Progressive Sword", self.player) >= 1)
+                or (state.count("Reverse Progressive Sword", self.player) >= 3)
+                )
 
     def has_darkroom(self, state) -> bool:
         return (state.has("ItemFlashLight", self.player)
@@ -372,7 +386,7 @@ class MinitRules:
                 and state.has("ItemPressPass", self.player))
 
     def region_BossFight(self, state) -> bool:
-        return (state.has("ItemMegaSword", self.player)
+        return (self.has_megasword(state)
                 and self.has_darkroom(state))
 
     def set_Minit_rules(self) -> None:

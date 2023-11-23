@@ -49,7 +49,6 @@ from Utils import visualize_regions
 
 # misc game mod TODOs
 # TODO - pull all required game mods out and reapply to clean up patch file
-# TODO - save mod specific values like location_sent etc.
 
 # add options
 # TODO - figure out how to progressive sword
@@ -78,12 +77,7 @@ from Utils import visualize_regions
 #  where item_sent is flagged by ap never hears
 
 # bug reports
-# hotel residents showing up in their rooms before being saved,
-# - potentially because the game was already completed? (toilet)
-# shrub arena not getting more enemies/dropping the coin
-# sidekick-energy guy not showing up at his dialog spawns
 # hotel backroom coin is accessible without breaking the pot
-# - (confirm vanilla behavior or fix)
 # fanfares sometimes clip you into walls without a way out
 # generation breaks sometimes, unknown cause
 
@@ -92,13 +86,6 @@ from Utils import visualize_regions
 # make residents item/location
 # make boss fight require the left/right machines
 # - to be stopped (and thus swim + coffee + darkroom by default)
-
-# release notes:
-# now press Q to return to dog house!
-# save files should now correctly represent the % aquired
-# ap sync should no longer give you items you already have
-# - thus no longer replacing your weapon with a dupe
-# - of your most recent recieved item
 
 
 class MinitWebWorld(WebWorld):
@@ -414,17 +401,25 @@ class MinitWorld(World):
                 state.has("Boss dead", self.player)
         elif self.options.chosen_goal == 1:  # toilet
             self.multiworld.completion_condition[self.player] = lambda state: \
-                state.has("ItemBrokenSword", self.player) and \
+                minitRules.has_brokensword(state) and \
                 (minitRules.region_factory_desert(state) or
                     minitRules.region_factory_hotel(state))
         elif self.options.chosen_goal == 2:  # any
             self.multiworld.completion_condition[self.player] = lambda state: \
                 state.has("Boss dead", self.player) or \
-                (state.has("ItemBrokenSword", self.player) and
+                (minitRules.has_brokensword(state) and
                     (minitRules.region_factory_desert(state) or
                         minitRules.region_factory_hotel(state)))
         if bool(self.options.starting_sword.value):
-            self.multiworld.local_early_items[self.player]['ItemSword'] = 1
+            self.multiworld.local_early_items[self.player][self.get_sword_item_name()] = 1
+
+    def get_sword_item_name(self) -> str:
+        if self.options.progressive_sword.value == 0:
+            return "Progressive Sword"
+        elif self.options.progressive_sword.value == 1:
+            return "Reverse Progressive Sword"
+        elif self.options.progressive_sword.value == 2:
+            return "ItemSword"
 
     def get_filler_item_name(self) -> str:
         return "HeartPiece"
