@@ -202,24 +202,7 @@ class MinitWorld(World):
     def create_regions(self):
 
         if self.options.er_option == 0:
-            # self.output_connections = None
-            # self.output_connections = [
-            #     ("dog house inside door", "dog house door",),
-            #     ("dog house door", "dog house inside door",),
-
-            #     ("dog house west", "dog house east",),
-            #     ("dog house east", "dog house west",),
-
-            #     ("dog house east lower", "dog house bushes",),
-            #     ("dog house bushes", "dog house east lower",),
-
-            #     ("dog house river north", "dog house river south",),
-            #     ("dog house river south", "dog house river north",),
-
-            #     ("dog house south", "coffee shop inside",),
-            #     ("coffee shop inside", "dog house south",),
-            # ]
-            self.output_connections = self.make_bad_map()
+            self.output_connections = None
 
             for region_name in region_table.keys():
                 self.multiworld.regions.append(Region(
