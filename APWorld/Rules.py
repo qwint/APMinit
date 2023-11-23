@@ -159,6 +159,7 @@ class MinitRules:
                 # - island shack access, existing implies dog house access,
                 # - only need to check hotel room access
                 # need to revisit logic for obscure swim rules
+                #need to update and refactor this for obscure logic swimming to Island shack and thus not hard requiring teleport
             "Desert RV - Fire Bat Coin": lambda state:
                 state.has("ItemWateringCan", self.player)
                 and self.has_darkroom(state) and self.can_openChest(state),

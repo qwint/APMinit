@@ -17,6 +17,7 @@ from aiohttp import web
 import Utils
 import settings
 from .Items import item_table
+from .ERData import er_entrances, game_entrances
 tracker_loaded = False
 try:
     from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
@@ -108,9 +109,13 @@ class ProxyGameContext(SuperContext):
             ]
             base_title = "Minit Client"
 
+
             def build(self):
                 container = super().build()
                 if tracker_loaded:
+                    self.tabs.do_default_tab = True
+                    self.tabs.current_tab.height = 40
+                    self.tabs.tab_height = 40
                     self.ctx.build_gui(self)
 
                 return container
@@ -215,6 +220,95 @@ class ProxyGameContext(SuperContext):
         # response = {'datapackage':'FROM MINIT - need to figure out data'}
         # await self.send_msgs(response)
         return web.json_response(response)
+
+    async def erConnHandler(self, request: web.Request) -> web.Response:
+        """handle GET at /ErConnections"""
+        response = handleErConnections(self)
+        return web.json_response(response)
+
+
+def handleErConnections(ctx: CommonContext):
+    connections = ctx.slot_data["ER_connections"]
+    erMessage = {"Entrances": game_entrances}
+    if connections:
+        for connection in connections:
+            left = connection[0]
+            right = connection[1]
+            for e in er_entrances:
+                if e[0] == left:
+                    left_entrance = e
+                if e[0] == right:
+                    right_entrance = e
+
+            print(f"left_entrance: {left_entrance}")
+            print(f"right_entrance: {right_entrance}")
+            left_tile = left_entrance[4]
+            print(f"left_tile: {left_tile}")
+            left_name = left_entrance[0]
+            print(f"left_name: {left_name}")
+
+            index = 0
+            for entrance in erMessage["Entrances"][left_tile]:
+                if left_name == entrance["CName"]:
+                    erMessage["Entrances"][left_tile][index]["out"] = {
+                        "tile": right_entrance[4],
+                        "x": right_entrance[5],
+                        "y": right_entrance[6],
+                        "offDir": right_entrance[7],
+                        "offNum": right_entrance[8],
+                        }
+                index += 1
+
+    # erMessage format:
+    # {"Entrances": [
+    #     "hom10_10": [
+    #         {
+    #             "direction": "south",
+    #             "baseCoor": 0,
+    #             "offset": 224,
+    #             "out": {
+    #                 "room": "hom10_10",
+    #                 "x": 0,
+    #                 "y": 0,
+    #             }
+    #         },
+    #         {
+    #             "direction": "north",
+    #             "baseCoor": 0,
+    #             "offset": 224,
+    #             "out": {
+    #                 "room": "hom10_10",
+    #                 "x": 0,
+    #                 "y": 0,
+    #             }
+    #         }
+    #     ],
+    #     "rom10_10": [
+    #         {
+    #             "direction": "south",
+    #             "baseCoor": 0,
+    #             "offset": 224,
+    #             "out": {
+    #                 "room": "hom10_10",
+    #                 "x": 0,
+    #                 "y": 0,
+    #             }
+    #         },
+    #         {
+    #             "direction": "door",
+    #             "x": 0,
+    #             "y": 224,
+    #             "out": {
+    #                 "room": "hom10_10",
+    #                 "x": 0,
+    #                 "y": 0,
+    #             }
+    #         }
+    #     ]
+    # ]}
+    else:
+        erMessage = "ER Disabled"
+    return erMessage
 
 
 def handleDeathlink(ctx: CommonContext):

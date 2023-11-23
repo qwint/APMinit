@@ -1,0 +1,9 @@
+add to Region a way to directly add an Entrance to exits
+
+
+
+    def add_er_exits(self, exit: Entrance) -> None:
+        """
+		Adds Entrance to self.exits
+        """
+        self.exits.append(exit)
