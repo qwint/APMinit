@@ -269,6 +269,11 @@ location_table = {
     "Fight the Boss": MinitLocationData(
         region="Boss Fight",
         er_region="factory machine generator",
- #       locked_item="Boss dead",
+        # locked_item="Boss dead",
+        ),
+    "Flush the Sword": MinitLocationData(
+        region="Factory Main",
+        er_region="factory toilet",
+        # locked_item="Sword Flushed",
         ),
 }

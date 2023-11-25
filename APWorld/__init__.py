@@ -139,6 +139,7 @@ class MinitWorld(World):
     options: MinitGameOptions
     web = MinitWebWorld()
     output_connections: List[tuple[str, str]]
+    er_region_list: List[Region] = []
 
     item_name_to_id = {
         name: data.code
@@ -248,7 +249,16 @@ class MinitWorld(World):
                     ).place_locked_item(MinitItem(
                         name="Boss dead",
                         classification=ItemClassification.progression,
-                        code=60021,
+                        code=None,  # code=60021,
+                        player=self.player))
+                if loc_name == "Flush the Sword":
+                    self.multiworld.get_location(
+                        loc_name,
+                        self.player
+                    ).place_locked_item(MinitItem(
+                        name="Sword Flushed",
+                        classification=ItemClassification.progression,
+                        code=None,  # code=60021,
                         player=self.player))
 
             for region_name, exit_list in region_table.items():
@@ -294,20 +304,21 @@ class MinitWorld(World):
         elif self.options.er_option == 1:
             # current code for using the Generic ER randomizer, but as it isn't
             # finished yet delegating to an impossible option
-            region_list = []
+            # region_list = []
             for region_name in er_regions:
                 region = Region(
                     region_name,
                     self.player,
                     self.multiworld)
                 self.multiworld.regions.append(region)
-                region_list.append(region)
+                # region_list.append(region)
 
             for region_name, exit_list in er_static_connections.items():
                 region = self.multiworld.get_region(region_name, self.player)
                 for other_region_name in exit_list:
                     other_region = self.multiworld.get_region(other_region_name, self.player)
                     region.connect(other_region)
+                    other_region.connect(region)
                 # region = self.multiworld.get_region(region_name, self.player)
                 # region_list.append(region)
                 # region.add_exits(exit_list)
@@ -325,6 +336,8 @@ class MinitWorld(World):
                 region = self.multiworld.get_region(
                     er_entrance[1],
                     self.player)
+                if region not in self.er_region_list:
+                    self.er_region_list.append(region)
                 # entrance = ER_Entrance(self.player, er_entrance[0], region)
                 # entrance.is_dead_end = er_entrance[2]
                 # entrance.group_name = er_entrance[3]
@@ -332,7 +345,9 @@ class MinitWorld(World):
                 # print(f"for exit: {entrance.name} parent region: {entrance.parent_region} and connected region: {entrance.connected_region}")
                 # region = self.multiworld.get_region(region_name, self.player)
                 en1 = region.create_exit(er_entrance[0])
+                en1.er_type = Entrance.Type.TWO_WAY
                 en2 = region.create_er_entrance(er_entrance[0])
+                en2.er_type = Entrance.Type.TWO_WAY
                 # en1.er_group = er_entrance[3]
                 # en2.er_group = er_entrance[3]
 
@@ -342,6 +357,8 @@ class MinitWorld(World):
                 #     print(f"region {region.name} has exits: {type(exit)}")
                 # for exit in region.get_exits():
                 #     print(f"region {region.name} has exits: {type(exit)}")
+
+            # assert region_list == self.er_region_list, f"{str(region_list)}\n is not \n{str(self.er_region_list)}"
 
             # test = ""
             # needed_region = self.multiworld.get_region(
@@ -364,16 +381,16 @@ class MinitWorld(World):
             # assert test == "garbage", f"test was {test}"
             # print("region_list: " + str(region_list))
 
-            self.output_connections = randomize_entrances(
-                self,
-                # self.player,
-                self.random,
-                # entrance_list,
-                region_list,
-                True,
-                minit_get_target_groups,
-                # True,
-                )
+            # self.output_connections = randomize_entrances(
+            #     self,
+            #     # self.player,
+            #     self.random,
+            #     # entrance_list,
+            #     region_list,
+            #     True,
+            #     minit_get_target_groups,
+            #     # True,
+            #     )
             # print("output_connections: " + str(output_connections))
             # output_coordinates = transform_connections(output_connections)
             # assert self.output_connections == "garbage", f"test was {self.output_connections}"
@@ -401,9 +418,7 @@ class MinitWorld(World):
                         classification=ItemClassification.progression,
                         code=60021,
                         player=self.player))
-            visualize_regions(
-                self.multiworld.get_region("Menu", self.player),
-                "output/regionmap.puml")
+
             # print(output_connections)
             # randomize_entrances(self, self, self, self, self, self, self)
 
@@ -422,6 +437,17 @@ class MinitWorld(World):
 
         #     locked_item = self.create_item(location_table[location_name].locked_item)
         #     self.multiworld.get_location(location_name, self.player).place_locked_item(locked_item)
+    # def pre_fill(self) -> None:
+    #     self.output_connections = randomize_entrances(
+    #             self,
+    #             # self.player,
+    #             self.random,
+    #             # entrance_list,
+    #             self.er_region_list,
+    #             True,
+    #             minit_get_target_groups,
+    #             # True,
+    #             )
 
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
@@ -435,29 +461,54 @@ class MinitWorld(World):
         if self.options.er_option == 0:
             minitRules = MinitRules(self)
             minitRules.set_Minit_rules()
+            if self.options.chosen_goal == 0:  # boss fight
+                self.multiworld.completion_condition[self.player] = lambda state: \
+                    state.has("Boss dead", self.player)
+            elif self.options.chosen_goal == 1:  # toilet
+                self.multiworld.completion_condition[self.player] = lambda state: \
+                    state.has("ItemBrokenSword", self.player) and \
+                    (minitRules.region_factory_desert(state) or
+                        minitRules.region_factory_hotel(state))
+            elif self.options.chosen_goal == 2:  # any
+                self.multiworld.completion_condition[self.player] = lambda state: \
+                    state.has("Boss dead", self.player) or \
+                    (state.has("ItemBrokenSword", self.player) and
+                        (minitRules.region_factory_desert(state) or
+                            minitRules.region_factory_hotel(state)))
+            if bool(self.options.starting_sword.value):
+                self.multiworld.local_early_items[self.player]['ItemSword'] = 1
         # elif self.options.er_option == 3:
         #     minitRules = MinitRules(self)
         #     minitRules.set_Minit_rules()
         elif self.options.er_option == 1:
+            assert ["lighthouse lookout", "coffee shop pot stairs", "sewer island", "shoe shop inside", "camera house inside", "dog house inside", "lighthouse inside", "island house", "shoe shop downstairs", "dog house basement"] not in self.er_region_list
+            self.output_connections = randomize_entrances(
+                    self,
+                    # self.player,
+                    self.random,
+                    # entrance_list,
+                    self.er_region_list,
+                    True,
+                    minit_get_target_groups,
+                    # True,
+                    )
+            visualize_regions(
+                self.multiworld.get_region("Menu", self.player),
+                "output/regionmap.puml")
             minitRules = ER_MinitRules(self)
             minitRules.set_Minit_rules()
-
-        if self.options.chosen_goal == 0:  # boss fight
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                state.has("Boss dead", self.player)
-        elif self.options.chosen_goal == 1:  # toilet
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                state.has("ItemBrokenSword", self.player) and \
-                (minitRules.region_factory_desert(state) or
-                    minitRules.region_factory_hotel(state))
-        elif self.options.chosen_goal == 2:  # any
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                state.has("Boss dead", self.player) or \
-                (state.has("ItemBrokenSword", self.player) and
-                    (minitRules.region_factory_desert(state) or
-                        minitRules.region_factory_hotel(state)))
-        if bool(self.options.starting_sword.value):
-            self.multiworld.local_early_items[self.player]['ItemSword'] = 1
+            if self.options.chosen_goal == 0:  # boss fight
+                self.multiworld.completion_condition[self.player] = lambda state: \
+                    state.has("Boss dead", self.player)
+            elif self.options.chosen_goal == 1:  # toilet
+                self.multiworld.completion_condition[self.player] = lambda state: \
+                    state.has("ItemBrokenSword", self.player) and \
+                    state.has("Sword Flushed", self.player)
+            elif self.options.chosen_goal == 2:  # any
+                self.multiworld.completion_condition[self.player] = lambda state: \
+                    state.has("Boss dead", self.player) or \
+                    (state.has("ItemBrokenSword", self.player) and
+                        state.has("Sword Flushed", self.player))
 
     def get_filler_item_name(self) -> str:
         return "HeartPiece"

@@ -260,7 +260,7 @@ class ER_MinitRules:
     #need rewrites
     def has_savedResidents(self, state) -> bool:
         #can save all the residents to access the hotel roof
-        return self.has_sword(state) and state.has("ItemCoffee", self.player) and state.has("ItemGlove", self.player) and (self.has_bridge(state) or self.region_hotel_factory(state))
+        return self.has_sword(state) and state.has("ItemCoffee", self.player) and state.has("ItemGlove", self.player) and self.has_bridge(state)  # (self.has_bridge(state) or self.region_hotel_factory(state))
     def has_bridge(self, state) -> bool:
         return  state.has("ItemSwim", self.player) or (self.has_darkroom(state) and state.has("ItemThrow", self.player) and self.has_sword(state))
         #this is also accessible through the factory in the case that your factory access is desert > sword + grinder and you have press pass, but those are covered by region_hotel_factory when necessary
@@ -270,15 +270,15 @@ class ER_MinitRules:
     def can_teleport(self, state) -> bool:
         return self.has_madeboat(state) and state.has("ItemBasement", self.player) and self.has_sword(state) and state.has("ItemSwim", self.player) or state.has("ItemCoffee", self.player)
 
-    #meaningless but currently used
-    def region_factory_hotel(self, state) -> bool:
-        return (self.has_sword(state) and state.has("ItemPressPass", self.player) and 
-                    ((self.has_darkroom(state) and state.has("ItemThrow", self.player)) or state.has("ItemSwim", self.player))) or (state.has("ItemSwim", self.player) and self.has_darkroom(state))
+    # #meaningless but currently used
+    # def region_factory_hotel(self, state) -> bool:
+    #     return (self.has_sword(state) and state.has("ItemPressPass", self.player) and 
+    #                 ((self.has_darkroom(state) and state.has("ItemThrow", self.player)) or state.has("ItemSwim", self.player))) or (state.has("ItemSwim", self.player) and self.has_darkroom(state))
 
-    def region_factory_desert(self, state) -> bool:
-        return  (self.has_sword(state) and state.has("ItemGrinder", self.player)) or (state.has("ItemSwim", self.player) and state.has("ItemCoffee", self.player))
-    def region_hotel_factory(self, state) -> bool:
-        return  self.region_DesertRV(state) and self.region_factory_desert(state) and self.has_sword(state) and state.has("ItemPressPass", self.player)
+    # def region_factory_desert(self, state) -> bool:
+    #     return  (self.has_sword(state) and state.has("ItemGrinder", self.player)) or (state.has("ItemSwim", self.player) and state.has("ItemCoffee", self.player))
+    # def region_hotel_factory(self, state) -> bool:
+    #     return  self.region_DesertRV(state) and self.region_factory_desert(state) and self.has_sword(state) and state.has("ItemPressPass", self.player)
 
 
 
