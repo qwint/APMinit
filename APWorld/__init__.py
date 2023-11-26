@@ -36,7 +36,7 @@ from worlds.LauncherComponents import (
 )
 import random
 from Utils import visualize_regions
-from EntranceRando import randomize_entrances  # , ER_Entrance
+from EntranceRando import randomize_entrances
 
 # high prio
 # TODO - find more places exceptions need to be handled
@@ -245,7 +245,10 @@ class MinitWorld(World):
             region = self.multiworld.get_region(region_name, self.player)
             if er_on:
                 for other_region_name in exit_list:
-                    other_region = self.multiworld.get_region(other_region_name, self.player)
+                    other_region = self.multiworld.get_region(
+                        other_region_name,
+                        self.player,
+                        )
                     region.connect(other_region)
                     other_region.connect(region)
             else:

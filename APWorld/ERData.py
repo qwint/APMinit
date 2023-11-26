@@ -62,6 +62,10 @@ er_static_connections: Dict[str, List[str]] = {
     "dog house basement": ["hotel room", "shoe shop downstairs", "island teleporter"],
 }
 
+# vanilla_connections: Dict[str, List[str]] = {
+#
+# }
+
 er_regions: List[str] = [
     "Menu", "lighthouse water", "lighthouse land", "lighthouse lookout",
     "boat water", "boat land", "sword bushes", "sword main", "sword water",
