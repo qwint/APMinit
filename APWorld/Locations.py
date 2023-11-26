@@ -269,11 +269,86 @@ location_table = {
     "Fight the Boss": MinitLocationData(
         region="Boss Fight",
         er_region="factory machine generator",
-        # locked_item="Boss dead",
+        locked_item="Boss dead",
         ),
     "Flush the Sword": MinitLocationData(
         region="Factory Main",
         er_region="factory toilet",
-        # locked_item="Sword Flushed",
+        locked_item="Sword Flushed",
+        ),
+    "generator smashed": MinitLocationData(
+        region="Factory Main",
+        er_region="factory machine generator",
+        locked_item="generator smashed",
+        ),
+    "drill smacked": MinitLocationData(
+        region="Factory Main",
+        er_region="factory drill",
+        locked_item="drill smacked",
+        ),
+    "swimmer saved": MinitLocationData(
+        region="Hotel Room",
+        er_region="diver room",
+        locked_item="swimmer saved",
+        ),
+    "hostage saved": MinitLocationData(
+        region="Hotel Room",
+        er_region="arena main",
+        locked_item="hostage saved",
+        ),
+    "wallet saved": MinitLocationData(
+        region="Hotel Room",
+        er_region="wallet room",
+        locked_item="wallet saved",
+        ),
+    "ninja saved": MinitLocationData(
+        region="Hotel Room",
+        er_region="tree resident",
+        locked_item="ninja saved",
+        ),
+    "bridge on": MinitLocationData(
+        region="Hotel Room",
+        er_region="bridge switch right",
+        locked_item="bridge on",
+        ),
+    "bridge saved": MinitLocationData(
+        region="Hotel Room",
+        er_region="bridge right",
+        locked_item="bridge saved",
+        ),
+    "hidden saved": MinitLocationData(
+        region="Hotel Room",
+        er_region="bridge switch left",
+        locked_item="hidden saved",
+        ),
+    "teleporter switch1": MinitLocationData(
+        region="Island Shack",
+        er_region="teleporter switch1",
+        locked_item="teleporter switch1",
+        ),
+    "teleporter switch4": MinitLocationData(
+        region="Island Shack",
+        er_region="Overworld",
+        locked_item="teleporter switch4",
+        ),
+    "teleporter switch6": MinitLocationData(
+        region="Island Shack",
+        er_region="Overworld",
+        locked_item="teleporter switch6",
+        ),
+    "boatguy watered": MinitLocationData(
+        region="Desert RV",
+        er_region="Overworld",
+        locked_item="boatguy watered",
+        ),
+    "left machine": MinitLocationData(
+        region="Factory Main",
+        er_region="grinder main",
+        locked_item="left machine",
+        ),
+    "right machine": MinitLocationData(
+        region="Factory Main",
+        er_region="factory switch test",
+        locked_item="right machine",
         ),
 }
