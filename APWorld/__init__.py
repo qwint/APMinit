@@ -60,19 +60,15 @@ from EntranceRando import randomize_entrances
 # TODO - clean up item/location names
 # TODO - refactor code
 # TODO - add swim as an option for getting 1/4 of temple coin
-# TODO - add coin counter when recieving any new coins
 
 # deathlink testing
 # deaths during pause seem to dissapear
-# sometimes item pickups are delayed, seems to be competing async tasks in game
 # saw a death as i respawned once but no idea what the cause
-# still some sort of message queuing in the game mod
 # seemingly had another
 # - Unable to find any instance for object index '0' name 'Player'
 # - at gml_Object_apConnection_Other_62
 # error when recieving a deathlink after dying, but unknown why
 # - (because that should be handled)
-# seemingly unrelated bugs: broken truck seems to not be sending when collected
 # potential sync issue when sending items and dying (deathlink)
 #  where item_sent is flagged by ap never hears
 
@@ -86,6 +82,7 @@ from EntranceRando import randomize_entrances
 # make residents item/location
 # make boss fight require the left/right machines
 # - to be stopped (and thus swim + coffee + darkroom by default)
+# set item_sent flags on connect / full sync
 
 
 class MinitWebWorld(WebWorld):
