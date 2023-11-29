@@ -148,8 +148,8 @@ class MinitRules:
                 state.has("ItemWateringCan", self.player)
                 or (self.region_DogHouse(state)
                     and (self.has_sword(state)
-                         and state.has("ItemGlove", self.player))
-                    or state.has("ItemSwim", self.player)),
+                         and state.has("ItemGlove", self.player)
+                    or state.has("ItemSwim", self.player))),
             "Desert RV - ItemTurboInk": lambda state:
                 self.get_tentacles(state, 8) and self.has_darkroom(state),
             "Desert RV - Temple Coin": lambda state:
@@ -279,7 +279,12 @@ class MinitRules:
             "ninja saved": lambda state:
                 self.has_sword(state) and state.has("ItemGlove", self.player),
             "bridge on": lambda state:
-                self.has_sword(state),  # get there
+                self.has_sword(state)
+                and (
+                     state.has("ItemSwim", self.player)
+                     or (state.has("ItemThrow", self.player) and self.has_sword(state) and self.has_darkroom(state))
+                     or (self.region_hotel_factory(state) and state.has("ItemPressPass", self.player))
+                ),
             "bridge saved": lambda state:
                 state.has("bridge on", self.player),
             "hidden saved": lambda state:
@@ -409,11 +414,11 @@ class MinitRules:
     def region_DesertRV(self, state) -> bool:
         return (self.region_DogHouse(state)
                 and (self.has_sword(state)
-                     and state.has("ItemGlove", self.player)
-                     or (self.has_sword(state)
-                         or state.has("ItemSwim", self.player))
-                     and self.has_darkroom(state)
-                     or state.has("ItemSwim", self.player)))
+                     and state.has("ItemGlove", self.player))
+                or ((self.has_sword(state)
+                    or state.has("ItemSwim", self.player))
+                    and self.has_darkroom(state))
+                or state.has("ItemSwim", self.player))
 
     def region_HotelRoom(self, state) -> bool:
         return (self.region_DogHouse(state)
