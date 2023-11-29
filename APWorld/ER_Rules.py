@@ -210,7 +210,9 @@ class ER_MinitRules:
         self.location_rules = {
 
             # Dog House
-            "Dog House - ItemCoffee": lambda state: True,
+            "Dog House - ItemCoffee": lambda state:
+                True,
+                # needs logic to kill the crabs
             "Dog House - ItemFlashLight": lambda state:
                 True,
                 # this ignores obscure logic rn
