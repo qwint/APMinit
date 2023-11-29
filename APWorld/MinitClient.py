@@ -385,6 +385,8 @@ def handleItems(ctx: CommonContext):
     coins = 0
     hearts = 0
     tentacles = 0
+    swordsF = 0
+    swordsR = 0
     for item in ctx.items_received:
         if item[0] == 60000:
             coins += 1
@@ -392,13 +394,19 @@ def handleItems(ctx: CommonContext):
             hearts += 1
         elif item[0] == 60002:
             tentacles += 1
+        elif item[0] == 60021:
+            swordsF += 1
+        elif item[0] == 60022:
+            swordsR += 1
         else:
             itemIds.append(item[0])
     itemmessage = {
         "Items": itemIds,
         "Coins": coins,
         "Hearts": hearts,
-        "Tentacles": tentacles
+        "Tentacles": tentacles,
+        "swordsF": swordsF,
+        "swordsR": swordsR,
     }
     return itemmessage
 
