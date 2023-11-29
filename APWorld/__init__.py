@@ -339,3 +339,18 @@ class MinitWorld(World):
 
     def get_filler_item_name(self) -> str:
         return "HeartPiece"
+
+    def pre_fill(self) -> None:
+        if self.multiworld.players == 1 and not bool(self.options.starting_sword.value):
+            starting_items = ["ItemSwim", "ItemWateringCan"]
+            if self.options.progressive_sword.value == 2:
+                starting_items.append("ItemBrokenSword")
+                starting_items.append("ItemSword")
+                starting_items.append("ItemMegaSword")
+            else:
+                # put progressive sword in here when i finally do it
+                starting_items.append("ItemBrokenSword")
+                starting_items.append("ItemSword")
+                starting_items.append("ItemMegaSword")
+            self.random.shuffle(starting_items)
+            self.multiworld.local_early_items[self.player][starting_items.pop()] = 1
