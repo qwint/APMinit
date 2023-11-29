@@ -10,6 +10,7 @@ from CommonClient import (
     ClientCommandProcessor
 )
 import json
+from typing import List
 import time
 import os
 import bsdiff4
@@ -87,6 +88,7 @@ class ProxyGameContext(SuperContext):
     slot_data: dict[str, any]
     death_amnisty_total: int
     death_amnisty_count: int
+    goals: List[str]
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
@@ -148,6 +150,7 @@ class ProxyGameContext(SuperContext):
                 "locations": list(self.missing_locations),
                 "create_as_hint": 0
                 }]))
+            self.goals = self.slot_data["goals"]
         # if cmd == 'ReceivedItems':
         #     #TODO make this actually send minit a ping
         #      - or check if it can be handled with ctx.watcher_event instead
@@ -177,8 +180,10 @@ class ProxyGameContext(SuperContext):
 
     async def goalHandler(self, request: web.Request) -> web.Response:
         """handle POST at /Goal"""
-        response = handleGoal(self)
-        await self.send_msgs(response)
+        requestjson = await request.text()
+        response = handleGoal(self, requestjson)
+        if response:
+            await self.send_msgs(response)
         return web.json_response(response)
 
     async def deathHandler(self, request: web.Request) -> web.Response:
@@ -312,8 +317,11 @@ def handleDeathlink(ctx: CommonContext):
     return deathlinkmessage
 
 
-def handleGoal(ctx: CommonContext):
-    goalmessage = [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
+def handleGoal(ctx: CommonContext, request: str):
+    if request in ctx.goals:
+        goalmessage = [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
+    else:
+        goalmessage = None
     return goalmessage
 
 

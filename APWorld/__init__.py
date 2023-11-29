@@ -283,12 +283,21 @@ class MinitWorld(World):
             # ]
             # self.output_connections = self.make_bad_map()
 
+    def parse_goals(self, chosen_goal: int) -> List[str]:
+        if chosen_goal == 0:  # boss fight
+            return ["boss"]
+        if chosen_goal == 1:  # toilet
+            return ["toilet"]
+        if chosen_goal == 2:
+            return ["toilet", "boss"]  # any
+
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
             "slot_number": self.player,
             "death_link": self.options.death_link.value,
             "death_amnisty_total": self.options.death_amnisty_total.value,
             "ER_connections": self.output_connections,
+            "goals": self.parse_goals(self.options.chosen_goal),
             }
 
     def set_rules(self):
