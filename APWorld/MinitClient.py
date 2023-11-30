@@ -10,6 +10,7 @@ from CommonClient import (
     ClientCommandProcessor
 )
 import json
+from typing import List
 import time
 import os
 import bsdiff4
@@ -24,7 +25,7 @@ try:
     tracker_loaded = True
 except ModuleNotFoundError:
     from CommonClient import CommonContext as SuperContext
-    # logger.info("please install the universal tracker :)")
+    logger.info("please install the universal tracker :)")
 
 
 logger = logging.getLogger("Client")
@@ -87,6 +88,7 @@ class ProxyGameContext(SuperContext):
     slot_data: dict[str, any]
     death_amnisty_total: int
     death_amnisty_count: int
+    goals: List[str]
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
@@ -103,11 +105,19 @@ class ProxyGameContext(SuperContext):
         logger.info("please install the universal tracker :)")
 
         class ProxyManager(GameManager):
-            # super().__init__()
             logging_pairs = [
                 ("Client", "Archipelago")
             ]
             base_title = "Minit Client"
+
+
+            def build(self):
+                container = super().build()
+                if tracker_loaded:
+                    self.tabs.do_default_tab = True
+                    self.tabs.current_tab.height = 40
+                    self.tabs.tab_height = 40
+                    self.ctx.build_gui(self)
 
 
             def build(self):
@@ -152,9 +162,16 @@ class ProxyGameContext(SuperContext):
                 "locations": list(self.missing_locations),
                 "create_as_hint": 0
                 }]))
+            self.goals = self.slot_data["goals"]
         # if cmd == 'ReceivedItems':
         #     #TODO make this actually send minit a ping
         #      - or check if it can be handled with ctx.watcher_event instead
+        #     logger.info("send minit a ping")
+        # if cmd == 'ReceivedItems':
+        #     #TODO make this actually send minit a ping or check if it can be handled with ctx.watcher_event instead
+        #     logger.info("send minit a ping")
+        # if cmd == 'ReceivedItems':
+        #     #TODO make this actually send minit a ping or check if it can be handled with ctx.watcher_event instead
         #     logger.info("send minit a ping")
 
     async def send_death(self, death_text: str = ""):
@@ -181,8 +198,10 @@ class ProxyGameContext(SuperContext):
 
     async def goalHandler(self, request: web.Request) -> web.Response:
         """handle POST at /Goal"""
-        response = handleGoal(self)
-        await self.send_msgs(response)
+        requestjson = await request.text()
+        response = handleGoal(self, requestjson)
+        if response:
+            await self.send_msgs(response)
         return web.json_response(response)
 
     async def deathHandler(self, request: web.Request) -> web.Response:
@@ -316,13 +335,24 @@ def handleDeathlink(ctx: CommonContext):
     return deathlinkmessage
 
 
-def handleGoal(ctx: CommonContext):
-    goalmessage = [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
+def handleGoal(ctx: CommonContext, request: str):
+    if request in ctx.goals:
+        goalmessage = [{
+            "cmd": "StatusUpdate",
+            "status": ClientStatus.CLIENT_GOAL
+            }]
+    else:
+        goalmessage = None
     return goalmessage
 
 
 def handleLocations(ctx: CommonContext, request: json) -> json:
-    # expecting request to be json body in the form of {"Locations": [123,456]}
+    """
+    expecting request to be json body in the form of
+    {"Locations": [123,456]}
+    """
+
+
 
     # TODO - make this actually send the difference
     needed_updates = set(request["Locations"]).difference(
@@ -335,20 +365,14 @@ def handleLocations(ctx: CommonContext, request: json) -> json:
 
 
 def handleLocalLocations(ctx: CommonContext, request: json) -> json:
-    # expecting request to be json body in the form of
-    # {"LocationResponse":
-    #     {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
-    # - for a local item
-    # {"LocationResponse": {"Player": "OtherPlayer", "Item": "ItemGrinder"}
-    # - for a remote item
-
-    # TODO - make this not break if the sent item is not in missing locations
-    # - (the things we scouted for)
-    # TODO - make the game mod not crash if something doesn't have
-    # - an item value after translate
-    # TODO - load the datapackage so i can get translated names
-    # - instead of setting their ids to strings
-    # TODO - still find a way to make the scouts launch automatically
+    """
+    expecting request to be json body in the form of
+    {"LocationResponse":
+        {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
+    - for a local item
+    {"LocationResponse": {"Player": "OtherPlayer", "Item": "ItemGrinder"}
+    - for a remote item
+    """
 
     locations = set(request["Locations"]).difference(ctx.locations_checked)
     if len(locations) == 1:
@@ -369,26 +393,20 @@ def handleLocalLocations(ctx: CommonContext, request: json) -> json:
                 else:
                     locationmessage = {"Player": player, "Item": item}
                 return locationmessage
-            # else:
-                # logger.info("location not found in the scouts")
-                # not found in the scouts that do exist
-        # else:
-            # logger.info("no scouts found to hint names for location pickup")
-    # else:
-        # logger.info("len(Locations) == 1 resolved to false")
-        # error handle
-
-    # if we couldn't handle the logic send back benign message
     return {"Location": "Not found in scout cache"}
 
 
 def handleItems(ctx: CommonContext):
-    # expecting request to be json body in the form of
-    # {"Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
+    """
+    expecting request to be json body in the form of
+    {"Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
+    """
     itemIds = []
     coins = 0
     hearts = 0
     tentacles = 0
+    swordsF = 0
+    swordsR = 0
     for item in ctx.items_received:
         if item[0] == 60000:
             coins += 1
@@ -396,13 +414,19 @@ def handleItems(ctx: CommonContext):
             hearts += 1
         elif item[0] == 60002:
             tentacles += 1
+        elif item[0] == 60021:
+            swordsF += 1
+        elif item[0] == 60022:
+            swordsR += 1
         else:
             itemIds.append(item[0])
     itemmessage = {
         "Items": itemIds,
         "Coins": coins,
         "Hearts": hearts,
-        "Tentacles": tentacles
+        "Tentacles": tentacles,
+        "swordsF": swordsF,
+        "swordsR": swordsR,
     }
     return itemmessage
 

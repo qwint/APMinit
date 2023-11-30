@@ -35,7 +35,6 @@ Also Goal: Flush is a much quicker goal to use as it only requires Factory acces
 
 ## What is different from the vanilla game?
 
-* Island Shack currently has an extra lock on it so that you cannot enter if you do not have the items to turn on the teleporter and leave so you cannot softlock yourself.
 * There is an extra location available: you can water the Dolphin NPC south of the Watering Can vanilla location to spawn a heart.
 * Regardless of mode both Camera and PressPass will be treated as the same Location, but only PressPass is in the item pool.
 * The camera pickup location near your current House is an AP Item that will sync your inventory with the remote server.

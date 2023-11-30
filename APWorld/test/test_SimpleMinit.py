@@ -150,6 +150,11 @@ class TestER(MinitTestBase):
         "er_option": 1,
     }
 
+class TestER(MinitTestBase):
+    options = {
+        "er_option": 1,
+    }
+
 
 class TestProgressiveChestAccess(MinitTestBase):
     options = {
