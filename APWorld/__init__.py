@@ -36,7 +36,14 @@ from worlds.LauncherComponents import (
 )
 import random
 from Utils import visualize_regions
-from EntranceRando import randomize_entrances
+
+
+try:
+    from EntranceRando import randomize_entrances
+    er_loaded = True
+except ModuleNotFoundError:
+    er_loaded = False
+
 
 # high prio
 # TODO - find more places exceptions need to be handled
@@ -242,9 +249,7 @@ class MinitWorld(World):
 
         er_on = bool(self.options.er_option)
 
-        if er_on:
-            # self.add_regions_and_locations(False)
-            # self.output_connections = self.make_bad_map()
+        if er_on and er_loaded:
             self.add_regions_and_locations(er_on)  # will move this back up when er is finished
             # current code for using the Generic ER randomizer
             for er_entrance in er_entrances:
@@ -262,6 +267,9 @@ class MinitWorld(World):
                 en2 = region.create_er_entrance(er_entrance[0])
                 en2.er_type = Entrance.Type.TWO_WAY
                 en2.er_group = er_entrance[3]
+        elif er_on and not er_loaded:
+            self.add_regions_and_locations(False)
+            self.output_connections = self.make_bad_map()
         else:
             self.add_regions_and_locations(er_on)  # will move this back up when er is finished
             self.output_connections = None
@@ -304,7 +312,10 @@ class MinitWorld(World):
         if self.options.er_option == 0:
             minitRules = MinitRules(self)
             minitRules.set_Minit_rules()
-        elif self.options.er_option == 1:
+        elif self.options.er_option == 1 and not er_loaded:
+            minitRules = MinitRules(self)
+            minitRules.set_Minit_rules()
+        elif self.options.er_option == 1 and er_loaded:
             # shouldn't be needed later:
             assert ["lighthouse lookout", "coffee shop pot stairs", "sewer island", "shoe shop inside", "camera house inside", "dog house inside", "lighthouse inside", "island house", "shoe shop downstairs", "dog house basement"] not in self.er_region_list
             self.output_connections = randomize_entrances(
