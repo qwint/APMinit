@@ -62,7 +62,6 @@ class MinitRules:
                     and bool(self.world.options.obscure.value)),
                 # obscure: you can swim behind the lighthouse
                 # - and pick up the item
-                #obscure: you can swim behind the lighthouse and pick up the item
             "Dog House - ItemKey": lambda state:
                 self.has_sword(state) and self.can_passBoxes(state),
                 # can swim past the plants,
@@ -78,7 +77,6 @@ class MinitRules:
                      and bool(self.world.options.obscure.value))),
                 # obscure: you can swim from treasure island
                 # - by baiting the shark
-                #obscure: you can swim from treasure island by baiting the shark
             "Dog House - ItemPressPass": lambda state:
                 ((self.can_passBoxes(state)
                     and ((state.has("ItemThrow", self.player)
@@ -95,12 +93,9 @@ class MinitRules:
                     and state.has("ItemSwim", self.player)
                     and self.total_hearts(state, 7))
                     and bool(self.world.options.obscure.value)),
-                # you can hit the grass on the output of the toxic river
-                # - and swim through, may bump to +3 life?
                 # obscure: you can, with clean movement and damage tanks,
                 # - swim from the factory bridge to press pass house
                 # - without any other items
-                #obscure: you can, with clean movement and damage tanks, swim from the factory bridge to press pass house without any other items
             "Dog House - House Pot Coin": lambda state:
                 self.has_sword(state),
             "Dog House - Sewer Island Coin": lambda state:
@@ -162,8 +157,6 @@ class MinitRules:
                 # - island shack access, existing implies dog house access,
                 # - only need to check hotel room access
                 # need to revisit logic for obscure swim rules
-                #need to update and refactor this for obscure logic swimming to Island shack and thus not hard requiring teleport
-                #need to revisit logic for obscure swim rules
             "Desert RV - Fire Bat Coin": lambda state:
                 state.has("ItemWateringCan", self.player)
                 and self.has_darkroom(state) and self.can_openChest(state),
@@ -184,7 +177,6 @@ class MinitRules:
                          and bool(self.world.options.obscure.value))),
                 # obscure: making darkroom settings not require you to do
                 # - temple heart without also having obscure on
-                #obscure: making darkroom settings not require you to do temple heart without also having obscure on
             "Desert RV - Shop Heart": lambda state:
                 self.get_coins(state, 19)
                 and state.has("ItemBasement", self.player),
@@ -248,7 +240,6 @@ class MinitRules:
                     and bool(self.world.options.obscure.value)),
                 # obscure: attacking in coyote frames from the right teleporter
                 # - lets you do this with just sword/swim
-                #obscure: attacking in coyote frames from the right teleporter lets you do this with just sword/swim
 
             # Underground Tent
             "Underground Tent - ItemTrophy": lambda state:
@@ -425,7 +416,6 @@ class MinitRules:
                     or state.has("ItemSwim", self.player))
                     and self.has_darkroom(state))
                 or state.has("ItemSwim", self.player))
-
 
     def region_HotelRoom(self, state) -> bool:
         return (self.region_DogHouse(state)

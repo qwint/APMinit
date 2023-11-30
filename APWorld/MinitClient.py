@@ -110,22 +110,9 @@ class ProxyGameContext(SuperContext):
             ]
             base_title = "Minit Client"
 
-
             def build(self):
                 container = super().build()
                 if tracker_loaded:
-                    self.tabs.do_default_tab = True
-                    self.tabs.current_tab.height = 40
-                    self.tabs.tab_height = 40
-                    self.ctx.build_gui(self)
-
-
-            def build(self):
-                container = super().build()
-                if tracker_loaded:
-                    self.tabs.do_default_tab = True
-                    self.tabs.current_tab.height = 40
-                    self.tabs.tab_height = 40
                     self.ctx.build_gui(self)
 
                 return container
@@ -166,12 +153,6 @@ class ProxyGameContext(SuperContext):
         # if cmd == 'ReceivedItems':
         #     #TODO make this actually send minit a ping
         #      - or check if it can be handled with ctx.watcher_event instead
-        #     logger.info("send minit a ping")
-        # if cmd == 'ReceivedItems':
-        #     #TODO make this actually send minit a ping or check if it can be handled with ctx.watcher_event instead
-        #     logger.info("send minit a ping")
-        # if cmd == 'ReceivedItems':
-        #     #TODO make this actually send minit a ping or check if it can be handled with ctx.watcher_event instead
         #     logger.info("send minit a ping")
 
     async def send_death(self, death_text: str = ""):
@@ -351,8 +332,6 @@ def handleLocations(ctx: CommonContext, request: json) -> json:
     expecting request to be json body in the form of
     {"Locations": [123,456]}
     """
-
-
 
     # TODO - make this actually send the difference
     needed_updates = set(request["Locations"]).difference(

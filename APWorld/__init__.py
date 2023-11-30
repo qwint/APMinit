@@ -7,7 +7,6 @@ from BaseClasses import (
     Entrance,
     Tutorial
 )
-from .generic_er import randomize_entrances, ER_Entrance
 from .Items import (
     MinitItem,
     MinitItemData,
@@ -69,7 +68,6 @@ except ModuleNotFoundError:
 # TODO - clean up item/location names
 # TODO - refactor code
 # TODO - add swim as an option for getting 1/4 of temple coin
-# TODO - add coin counter when recieving any new coins
 
 # deathlink testing
 # deaths during pause seem to dissapear
@@ -247,9 +245,9 @@ class MinitWorld(World):
                     other_region.connect(region)
             else:
                 region.add_exits(exit_list)
-        elif self.options.er_option == 1:
-            # current map gen is pure random, so make regions/connections vanilla
-            self.output_connections = self.make_bad_map()
+        # elif self.options.er_option == 1:
+        #     # current map gen is pure random, so make regions/connections vanilla
+        #     self.output_connections = self.make_bad_map()
 
     def create_regions(self):
 
