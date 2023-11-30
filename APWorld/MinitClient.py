@@ -25,7 +25,7 @@ try:
     tracker_loaded = True
 except ModuleNotFoundError:
     from CommonClient import CommonContext as SuperContext
-    # logger.info("please install the universal tracker :)")
+    logger.info("please install the universal tracker :)")
 
 
 logger = logging.getLogger("Client")
@@ -105,7 +105,6 @@ class ProxyGameContext(SuperContext):
         logger.info("please install the universal tracker :)")
 
         class ProxyManager(GameManager):
-            # super().__init__()
             logging_pairs = [
                 ("Client", "Archipelago")
             ]
@@ -319,14 +318,20 @@ def handleDeathlink(ctx: CommonContext):
 
 def handleGoal(ctx: CommonContext, request: str):
     if request in ctx.goals:
-        goalmessage = [{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}]
+        goalmessage = [{
+            "cmd": "StatusUpdate",
+            "status": ClientStatus.CLIENT_GOAL
+            }]
     else:
         goalmessage = None
     return goalmessage
 
 
 def handleLocations(ctx: CommonContext, request: json) -> json:
-    # expecting request to be json body in the form of {"Locations": [123,456]}
+    """
+    expecting request to be json body in the form of
+    {"Locations": [123,456]}
+    """
 
     # TODO - make this actually send the difference
     needed_updates = set(request["Locations"]).difference(
@@ -339,20 +344,14 @@ def handleLocations(ctx: CommonContext, request: json) -> json:
 
 
 def handleLocalLocations(ctx: CommonContext, request: json) -> json:
-    # expecting request to be json body in the form of
-    # {"LocationResponse":
-    #     {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
-    # - for a local item
-    # {"LocationResponse": {"Player": "OtherPlayer", "Item": "ItemGrinder"}
-    # - for a remote item
-
-    # TODO - make this not break if the sent item is not in missing locations
-    # - (the things we scouted for)
-    # TODO - make the game mod not crash if something doesn't have
-    # - an item value after translate
-    # TODO - load the datapackage so i can get translated names
-    # - instead of setting their ids to strings
-    # TODO - still find a way to make the scouts launch automatically
+    """
+    expecting request to be json body in the form of
+    {"LocationResponse":
+        {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
+    - for a local item
+    {"LocationResponse": {"Player": "OtherPlayer", "Item": "ItemGrinder"}
+    - for a remote item
+    """
 
     locations = set(request["Locations"]).difference(ctx.locations_checked)
     if len(locations) == 1:
@@ -373,22 +372,14 @@ def handleLocalLocations(ctx: CommonContext, request: json) -> json:
                 else:
                     locationmessage = {"Player": player, "Item": item}
                 return locationmessage
-            # else:
-                # logger.info("location not found in the scouts")
-                # not found in the scouts that do exist
-        # else:
-            # logger.info("no scouts found to hint names for location pickup")
-    # else:
-        # logger.info("len(Locations) == 1 resolved to false")
-        # error handle
-
-    # if we couldn't handle the logic send back benign message
     return {"Location": "Not found in scout cache"}
 
 
 def handleItems(ctx: CommonContext):
-    # expecting request to be json body in the form of
-    # {"Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
+    """
+    expecting request to be json body in the form of
+    {"Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
+    """
     itemIds = []
     coins = 0
     hearts = 0
