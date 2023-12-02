@@ -265,11 +265,11 @@ class MinitWorld(World):
                 # entrance.is_dead_end = er_entrance[2]
 
                 en1 = region.create_exit(er_entrance[0])
-                en1.er_type = Entrance.Type.TWO_WAY
+                en1.er_type = Entrance.EntranceType.TWO_WAY
                 en1.er_group = er_entrance[3]
 
-                en2 = region.create_er_entrance(er_entrance[0])
-                en2.er_type = Entrance.Type.TWO_WAY
+                en2 = region.create_er_target(er_entrance[0])
+                en2.er_type = Entrance.EntranceType.TWO_WAY
                 en2.er_group = er_entrance[3]
         elif er_on and not er_loaded:
             self.add_regions_and_locations(False)
@@ -312,6 +312,19 @@ class MinitWorld(World):
             "goals": self.parse_goals(self.options.chosen_goal),
             }
 
+    def interpret_slot_data(self, slot_data: Dict[str, Any]):
+        # for region in self.get_regions(self.player):
+        #     for entrance in region.entrances:
+
+        if slot_data["ER_connections"]:
+            e_dict = {entrance.name: entrance for region in self.multiworld.get_regions(self.player) for entrance in region.entrances}
+
+            for connection in slot_data["ER_connections"]:
+                assert connection[0] in e_dict, f"entrance {connection[0]} in slot data not in world"
+                assert connection[1] in e_dict, f"entrance {connection[1]} in slot data not in world"
+
+                e_dict[connection[0]].connected_region = e_dict[connection[1]].parent_region
+
     def set_rules(self):
         if self.options.er_option == 0:
             minitRules = MinitRules(self)
@@ -323,15 +336,28 @@ class MinitWorld(World):
             # shouldn't be needed later:
             assert ["lighthouse lookout", "coffee shop pot stairs", "sewer island", "shoe shop inside", "camera house inside", "dog house inside", "lighthouse inside", "island house", "shoe shop downstairs", "dog house basement"] not in self.er_region_list
             self.output_connections = randomize_entrances(
-                    self,
-                    self.random,
-                    self.er_region_list,
-                    True,
-                    minit_get_target_groups,
-                    )
+                    world=self,
+                    # random=self.random,
+                    regions=self.er_region_list,
+                    coupled=True,
+                    get_target_groups=minit_get_target_groups,
+                    preserve_group_order=False
+                    ).pairings
+            # self.output_connections = self.make_bad_map()
             visualize_regions(
                 self.multiworld.get_region("Menu", self.player),
                 "output/regionmap.puml")
+
+            # self.interpret_slot_data({
+            #     "slot_number": self.player,
+            #     "death_link": self.options.death_link.value,
+            #     "death_amnisty_total": self.options.death_amnisty_total.value,
+            #     "ER_connections": self.output_connections,
+            #     "goals": self.parse_goals(self.options.chosen_goal),
+            #     })
+            # visualize_regions(
+            #     self.multiworld.get_region("Menu", self.player),
+            #     "output/regionmap-slotdata.puml")
             minitRules = ER_MinitRules(self)
             minitRules.set_Minit_rules()
 

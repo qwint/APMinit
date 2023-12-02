@@ -22,6 +22,10 @@ class ER_MinitRules:
 
         self.region_rules = {
             "Menu -> sword main": lambda state: True,
+            "factory machine catwalk -> Boss Fight": lambda state:
+                (state.has("ItemMegaSword", self.player) and self.has_darkroom(state)),
+            "factory machine generator -> Boss Fight": lambda state:
+                (state.has("ItemMegaSword", self.player) and self.has_darkroom(state)),
             "lighthouse land <-> lighthouse water": lambda state:
                 state.has("ItemSwim", self.player),
             "boat land <-> boat water": lambda state:
@@ -441,9 +445,12 @@ class ER_MinitRules:
                 "teleporter switch6",
             }, self.player)
 
-    def rev(e_name: str) -> List[str]:
+    def rev(self, e_name: str) -> List[str]:
         e_list = e_name.split(" -> ")
-        return [f"{e_list[1]} <-> {e_list[0]}", f"{e_list[0]} <-> {e_list[1]}"]
+        if len(e_list) == 2:
+            return [f"{e_list[1]} <-> {e_list[0]}", f"{e_list[0]} <-> {e_list[1]}"]
+        else:
+            return ["", ""]
 
     def set_Minit_rules(self) -> None:
         multiworld = self.world.multiworld
@@ -451,16 +458,18 @@ class ER_MinitRules:
             for entrance in region.entrances:
                 if entrance.name in self.region_rules:
                     set_rule(entrance, self.region_rules[entrance.name])
-                elif self.rev(entrance.name)[0] in self.region_rules:
-                    set_rule(
-                        entrance,
-                        self.region_rules[self.rev(entrance.name)[0]]
-                        )
-                elif self.rev(entrance.name)[1] in self.region_rules:
-                    set_rule(
-                        entrance,
-                        self.region_rules[self.rev(entrance.name)[1]]
-                        )
+                else:
+                    twoWayName = self.rev(entrance.name)
+                    if twoWayName[0] in self.region_rules:
+                        set_rule(
+                            entrance,
+                            self.region_rules[twoWayName[0]]
+                            )
+                    elif twoWayName[1] in self.region_rules:
+                        set_rule(
+                            entrance,
+                            self.region_rules[twoWayName[1]]
+                            )
             for location in region.locations:
                 if location.name in self.location_rules:
                     set_rule(location, self.location_rules[location.name])

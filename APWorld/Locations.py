@@ -37,7 +37,7 @@ location_table = {
     "Dog House - ItemBasement": MinitLocationData(
         code=60605,
         region="Dog House",
-        er_region="Overworld",),
+        er_region="Overworld island shack",),
     "Dog House - ItemPressPass": MinitLocationData(
         code=60606,
         region="Dog House",
@@ -76,7 +76,7 @@ location_table = {
         # coin7 - chest
         code=60613,
         region="Dog House",
-        er_region="Overworld",),
+        er_region="Overworld treasure island",),
     "Dog House - Plant Heart": MinitLocationData(
         # heartPiece1
         code=60614,
@@ -96,7 +96,7 @@ location_table = {
         # tentacle2
         code=60617,
         region="Dog House",
-        er_region="Overworld",),
+        er_region="Overworld treasure island",),
     "Dog House - Sword Toss Tentacle": MinitLocationData(
         # tentacle3
         code=60618,
@@ -112,7 +112,7 @@ location_table = {
     "Desert RV - ItemThrow": MinitLocationData(
         code=60620,
         region="Desert RV",
-        er_region="Overworld",),
+        er_region="Overworld desert",),
     "Desert RV - ItemShoes": MinitLocationData(
         code=60621,
         region="Desert RV",
@@ -144,7 +144,7 @@ location_table = {
         # coin13 - chest
         code=60627,
         region="Desert RV",
-        er_region="Overworld",),
+        er_region="Overworld desert",),
     "Desert RV - Quicksand Coin": MinitLocationData(
         # coin16 - chest
         code=60628,
@@ -268,7 +268,7 @@ location_table = {
 
     "Fight the Boss": MinitLocationData(
         region="Boss Fight",
-        er_region="factory machine generator",
+        er_region="Boss Fight",
         locked_item="Boss dead",
         ),
     "Flush the Sword": MinitLocationData(
@@ -328,17 +328,17 @@ location_table = {
         ),
     "teleporter switch4": MinitLocationData(
         region="Island Shack",
-        er_region="Overworld",
+        er_region="Overworld island shack",
         locked_item="teleporter switch4",
         ),
     "teleporter switch6": MinitLocationData(
         region="Island Shack",
-        er_region="Overworld",
+        er_region="Overworld island shack",
         locked_item="teleporter switch6",
         ),
     "boatguy watered": MinitLocationData(
         region="Desert RV",
-        er_region="Overworld",
+        er_region="Overworld desert",
         locked_item="boatguy watered",
         ),
     "left machine": MinitLocationData(
