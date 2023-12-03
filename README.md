@@ -1,17 +1,20 @@
 # APMinit
 archipelago implementation of a Minit Randomizer
 
-# notes for alpha implementation
-i don't have any fanfares for items, picked up or received, but the proxy client will inform you of everything sent and received
-the location checks respawn, but getting them again isn't an issue
-the game does not automatically sync items, it's currently a manual process (that only works in the initial house) by pressing Q on the keyboard
-swords are not handled the best which includes the timer just,, never starting? it might be tied to receiving the cursed sword but i haven't got there yet
+# What is different from the vanilla game?
+
+* There is an extra location available: you can water the Dolphin NPC south of the Watering Can vanilla location to spawn a heart.
+* Regardless of mode both Camera and PressPass will be treated as the same Location, but only PressPass is in the item pool.
+* The camera pickup location near your current House is an AP Item that will sync your inventory with the remote server.
+* If you have received a remote item from the Archipelago Server, it does not sync automatically into your inventory. You are expected to sync your inventory with the AP Item near the house. Local items will automatically be added to your inventory though.
+* An extra keybind has been added (currently only on keyboard Q) to respawn at the Start Location.
 
 # Setup for new Archipelago users
 
 For Installation
 Install Archipelago, you will need the generator and likely the server (though the seed can be hosted on Archipelago.gg)
 add the minit.apworld file to Archipelago/lib/worlds
+the tracker.apworld file can also be installed in the same way, which adds a new tab to the client that functions as a simple location tracker
 
 For Generation
 put a .yaml file (example in Release) into the /Players folder
@@ -37,6 +40,7 @@ your (now patched) data.win is now ready and installed, only needing to launch t
 # Setup for Archipelago users
 
 .yaml and .apworld are in the Release page and need to be installed appropriatly 
+a valid tracker.apworld is also included in the release, which adds a new tab to the client that functions as a simple location tracker
 the proxy "Minit Client" can be accessed through ArchipelagoLauncher
 
 you need to patch the game by doing the following:
