@@ -23,9 +23,9 @@ class ER_MinitRules:
         self.region_rules = {
             "Menu -> sword main": lambda state: True,
             "factory machine catwalk -> Boss Fight": lambda state:
-                (state.has("ItemMegaSword", self.player) and self.has_darkroom(state)),
+                (self.has_megasword(state) and self.has_darkroom(state)),
             "factory machine generator -> Boss Fight": lambda state:
-                (state.has("ItemMegaSword", self.player) and self.has_darkroom(state)),
+                (self.has_megasword(state) and self.has_darkroom(state)),
             "lighthouse land <-> lighthouse water": lambda state:
                 state.has("ItemSwim", self.player),
             "boat land <-> boat water": lambda state:
@@ -215,7 +215,7 @@ class ER_MinitRules:
 
             # Dog House
             "Dog House - ItemCoffee": lambda state:
-                True,
+                self.has_sword(state),
                 # needs logic to kill the crabs
             "Dog House - ItemFlashLight": lambda state:
                 True,
@@ -401,12 +401,26 @@ class ER_MinitRules:
         return state.count("HeartPiece", self.player) + 2 >= count
 
     def has_sword(self, state) -> bool:
-        return state.has_any({
-            "ItemSword",
-            "ItemBrokenSword",
-            "ItemMegaSword",
-            "ProgressiveSword"
-            }, self.player)
+        return (state.has_any({
+                    "ItemSword",
+                    "ItemBrokenSword",
+                    "ItemMegaSword",
+                    }, self.player)
+                or (state.count("Progressive Sword", self.player) >= 1)
+                or (state.count("Reverse Progressive Sword", self.player) >= 1)
+                )
+
+    def has_megasword(self, state) -> bool:
+        return (state.has("ItemMegaSword", self.player)
+                or (state.count("Progressive Sword", self.player) >= 3)
+                or (state.count("Reverse Progressive Sword", self.player) >= 1)
+                )
+
+    def has_brokensword(self, state) -> bool:
+        return (state.has("ItemBrokenSword", self.player)
+                or (state.count("Progressive Sword", self.player) >= 1)
+                or (state.count("Reverse Progressive Sword", self.player) >= 3)
+                )
 
     def has_darkroom(self, state) -> bool:
         return (state.has("ItemFlashLight", self.player)

@@ -256,6 +256,29 @@ class MinitWorld(World):
         if er_on and er_loaded:
             self.add_regions_and_locations(er_on)  # will move this back up when er is finished
             # current code for using the Generic ER randomizer
+            if self.multiworld.players == 1:
+                # if there is a one-player world, make at least one
+                # of the early entrances into a check
+                # that you can pick up for free
+                free_checks = [
+                    "watering can",
+                    "camera house outside south",
+                    "glove outside east",
+                    "glove outside west",
+                    "factory loading upper north",
+                    "factory loading upper east",
+                    "factory loading upper south",
+                    "factory snakehall north",
+                    "factory queue",
+                    "trophy room",
+                    ]
+                self.random.shuffle(free_checks)
+                starting_entrance = free_checks.pop()
+                # print(f"adding {starting_entrance} to starting region to make single player ER playable")
+                manual_connect_start = None
+                manual_connect_end = None
+                # add_manual_connect = True
+
             for er_entrance in er_entrances:
                 region = self.multiworld.get_region(
                     er_entrance[1],
@@ -267,10 +290,21 @@ class MinitWorld(World):
                 en1 = region.create_exit(er_entrance[0])
                 en1.er_type = Entrance.EntranceType.TWO_WAY
                 en1.er_group = er_entrance[3]
+                if starting_entrance and er_entrance[0] in ["dog house south", starting_entrance]:
+                    if er_entrance[0] == "dog house south":
+                        manual_connect_start = en1
+                    if er_entrance[0] == starting_entrance:
+                        manual_connect_end = en1
+                    if manual_connect_start and manual_connect_end:
+                        manual_connect_start.connect(manual_connect_end.parent_region)
+                        manual_connect_end.connect(manual_connect_start.parent_region)
+                        # print(f"connecting {manual_connect_start.name} and {manual_connect_end.name}")
+                        # add_manual_connect = False
+                else:
+                    en2 = region.create_er_target(er_entrance[0])
+                    en2.er_type = Entrance.EntranceType.TWO_WAY
+                    en2.er_group = er_entrance[3]
 
-                en2 = region.create_er_target(er_entrance[0])
-                en2.er_type = Entrance.EntranceType.TWO_WAY
-                en2.er_group = er_entrance[3]
         elif er_on and not er_loaded:
             self.add_regions_and_locations(False)
             self.output_connections = self.make_bad_map()
@@ -333,6 +367,9 @@ class MinitWorld(World):
             minitRules = MinitRules(self)
             minitRules.set_Minit_rules()
         elif self.options.er_option == 1 and er_loaded:
+            minitRules = ER_MinitRules(self)
+            minitRules.set_Minit_rules()
+
             # shouldn't be needed later:
             assert ["lighthouse lookout", "coffee shop pot stairs", "sewer island", "shoe shop inside", "camera house inside", "dog house inside", "lighthouse inside", "island house", "shoe shop downstairs", "dog house basement"] not in self.er_region_list
             self.output_connections = randomize_entrances(
@@ -347,19 +384,6 @@ class MinitWorld(World):
             visualize_regions(
                 self.multiworld.get_region("Menu", self.player),
                 "output/regionmap.puml")
-
-            # self.interpret_slot_data({
-            #     "slot_number": self.player,
-            #     "death_link": self.options.death_link.value,
-            #     "death_amnisty_total": self.options.death_amnisty_total.value,
-            #     "ER_connections": self.output_connections,
-            #     "goals": self.parse_goals(self.options.chosen_goal),
-            #     })
-            # visualize_regions(
-            #     self.multiworld.get_region("Menu", self.player),
-            #     "output/regionmap-slotdata.puml")
-            minitRules = ER_MinitRules(self)
-            minitRules.set_Minit_rules()
 
         if self.options.chosen_goal == 0:  # boss fight
             self.multiworld.completion_condition[self.player] = lambda state: \
@@ -394,10 +418,9 @@ class MinitWorld(World):
                 starting_items.append("ItemBrokenSword")
                 starting_items.append("ItemSword")
                 starting_items.append("ItemMegaSword")
-            else:
-                # put progressive sword in here when i finally do it
-                starting_items.append("ItemBrokenSword")
-                starting_items.append("ItemSword")
-                starting_items.append("ItemMegaSword")
+            if self.options.progressive_sword.value == 1:
+                starting_items.append("Reverse Progressive Sword")
+            if self.options.progressive_sword.value == 0:
+                starting_items.append("Progressive Sword")
             self.random.shuffle(starting_items)
             self.multiworld.local_early_items[self.player][starting_items.pop()] = 1

@@ -4,7 +4,7 @@ from typing import NamedTuple, Callable, Dict, List, Optional
 er_static_connections: Dict[str, List[str]] = {
     "Menu": ["dog house inside"],
     "factory machine catwalk": ["Boss Fight"],
-    "factory machine generator": ["Boss Fight"],
+    "factory machine generator": ["Boss Fight", "factory machine catwalk"],
     "lighthouse land": ["lighthouse water"],
     "boat land": ["boat water"],
     "sword main": ["sword bushes", "sword water"],
@@ -40,7 +40,6 @@ er_static_connections: Dict[str, List[str]] = {
     "sewer bat arena": ["sewer bat gate"],
     "grinder south": ["grinder main"],
     "grinder east": ["grinder main"],
-    "factory machine generator": ["factory machine catwalk"],
     "miner chest belts": ["miner chest pipe entrance"],
     "lighthouse inside": ["lighthouse land", "lighthouse lookout"],
     "coffee shop pot stairs": ["sewer main right"],
