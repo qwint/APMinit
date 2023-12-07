@@ -22,36 +22,80 @@ sword_only = [
     "Factory Main - Drill Coin",
     ]
 
-pure_darkrooms = [
-    "Dog House - Sewer Island Coin",
-    "Dog House - Sewer Coin",
-    "Dog House - Hidden Snake Coin",
-    "Dog House - Sewer Tentacle",
-    "Desert RV - ItemTurboInk",
-    "Desert RV - Temple Coin",
+Darkrooms1 = [
     "Desert RV - Fire Bat Coin",
-    "Desert RV - Quicksand Coin",
-    "Desert RV - Temple Heart",
-    "Desert RV - Octopus Tentacle",
-    "Hotel Room - ItemGrinder",
-    "Hotel Room - Miner's Chest Coin",
     "Factory Main - ItemMegaSword",
     ]
 
-simple_darkrooms = [
-    "Dog House - Sewer Island Coin",
-    "Dog House - Sewer Coin",
+Darkrooms2 = [
     "Dog House - Hidden Snake Coin",
-    "Dog House - Sewer Tentacle",
+    "Dog House - Bull Heart",
     "Desert RV - ItemTurboInk",
     "Desert RV - Temple Coin",
-    "Desert RV - Fire Bat Coin",
     "Desert RV - Quicksand Coin",
     "Desert RV - Octopus Tentacle",
     "Hotel Room - ItemGrinder",
+    ]
+
+Darkrooms3 = [
+    "Dog House - Sewer Island Coin",
+    "Dog House - Sewer Coin",
+    "Dog House - Sewer Tentacle",
+    "Desert RV - Temple Heart",
     "Hotel Room - Miner's Chest Coin",
+    "Underground Tent - ItemTrophy",
+    ]
+
+ER_Darkrooms1 = [
+    "Hotel Room - ItemGrinder",
     "Factory Main - ItemMegaSword",
     ]
+
+ER_Darkrooms2 = [
+    "Dog House - Sewer Coin",
+    "Dog House - Hidden Snake Coin",
+    "Desert RV - Fire Bat Coin",
+    "Desert RV - ItemTurboInk",
+    "Desert RV - Quicksand Coin",
+    ]
+
+ER_Darkrooms3 = [
+    "Dog House - Sewer Tentacle",
+    "Desert RV - Temple Heart",
+    "Desert RV - Octopus Tentacle",
+    "Hotel Room - Miner's Chest Coin",
+    ]
+
+# pure_darkrooms = [
+#     "Dog House - Sewer Island Coin",
+#     "Dog House - Sewer Coin",
+#     "Dog House - Hidden Snake Coin",
+#     "Dog House - Sewer Tentacle",
+#     "Desert RV - ItemTurboInk",
+#     "Desert RV - Temple Coin",
+#     "Desert RV - Fire Bat Coin",
+#     "Desert RV - Quicksand Coin",
+#     "Desert RV - Temple Heart",
+#     "Desert RV - Octopus Tentacle",
+#     "Hotel Room - ItemGrinder",
+#     "Hotel Room - Miner's Chest Coin",
+#     "Factory Main - ItemMegaSword",
+#     ]
+
+# simple_darkrooms = [
+#     "Dog House - Sewer Island Coin",
+#     "Dog House - Sewer Coin",
+#     "Dog House - Hidden Snake Coin",
+#     "Dog House - Sewer Tentacle",
+#     "Desert RV - ItemTurboInk",
+#     "Desert RV - Temple Coin",
+#     "Desert RV - Fire Bat Coin",
+#     "Desert RV - Quicksand Coin",
+#     "Desert RV - Octopus Tentacle",
+#     "Hotel Room - ItemGrinder",
+#     "Hotel Room - Miner's Chest Coin",
+#     "Factory Main - ItemMegaSword",
+#     ]
 
 
 class TestChestAccess(MinitTestBase):
@@ -95,41 +139,88 @@ class TestChestAccess(MinitTestBase):
     #   items = [["ItemWateringCan"]]
     #   self.assertAccessIndependency(locations, items, only_check_listed=True)
 
-    def test_minit_darkrooms(self):
-        """Test locations that always require Darkroom"""
-        locations = pure_darkrooms
+
+class TestDarkroom0(MinitTestBase):
+    options = {
+        "darkrooms": 0,
+    }
+
+    def test_minit_flashlight(self):
+        """Test locations that require Flashlight"""
+        locations = []
+        locations + Darkrooms1
+        locations + Darkrooms2
+        locations + Darkrooms3
         items = [
             ["ItemFlashLight"],
             ]
         self.assertAccessDependency(locations, items, only_check_listed=True)
 
 
-class TestDarkroomOption(MinitTestBase):
+class TestDarkroom1(MinitTestBase):
     options = {
-        "darkrooms": True,
+        "darkrooms": 1,
     }
 
+    def test_minit_flashlight(self):
+        """Test locations that require Flashlight"""
+        locations = []
+        locations + Darkrooms2
+        locations + Darkrooms3
+        items = [
+            ["ItemFlashLight"],
+            ]
+        self.assertAccessDependency(locations, items, only_check_listed=True)
+
     def test_minit_darkrooms(self):
-        """Test locations that always require Darkroom"""
-        locations = simple_darkrooms
+        """Test locations that do not require Flashlight"""
+        locations = []
+        locations + Darkrooms1
         items = [
             ["ItemFlashLight"],
             ]
         self.assertAccessWithout(locations, items)
 
 
-class TestDarkroomObscure(MinitTestBase):
+class TestDarkroom2(MinitTestBase):
     options = {
-        "darkrooms": True,
-        "obscure": True,
+        "darkrooms": 2,
+    }
+
+    def test_minit_flashlight(self):
+        """Test locations that require Flashlight"""
+        locations = []
+        locations + Darkrooms3
+        items = [
+            ["ItemFlashLight"],
+            ]
+        self.assertAccessDependency(locations, items, only_check_listed=True)
+
+    def test_minit_darkrooms(self):
+        """Test locations that do not require Flashlight"""
+        locations = []
+        locations + Darkrooms1
+        locations + Darkrooms2
+        items = [
+            ["ItemFlashLight"],
+            ]
+        self.assertAccessWithout(locations, items)
+
+
+class TestDarkroom3(MinitTestBase):
+    options = {
+        "darkrooms": 3,
     }
 
     def test_minit_darkrooms(self):
-        """Test locations that always require Darkroom"""
-        locations = pure_darkrooms
+        """Test locations that do not require Flashlight"""
+        locations = []
+        locations + Darkrooms1
+        locations + Darkrooms2
+        locations + Darkrooms3
         items = [
             ["ItemFlashLight"],
-        ]
+            ]
         self.assertAccessWithout(locations, items)
 
 
@@ -149,6 +240,97 @@ class TestER(MinitTestBase):
     options = {
         "er_option": 1,
     }
+
+
+class TestERDarkroom0(MinitTestBase):
+    options = {
+        "darkrooms": 0,
+    }
+
+    def test_minit_flashlight(self):
+        """Test locations that require Flashlight"""
+        locations = []
+        locations + ER_Darkrooms1
+        locations + ER_Darkrooms2
+        locations + ER_Darkrooms3
+        items = [
+            ["ItemFlashLight"],
+            ]
+        self.assertAccessDependency(locations, items, only_check_listed=True)
+
+
+class TestERDarkroom1(MinitTestBase):
+    options = {
+        "darkrooms": 1,
+    }
+
+    def test_minit_flashlight(self):
+        """Test locations that require Flashlight"""
+        locations = []
+        locations + ER_Darkrooms2
+        locations + ER_Darkrooms3
+        items = [
+            ["ItemFlashLight"],
+            ]
+        self.assertAccessDependency(locations, items, only_check_listed=True)
+
+    def test_minit_darkrooms(self):
+        """Test locations that do not require Flashlight"""
+        locations = []
+        locations + Darkrooms1
+        items = [
+            ["ItemFlashLight"],
+            ]
+        self.assertAccessWithout(locations, items)
+
+
+class TestERDarkroom2(MinitTestBase):
+    options = {
+        "darkrooms": 2,
+    }
+
+    def test_minit_flashlight(self):
+        """Test locations that require Flashlight"""
+        locations = []
+        locations + ER_Darkrooms3
+        items = [
+            ["ItemFlashLight"],
+            ]
+        self.assertAccessDependency(locations, items, only_check_listed=True)
+
+    def test_minit_darkrooms(self):
+        """Test locations that do not require Flashlight"""
+        locations = []
+        locations + Darkrooms1
+        locations + Darkrooms2
+        items = [
+            ["ItemFlashLight"],
+            ]
+        self.assertAccessWithout(locations, items)
+
+
+class TestERDarkroom3(MinitTestBase):
+    options = {
+        "darkrooms": 3,
+    }
+
+    def test_minit_darkrooms(self):
+        """Test locations that do not require Flashlight"""
+        locations = []
+        locations + Darkrooms1
+        locations + Darkrooms2
+        locations + Darkrooms3
+        items = [
+            ["ItemFlashLight"],
+            ]
+        self.assertAccessWithout(locations, items)
+
+
+class TestERSeed(selectSeedMinit):
+    options = {
+        "er_option": 1,
+    }
+    seed = 63716117118555143701
 
 
 class TestProgressiveChestAccess(MinitTestBase):
@@ -174,7 +356,7 @@ class TestProgressiveChestAccess(MinitTestBase):
         self.assertAccessDependency(locations, items, only_check_listed=True)
 
 
-class TestProgressiveChestAccess(MinitTestBase):
+class TestRevProgressiveChestAccess(MinitTestBase):
     options = {
         "progressive_sword": 1,
     }

@@ -261,17 +261,17 @@ class MinitWorld(World):
                 # of the early entrances into a check
                 # that you can pick up for free
                 free_checks = [
-                    "watering can",
-                    "camera house outside south",
+                    "watering can",  # deadend
+                    "camera house outside south",  # deadend
                     "glove outside east",
                     "glove outside west",
                     "factory loading upper north",
                     "factory loading upper east",
                     "factory loading upper south",
                     "factory snakehall north",
-                    "factory queue",
-                    "trophy room",
-                    ]
+                    "factory queue",  # deadend
+                    "trophy room",  # deadend
+                    ]  # consider removing the deadends because they could have a higher chance of killing the seed
                 self.random.shuffle(free_checks)
                 starting_entrance = free_checks.pop()
                 # print(f"adding {starting_entrance} to starting region to make single player ER playable")
@@ -423,4 +423,6 @@ class MinitWorld(World):
             if self.options.progressive_sword.value == 0:
                 starting_items.append("Progressive Sword")
             self.random.shuffle(starting_items)
+            # single_player_item = starting_items.pop()
+            # print(f"adding {single_player_item} to make single player easier")
             self.multiworld.local_early_items[self.player][starting_items.pop()] = 1

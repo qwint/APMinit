@@ -39,7 +39,7 @@ class MinitRules:
                 self.region_factory_desert(state),
             "Hotel Room -> Underground Tent": lambda state:
                 self.has_sword(state) and
-                self.has_darkroom(state) and
+                self.has_darkroom(state, 3) and
                 state.has("ItemGrinder", self.player),
             "Hotel Room -> Factory Main": lambda state:
                 self.region_factory_hotel(state),
@@ -99,10 +99,10 @@ class MinitRules:
             "Dog House - House Pot Coin": lambda state:
                 self.has_sword(state),
             "Dog House - Sewer Island Coin": lambda state:
-                self.has_sword(state) and self.has_darkroom(state)
+                self.has_sword(state) and self.has_darkroom(state, 3)
                 and self.can_openChest(state),
             "Dog House - Sewer Coin": lambda state:
-                self.has_sword(state) and self.has_darkroom(state)
+                self.has_sword(state) and self.has_darkroom(state, 3)
                 and self.can_openChest(state)
                 and state.has("ItemSwim", self.player),
             "Dog House - Land is Great Coin": lambda state:
@@ -112,7 +112,7 @@ class MinitRules:
                          and self.has_sword(state))),
             "Dog House - Hidden Snake Coin": lambda state:
                 (self.has_sword(state) or state.has("ItemSwim", self.player))
-                and self.has_darkroom(state) and self.can_openChest(state),
+                and self.has_darkroom(state, 2) and self.can_openChest(state),
             "Dog House - Waterfall Coin": lambda state:
                 state.has("ItemSwim", self.player)
                 and self.can_openChest(state),
@@ -122,7 +122,7 @@ class MinitRules:
             "Dog House - Plant Heart": lambda state:
                 state.has("ItemWateringCan", self.player),
             "Dog House - Bull Heart": lambda state:
-                (self.has_darkroom(state) and self.has_sword(state))
+                (self.has_darkroom(state, 2) and self.has_sword(state))
                 or (self.region_DesertRV(state)
                     and self.has_sword(state)),
             "Dog House - Boat Tentacle": lambda state:
@@ -134,7 +134,7 @@ class MinitRules:
                 and state.has("ItemThrow", self.player)
                 and state.has("ItemGlove", self.player),
             "Dog House - Sewer Tentacle": lambda state:
-                self.has_sword(state) and self.has_darkroom(state)
+                self.has_sword(state) and self.has_darkroom(state, 3)
                 and state.has("ItemSwim", self.player),
 
             # Desert RV
@@ -149,9 +149,9 @@ class MinitRules:
                          and state.has("ItemGlove", self.player)
                     or state.has("ItemSwim", self.player))),
             "Desert RV - ItemTurboInk": lambda state:
-                self.get_tentacles(state, 8) and self.has_darkroom(state),
+                self.get_tentacles(state, 8) and self.has_darkroom(state, 2),
             "Desert RV - Temple Coin": lambda state:
-                self.has_sword(state) and self.has_darkroom(state)
+                self.has_sword(state) and self.has_darkroom(state, 2)
                 and self.can_teleport(state) and self.region_HotelRoom(state),
                 # item region implies desert rv access, can teleport implies
                 # - island shack access, existing implies dog house access,
@@ -159,13 +159,13 @@ class MinitRules:
                 # need to revisit logic for obscure swim rules
             "Desert RV - Fire Bat Coin": lambda state:
                 state.has("ItemWateringCan", self.player)
-                and self.has_darkroom(state) and self.can_openChest(state),
+                and self.has_darkroom(state, 1) and self.can_openChest(state),
             "Desert RV - Truck Supplies Coin": lambda state:
                 self.has_sword(state) and self.can_openChest(state),
             "Desert RV - Broken Truck": lambda state:
                 self.can_openChest(state),
             "Desert RV - Quicksand Coin": lambda state:
-                self.has_sword(state) and self.has_darkroom(state),
+                self.has_sword(state) and self.has_darkroom(state, 2),
                 # vanilla does require sword because the wateringcan drops
                 # - while drowing in quicksand
             "Desert RV - Dumpster": lambda state:
@@ -173,16 +173,13 @@ class MinitRules:
             "Desert RV - Temple Heart": lambda state:
                 state.has("ItemShoes", self.player)
                 and (state.has("ItemFlashLight", self.player)
-                     or (self.has_darkroom(state)
-                         and bool(self.world.options.obscure.value))),
-                # obscure: making darkroom settings not require you to do
-                # - temple heart without also having obscure on
+                     or self.has_darkroom(state, 3)),
             "Desert RV - Shop Heart": lambda state:
                 self.get_coins(state, 19)
                 and state.has("ItemBasement", self.player),
             "Desert RV - Octopus Tentacle": lambda state:
                 self.has_sword(state) and state.has("ItemSwim", self.player)
-                and self.has_darkroom(state),
+                and self.has_darkroom(state, 2),
             "Desert RV - Beach Tentacle": lambda state:
                 self.has_sword(state)
                 or (self.region_DogHouse(state)
@@ -195,15 +192,16 @@ class MinitRules:
             "Hotel Room - ItemGrinder": lambda state:
                 state.has("ItemSwim", self.player)
                 and state.has("ItemCoffee", self.player)
-                and self.has_darkroom(state),
+                and self.has_darkroom(state, 2),
             "Hotel Room - Shrub Arena Coin": lambda state:
                 self.has_sword(state),
             "Hotel Room - Miner's Chest Coin": lambda state:
                 self.has_sword(state) and state.has("ItemGrinder", self.player)
-                and self.can_openChest(state) and self.has_darkroom(state),
+                and self.can_openChest(state) and self.has_darkroom(state, 3),
             "Factory Main - Inside Truck": lambda state: True,
             "Hotel Room - Queue": lambda state:
-                self.has_bridge(state) or self.region_hotel_factory(state),
+                state.has_any({"ItemSwim", "bridge on"}, self.player)
+                or self.region_hotel_factory(state),
             "Hotel Room - Hotel Backroom Coin": lambda state:
                 self.can_passBoxes(state) and self.has_sword(state),
             "Factory Main - Drill Coin": lambda state: self.has_sword(state),
@@ -256,7 +254,7 @@ class MinitRules:
                 and state.has("left machine", self.player)
                 and state.has("right machine", self.player)
                 and state.has("drill smacked", self.player)
-                and self.has_darkroom(state),
+                and self.has_darkroom(state, 1),
                 # drill shortcut for swordless entry assumed
 
 
@@ -279,8 +277,11 @@ class MinitRules:
                 self.has_sword(state)
                 and (
                      state.has("ItemSwim", self.player)
-                     or (state.has("ItemThrow", self.player) and self.has_sword(state) and self.has_darkroom(state))
-                     or (self.region_hotel_factory(state) and state.has("ItemPressPass", self.player))
+                     or (
+                        state.has("ItemThrow", self.player)
+                        and self.has_sword(state)
+                        and self.has_darkroom(state, 2))
+                     or (self.region_hotel_factory(state))
                 ),
             "bridge saved": lambda state:
                 state.has("bridge on", self.player),
@@ -301,7 +302,7 @@ class MinitRules:
             "left machine": lambda state:
                 state.has("ItemCoffee", self.player)
                 and state.has("ItemSwim", self.player)
-                and self.has_darkroom(state),
+                and self.has_darkroom(state, 1),
             "right machine": lambda state:
                 self.has_sword(state),
         }
@@ -328,9 +329,9 @@ class MinitRules:
                 or (state.count("Reverse Progressive Sword", self.player) >= 3)
                 )
 
-    def has_darkroom(self, state) -> bool:
+    def has_darkroom(self, state, value) -> bool:
         return (state.has("ItemFlashLight", self.player)
-                or bool(self.world.options.darkrooms.value))
+                or self.world.options.darkrooms.value >= value)
 
     def has_savedResidents(self, state) -> bool:
         # can save all the residents to access the hotel roof
@@ -353,15 +354,15 @@ class MinitRules:
             "hidden saved",
             }, self.player)
 
-    def has_bridge(self, state) -> bool:
-        return (state.has("ItemSwim", self.player)
-                or (self.has_darkroom(state)
-                    and state.has("ItemThrow", self.player)
-                    and self.has_sword(state)))
-        # this is also accessible through the factory
-        # - in the case that your factory access is desert > sword + grinder
-        # - and you have press pass, but those are covered by
-        # - region_hotel_factory when necessary
+    # def has_bridge(self, state) -> bool:
+    #     return (state.has("ItemSwim", self.player)
+    #             or (self.has_darkroom(state, 2)
+    #                 and state.has("ItemThrow", self.player)
+    #                 and self.has_sword(state)))
+    #     # this is also accessible through the factory
+    #     # - in the case that your factory access is desert > sword + grinder
+    #     # - and you have press pass, but those are covered by
+    #     # - region_hotel_factory when necessary
 
     def has_madeboat(self, state) -> bool:
         return (state.has("ItemBoat", self.player)
@@ -414,7 +415,7 @@ class MinitRules:
                      and state.has("ItemGlove", self.player))
                 or ((self.has_sword(state)
                     or state.has("ItemSwim", self.player))
-                    and self.has_darkroom(state))
+                    and self.has_darkroom(state, 2))
                 or state.has("ItemSwim", self.player))
 
     def region_HotelRoom(self, state) -> bool:
@@ -426,11 +427,11 @@ class MinitRules:
     def region_factory_hotel(self, state) -> bool:
         return ((self.has_sword(state)
                 and state.has("ItemPressPass", self.player)
-                and ((self.has_darkroom(state)
+                and ((self.has_darkroom(state, 3)
                       and state.has("ItemThrow", self.player))
                 or state.has("ItemSwim", self.player)))
                 or (state.has("ItemSwim", self.player)
-                    and self.has_darkroom(state)))
+                    and self.has_darkroom(state, 2)))
 
     def region_factory_desert(self, state) -> bool:
         return ((self.has_sword(state)
@@ -446,7 +447,7 @@ class MinitRules:
 
     def region_BossFight(self, state) -> bool:
         return (self.has_megasword(state)
-                and self.has_darkroom(state))
+                and self.has_darkroom(state, 2))
 
     def set_Minit_rules(self) -> None:
         multiworld = self.world.multiworld

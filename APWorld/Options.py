@@ -4,13 +4,27 @@ from Options import Toggle, Choice, PerGameCommonOptions, DeathLink, Range
 
 
 class EarlySword(Toggle):
-    """Start With a Sword in vanilla Sword Location."""
+    """
+    Start With a Sword in vanilla Sword Location.
+    or with Entrance Rando on puts one accessible from spawn
+    """
     display_name = "Early Sword"
 
 
-class Darkrooms(Toggle):
-    """Puts Darkroom navigation without FlashLight in logic."""
+class Darkrooms(Choice):
+    """
+    Puts Darkroom navigation without FlashLight in logic.
+    off: makes any darkness out of logic without flashlight
+    minor: only regions where the majority of travel is lit are in logic
+    on: common darkrooms that require precise movement will be in logic
+    insane: darkness will never be considered out of logic
+    """
     display_name = "Darkrooms"
+    option_off = 0
+    option_minor = 1
+    option_on = 2
+    option_insane = 3
+    default = 1
 
 
 class Obscure(Toggle):
@@ -26,9 +40,11 @@ class DeathLinkAmnesty(Range):
 
 
 class ProgressiveSword(Choice):
-    """Sets the Broken, Basic, and Mega swords to be Progressive Items."""
-    """If set to reverse they will increment from Mega to Basic to Broken,"""
-    """expected to be used with Toilet Goal."""
+    """
+    Sets the Broken, Basic, and Mega swords to be Progressive Items.
+    If set to reverse they will increment from Mega to Basic to Broken,
+    expected to be used with Toilet Goal.
+    """
     display_name = "ProgressiveSword"
     option_forward_progressive = 0
     option_reverse_progressive = 1
@@ -37,10 +53,12 @@ class ProgressiveSword(Choice):
 
 
 class Goal(Choice):
-    """Forces the player to win via a specific Goal condition."""
-    """Boss is use the Mega Sword to destroy the factory machine"""
-    """and beat the boss. Toilet is to aquire the Broken Sword """
-    """and drop it into the Factory toilet."""
+    """
+    Forces the player to win via a specific Goal condition.
+    Boss is use the Mega Sword to destroy the factory machine
+    and beat the boss. Toilet is to aquire the Broken Sword
+    and drop it into the Factory toilet.
+    """
     display_name = "Goal"
     option_boss_fight = 0
     option_toilet_goal = 1
@@ -68,7 +86,7 @@ class MinitGameOptions(PerGameCommonOptions):
     er_option: EntranceRando
 
 
-#add options
-#TODO - add a darkroom option to ignore flashlight req
-#TODO - add puzzleless to de-prio longer/confusing puzzles
-#TODO - add random start locations
+# add options
+# TODO - add a darkroom option to ignore flashlight req
+# TODO - add puzzleless to de-prio longer/confusing puzzles
+# TODO - add random start locations
