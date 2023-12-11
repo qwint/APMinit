@@ -15,7 +15,7 @@ class MinitItemData(NamedTuple):
 item_table: Dict[str, MinitItemData] = {
     "Coin": MinitItemData(
         code=60000,
-        classification=ItemClassification.progression),
+        classification=ItemClassification.progression_skip_balancing),
     "HeartPiece": MinitItemData(
         code=60001,
         classification=ItemClassification.useful),

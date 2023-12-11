@@ -125,6 +125,10 @@ class MinitItem(Item):
 
 
 class MinitWorld(World):
+    """
+    Minit is a peculiar little adventure played sixty seconds at a time.
+    """
+
     game = "Minit"
     required_client_version = (0, 4, 3)
     options_dataclass = MinitGameOptions
