@@ -424,7 +424,7 @@ class ER_MinitRules:
 
     def has_darkroom(self, state, value) -> bool:
         return (state.has("ItemFlashLight", self.player)
-                or self.world.options.darkrooms.value >= value)
+                or self.world.options.darkrooms >= value)
 
     def can_passBoxes(self, state) -> bool:
         return (state.has("ItemCoffee", self.player)

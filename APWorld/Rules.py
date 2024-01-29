@@ -331,7 +331,7 @@ class MinitRules:
 
     def has_darkroom(self, state, value) -> bool:
         return (state.has("ItemFlashLight", self.player)
-                or self.world.options.darkrooms.value >= value)
+                or self.world.options.darkrooms >= value)
 
     def has_savedResidents(self, state) -> bool:
         # can save all the residents to access the hotel roof
