@@ -1,8 +1,8 @@
 # Minit
 
-## Where is the settings page?
+## Where is the options page?
 
-The [player settings page for Minit](../player-settings) contains all the options you need to configure and export a config file.
+The [player options page for Minit](../player-settings) contains all the options you need to configure and export a config file.
 
 ## What is the goal of Minit when randomized?
 
@@ -28,7 +28,7 @@ Item locations have their original sprites.
 
 Items will not be added synchronously to the player's inventory, rather the player is expected to pick up an item with the Archipelago logo as a sprite that is spawned near their current home base to manually sync all received items.
 
-## What are recommended settings to tweak for beginners to the rando?
+## What are recommended options to tweak for beginners to the rando?
 
 Vanilla Sword is recommended to turn on for beginners as it opens up many more checks in early game and removes potential requirements for the player to use unintuitive pathing and interactions.
 Also Goal: Flush is a much quicker goal to use as it only requires Factory access and the item Broken Sword.
