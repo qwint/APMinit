@@ -87,6 +87,5 @@ class MinitGameOptions(PerGameCommonOptions):
 
 
 # add options
-# TODO - add a darkroom option to ignore flashlight req
 # TODO - add puzzleless to de-prio longer/confusing puzzles
 # TODO - add random start locations

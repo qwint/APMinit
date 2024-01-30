@@ -351,9 +351,6 @@ class MinitWorld(World):
             }
 
     def interpret_slot_data(self, slot_data: Dict[str, Any]):
-        # for region in self.get_regions(self.player):
-        #     for entrance in region.entrances:
-
         if slot_data["ER_connections"]:
             e_dict = {entrance.name: entrance for region in self.multiworld.get_regions(self.player) for entrance in region.entrances}
 
@@ -378,13 +375,11 @@ class MinitWorld(World):
             assert ["lighthouse lookout", "coffee shop pot stairs", "sewer island", "shoe shop inside", "camera house inside", "dog house inside", "lighthouse inside", "island house", "shoe shop downstairs", "dog house basement"] not in self.er_region_list
             self.output_connections = randomize_entrances(
                     world=self,
-                    # random=self.random,
                     regions=self.er_region_list,
                     coupled=True,
                     get_target_groups=minit_get_target_groups,
                     preserve_group_order=False
                     ).pairings
-            # self.output_connections = self.make_bad_map()
             visualize_regions(
                 self.multiworld.get_region("Menu", self.player),
                 "output/regionmap.puml")
@@ -427,6 +422,4 @@ class MinitWorld(World):
             if self.options.progressive_sword.value == 0:
                 starting_items.append("Progressive Sword")
             self.random.shuffle(starting_items)
-            # single_player_item = starting_items.pop()
-            # print(f"adding {single_player_item} to make single player easier")
             self.multiworld.local_early_items[self.player][starting_items.pop()] = 1
