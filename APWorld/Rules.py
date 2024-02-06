@@ -343,14 +343,7 @@ class MinitRules:
         }
 
     def has_sword(self, state) -> bool:
-        return (state.has_any({
-                    "ItemSword",
-                    "ItemBrokenSword",
-                    "ItemMegaSword",
-                    }, self.player)
-                or (state.count("Progressive Sword", self.player) >= 1)
-                or (state.count("Reverse Progressive Sword", self.player) >= 1)
-                )
+        return state.prog_items[self.player]["has_sword"] > 0
 
     def has_megasword(self, state) -> bool:
         return (state.has("ItemMegaSword", self.player)

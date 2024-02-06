@@ -423,3 +423,16 @@ class MinitWorld(World):
                 starting_items.append("Progressive Sword")
             self.random.shuffle(starting_items)
             self.multiworld.local_early_items[self.player][starting_items.pop()] = 1
+
+    def collect(self, state: "CollectionState", item: "Item") -> bool:
+        change = super().collect(state, item)
+        if change and item.name in ["ItemBrokenSword", "ItemSword", "ItemMegaSword", "Reverse Progressive Sword", "Progressive Sword"]:
+            state.prog_items[item.player]["has_sword"] += 1
+        return change
+
+    def remove(self, state: "CollectionState", item: "Item") -> bool:
+        change = super().remove(state, item)
+        if change and item.name in ["ItemBrokenSword", "ItemSword", "ItemMegaSword", "Reverse Progressive Sword", "Progressive Sword"]:
+            state.prog_items[item.player]["has_sword"] -= 1
+            assert state.prog_items[item.player]["has_sword"] > -1
+        return change
