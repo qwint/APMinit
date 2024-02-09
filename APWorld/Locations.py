@@ -1,4 +1,5 @@
-from BaseClasses import Location, MultiWorld
+from BaseClasses import Location
+from worlds.AutoWorld import World
 from typing import NamedTuple, Dict, Optional, Callable
 
 
@@ -6,7 +7,7 @@ class MinitLocationData(NamedTuple):
     region: str
     er_region: str
     code: int = None
-    can_create: Callable[[MultiWorld, int], bool] = lambda multiworld, player: True
+    can_create: Callable[[World, int], bool] = lambda world, player: True
     locked_item: Optional[str] = None
     show_in_spoiler: bool = True
 

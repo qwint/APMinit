@@ -135,7 +135,7 @@ class MinitWorld(World):
     options: MinitGameOptions
     web = MinitWebWorld()
     output_connections: List[tuple[str, str]]
-    er_region_list: List[Region] = []
+    er_region_list: List[Region]
 
     item_name_to_id = {
         name: data.code
@@ -154,6 +154,10 @@ class MinitWorld(World):
         if data.locked_item}
     item_name_groups = item_groups
 
+    def __init__(self, multiworld: "MultiWorld", player: int):
+        super().__init__(multiworld, player)
+        self.er_region_list = []
+
     def create_item(self, name: str) -> MinitItem:
         data = item_table[name]
         return MinitItem(name, data.classification, data.code, self.player)
@@ -161,7 +165,7 @@ class MinitWorld(World):
     def create_items(self):
         for item_name, item_data in item_table.items():
             if (item_data.code and item_data.can_create(
-                    self.multiworld,
+                    self,
                     self.player)):
                 if (item_name in item_frequencies):
                     for count in range(item_frequencies[item_name]):
@@ -210,7 +214,7 @@ class MinitWorld(World):
                 self.multiworld))
 
         for loc_name, loc_data in location_table.items():
-            if not loc_data.can_create(self.multiworld, self.player):
+            if not loc_data.can_create(self, self.player):
                 continue
             if er_on:
                 loc_region = loc_data.er_region

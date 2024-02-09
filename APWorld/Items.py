@@ -1,4 +1,5 @@
-from BaseClasses import Item, ItemClassification, MultiWorld
+from BaseClasses import Item, ItemClassification
+from worlds.AutoWorld import World
 from typing import NamedTuple, Dict, Set, Callable
 
 
@@ -9,7 +10,7 @@ class MinitItem(Item):
 class MinitItemData(NamedTuple):
     code: int = None
     classification: ItemClassification = ItemClassification.filler
-    can_create: Callable[[MultiWorld, int], bool] = lambda multiworld, player: True
+    can_create: Callable[[World, int], bool] = lambda world, player: True
 
 
 item_table: Dict[str, MinitItemData] = {
@@ -60,13 +61,13 @@ item_table: Dict[str, MinitItemData] = {
     "ItemMegaSword": MinitItemData(
         code=60014,
         classification=ItemClassification.progression,
-        can_create=lambda multiworld, player:
-        multiworld.worlds[player].options.progressive_sword.value == 2),
+        can_create=lambda world, player:
+        world.options.progressive_sword.value == 2),
     "ItemBrokenSword": MinitItemData(
         code=60015,
         classification=ItemClassification.progression,
-        can_create=lambda multiworld, player:
-        multiworld.worlds[player].options.progressive_sword.value == 2),
+        can_create=lambda world, player:
+        world.options.progressive_sword.value == 2),
     "ItemTurboInk": MinitItemData(
         code=60016,
         classification=ItemClassification.useful),
@@ -82,18 +83,18 @@ item_table: Dict[str, MinitItemData] = {
     "ItemSword": MinitItemData(
         code=60020,
         classification=ItemClassification.progression,
-        can_create=lambda multiworld, player:
-        multiworld.worlds[player].options.progressive_sword.value == 2),
+        can_create=lambda world, player:
+        world.options.progressive_sword.value == 2),
     "Progressive Sword": MinitItemData(
         code=60021,
         classification=ItemClassification.progression,
-        can_create=lambda multiworld, player:
-        multiworld.worlds[player].options.progressive_sword.value == 0),
+        can_create=lambda world, player:
+        world.options.progressive_sword.value == 0),
     "Reverse Progressive Sword": MinitItemData(
         code=60022,
         classification=ItemClassification.progression,
-        can_create=lambda multiworld, player:
-        multiworld.worlds[player].options.progressive_sword.value == 1),
+        can_create=lambda world, player:
+        world.options.progressive_sword.value == 1),
 
     # "Boss dead": MinitItemData(
     #     classification=ItemClassification.progression),
