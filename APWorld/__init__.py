@@ -130,7 +130,8 @@ class MinitWorld(World):
     """
 
     game = "Minit"
-    required_client_version = (0, 4, 3)
+    required_client_version = (0, 4, 4)
+    data_version = 0  # needs to change after the item/location renaming
     options_dataclass = MinitGameOptions
     options: MinitGameOptions
     web = MinitWebWorld()
@@ -253,7 +254,7 @@ class MinitWorld(World):
                     other_region.connect(region)
             else:
                 region.add_exits(exit_list)
-        # elif self.options.er_option == 1:
+        # elif self.options.er_option == "on":
         #     # current map gen is pure random, so make regions/connections vanilla
         #     self.output_connections = self.make_bad_map()
 
@@ -347,7 +348,7 @@ class MinitWorld(World):
 
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
-            "slot_number": self.player,
+            "slot_number": self.player,  # unneeded?
             "death_link": self.options.death_link.value,
             "death_amnisty_total": self.options.death_amnisty_total.value,
             "ER_connections": self.output_connections,
@@ -365,13 +366,13 @@ class MinitWorld(World):
                 e_dict[connection[0]].connected_region = e_dict[connection[1]].parent_region
 
     def set_rules(self):
-        if self.options.er_option == 0:
+        if self.options.er_option == "off":
             minitRules = MinitRules(self)
             minitRules.set_Minit_rules()
-        elif self.options.er_option == 1 and not er_loaded:
+        elif self.options.er_option == "on" and not er_loaded:
             minitRules = MinitRules(self)
             minitRules.set_Minit_rules()
-        elif self.options.er_option == 1 and er_loaded:
+        elif self.options.er_option == "on" and er_loaded:
             minitRules = ER_MinitRules(self)
             minitRules.set_Minit_rules()
 
@@ -388,42 +389,42 @@ class MinitWorld(World):
                 self.multiworld.get_region("Menu", self.player),
                 "output/regionmap.puml")
 
-        if self.options.chosen_goal == 0:  # boss fight
+        if self.options.chosen_goal == "boss_fight":  # boss fight
             self.multiworld.completion_condition[self.player] = lambda state: \
                 state.has("Boss dead", self.player)
-        elif self.options.chosen_goal == 1:  # toilet
+        elif self.options.chosen_goal == "toilet_goal":  # toilet
             self.multiworld.completion_condition[self.player] = lambda state: \
                 minitRules.has_brokensword(state) and \
                 state.has("Sword Flushed", self.player)
-        elif self.options.chosen_goal == 2:  # any
+        elif self.options.chosen_goal == "any_goal":  # any
             self.multiworld.completion_condition[self.player] = lambda state: \
                 state.has("Boss dead", self.player) or \
                 (minitRules.has_brokensword(state) and
                     state.has("Sword Flushed", self.player))
-        if bool(self.options.starting_sword.value):
+        if bool(self.options.starting_sword):
             self.multiworld.local_early_items[self.player][self.get_sword_item_name()] = 1
 
     def get_sword_item_name(self) -> str:
-        if self.options.progressive_sword.value == 0:
+        if self.options.progressive_sword == "off":
             return "Progressive Sword"
-        elif self.options.progressive_sword.value == 1:
+        elif self.options.progressive_sword == "reverse_progressive":
             return "Reverse Progressive Sword"
-        elif self.options.progressive_sword.value == 2:
+        elif self.options.progressive_sword == "forward_progressive":
             return "ItemSword"
 
     def get_filler_item_name(self) -> str:
         return "HeartPiece"
 
     def pre_fill(self) -> None:
-        if self.multiworld.players == 1 and not bool(self.options.starting_sword.value):
+        if self.multiworld.players == 1 and not bool(self.options.starting_sword):
             starting_items = ["ItemSwim", "ItemWateringCan"]
-            if self.options.progressive_sword.value == 2:
+            if self.options.progressive_sword == "off":
                 starting_items.append("ItemBrokenSword")
                 starting_items.append("ItemSword")
                 starting_items.append("ItemMegaSword")
-            if self.options.progressive_sword.value == 1:
+            if self.options.progressive_sword == "reverse_progressive":
                 starting_items.append("Reverse Progressive Sword")
-            if self.options.progressive_sword.value == 0:
+            if self.options.progressive_sword == "forward_progressive":
                 starting_items.append("Progressive Sword")
             self.random.shuffle(starting_items)
             self.multiworld.local_early_items[self.player][starting_items.pop()] = 1

@@ -328,7 +328,7 @@ class ER_MinitRules:
                             "ItemShoes"}, self.player)))
                 or (self.has_sword(state)
                     and state.has("ItemGlove", self.player)
-                    and bool(self.world.options.obscure.value)),
+                    and bool(self.world.options.obscure)),
                 # TODO - untouched until i figure out a way to logic this
             "Factory Main - Cooler Tentacle": lambda state:
                 self.has_sword(state),
@@ -337,7 +337,7 @@ class ER_MinitRules:
             "Island Shack - Teleporter Tentacle": lambda state:
                 state.has("ItemSwim", self.player)
                 and (state.has("ItemCoffee", self.player)
-                     or bool(self.world.options.obscure.value))
+                     or bool(self.world.options.obscure))
                 and self.has_sword(state),
 
             # Underground Tent

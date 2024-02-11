@@ -62,12 +62,12 @@ item_table: Dict[str, MinitItemData] = {
         code=60014,
         classification=ItemClassification.progression,
         can_create=lambda world, player:
-        world.options.progressive_sword.value == 2),
+        world.options.progressive_sword == "off"),
     "ItemBrokenSword": MinitItemData(
         code=60015,
         classification=ItemClassification.progression,
         can_create=lambda world, player:
-        world.options.progressive_sword.value == 2),
+        world.options.progressive_sword == "off"),
     "ItemTurboInk": MinitItemData(
         code=60016,
         classification=ItemClassification.useful),
@@ -84,17 +84,17 @@ item_table: Dict[str, MinitItemData] = {
         code=60020,
         classification=ItemClassification.progression,
         can_create=lambda world, player:
-        world.options.progressive_sword.value == 2),
+        world.options.progressive_sword == "off"),
     "Progressive Sword": MinitItemData(
         code=60021,
         classification=ItemClassification.progression,
         can_create=lambda world, player:
-        world.options.progressive_sword.value == 0),
+        world.options.progressive_sword == "forward_progressive"),
     "Reverse Progressive Sword": MinitItemData(
         code=60022,
         classification=ItemClassification.progression,
         can_create=lambda world, player:
-        world.options.progressive_sword.value == 1),
+        world.options.progressive_sword == "reverse_progressive"),
 
     # "Boss dead": MinitItemData(
     #     classification=ItemClassification.progression),

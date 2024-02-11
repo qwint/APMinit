@@ -25,7 +25,7 @@ class MinitRules:
                 True,
             "Dog House -> Island Shack": lambda state:
                 (state.has("ItemSwim", self.player)
-                    and bool(self.world.options.obscure.value)
+                    and bool(self.world.options.obscure)
                  or (self.has_madeboat(state))),
                 # obscure: you can swim from treasure island
                 # - by baiting the shark
@@ -77,7 +77,7 @@ class MinitRules:
                     and (state.has("ItemSwim", self.player)
                          or self.has_sword(state)))
                 or (state.has("ItemSwim", self.player)
-                    and bool(self.world.options.obscure.value)),
+                    and bool(self.world.options.obscure)),
                 # obscure: you can swim behind the lighthouse
                 # - and pick up the item
             "Dog House - ItemKey": lambda state:
@@ -91,7 +91,7 @@ class MinitRules:
             "Dog House - ItemBasement": lambda state:
                 state.has("ItemGlove", self.player) and self.has_sword(state)
                 and ((state.has("ItemSwim", self.player)
-                      and bool(self.world.options.obscure.value))
+                      and bool(self.world.options.obscure))
                      or self.has_madeboat(state)),
                 # obscure: you can swim from treasure island
                 # - by baiting the shark
@@ -110,7 +110,7 @@ class MinitRules:
                             and state.has("ItemSwim", self.player)
                             and self.has_sword(state))))
                 or ((self.total_hearts(state, 7)
-                    and bool(self.world.options.obscure.value)
+                    and bool(self.world.options.obscure)
                     and state.can_reach("Hotel Room", player=self.player))
                     and state.has("ItemSwim", self.player)),
                 # obscure: you can, with clean movement and damage tanks,
@@ -241,7 +241,7 @@ class MinitRules:
                          or self.can_teleport(state)))
                 or (self.has_sword(state)
                     and state.has("ItemGlove", self.player)
-                    and bool(self.world.options.obscure.value)),
+                    and bool(self.world.options.obscure)),
                 # obscure: with good movemnt can do this in 50s
                 # -  with just sword glove, adding teleport/swim/shoes
                 # - to give more wiggle room outside obscure logic
@@ -259,7 +259,7 @@ class MinitRules:
                         "ItemSwim",
                         }, self.player)
                 and (state.has("ItemCoffee", self.player)
-                     or bool(self.world.options.obscure.value))
+                     or bool(self.world.options.obscure))
                 and self.has_sword(state),
                 # obscure: attacking in coyote frames from the right teleporter
                 # - lets you do this with just sword/swim
