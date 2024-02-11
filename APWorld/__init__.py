@@ -185,6 +185,17 @@ class MinitWorld(World):
                             item_data.code,
                             self.player))
 
+        non_event_locations = [location for location in self.multiworld.get_locations() if not location.event]
+        for _ in range(len(non_event_locations) - len(self.multiworld.itempool)):
+            item_name = self.get_filler_item_name()
+            item_data = item_table[item_name]
+            self.multiworld.itempool.append(
+                MinitItem(
+                    item_name,
+                    item_data.classification,
+                    item_data.code,
+                    self.player))
+
     def make_bad_map(self) -> List[tuple[str, str]]:
         unconnected = []
         output = []
@@ -414,7 +425,10 @@ class MinitWorld(World):
             return "ItemSword"
 
     def get_filler_item_name(self) -> str:
-        return "HeartPiece"
+        if bool(self.options.min_hp):
+            return "Coin"
+        else:
+            return "HeartPiece"
 
     def pre_fill(self) -> None:
         if self.multiworld.players == 1 and not bool(self.options.starting_sword):

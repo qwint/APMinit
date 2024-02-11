@@ -19,7 +19,9 @@ item_table: Dict[str, MinitItemData] = {
         classification=ItemClassification.progression_skip_balancing),
     "HeartPiece": MinitItemData(
         code=60001,
-        classification=ItemClassification.useful),
+        classification=ItemClassification.useful,
+        can_create=lambda world, player:
+        not bool(world.options.min_hp)),
     "Tentacle": MinitItemData(
         code=60002,
         classification=ItemClassification.progression),

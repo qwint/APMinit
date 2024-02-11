@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Toggle, Choice, PerGameCommonOptions, DeathLink, Range
+from Options import Toggle, Choice, PerGameCommonOptions, DeathLink, Range, StartInventoryPool
 
 
 class EarlySword(Toggle):
@@ -74,8 +74,17 @@ class EntranceRando(Choice):
     default = 0
 
 
+class MinHP(Toggle):
+    """
+    If on replaces all Health Pieces with bonus coins,
+    keeping the player at 2 HP
+    """
+    display_name = "MinHP"
+
+
 @dataclass
 class MinitGameOptions(PerGameCommonOptions):
+    start_inventory_from_pool: StartInventoryPool
     starting_sword: EarlySword
     darkrooms: Darkrooms
     obscure: Obscure
@@ -84,6 +93,7 @@ class MinitGameOptions(PerGameCommonOptions):
     death_link: DeathLink
     death_amnisty_total: DeathLinkAmnesty
     er_option: EntranceRando
+    min_hp: MinHP
 
 
 # add options

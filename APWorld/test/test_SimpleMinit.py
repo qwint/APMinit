@@ -379,6 +379,45 @@ class TestRevProgressiveChestAccess(MinitTestBase):
         self.assertAccessDependency(locations, items, only_check_listed=True)
 
 
+class TestMinHP(MinitTestBase):
+    options = {
+        "min_hp": True,
+    }
+
+    def test_item_removed(self):
+        itempool = [item.name for item in self.multiworld.get_items()]
+        assert "HeartPiece" not in itempool
+        assert "ItemGrinder" in itempool
+
+        count = 0
+        for item in itempool:
+            if item == "Coin":
+                count += 1
+        assert count == 25
+
+
+class TestFullHP(MinitTestBase):
+    options = {
+        "min_hp": False,
+    }
+
+    def test_item_removed(self):
+        itempool = [item.name for item in self.multiworld.get_items()]
+        assert "HeartPiece" in itempool
+        assert "ItemGrinder" in itempool
+
+        count = 0
+        for item in itempool:
+            if item == "HeartPiece":
+                count += 1
+        assert count == 6
+        count = 0
+        for item in itempool:
+            if item == "Coin":
+                count += 1
+        assert count == 19
+
+
 class TestSeed1(selectSeedMinit):
     seed = 95400472555641845910
 
@@ -389,3 +428,6 @@ class TestSeed2(selectSeedMinit):
 
 class TestSeed3(selectSeedMinit):
     seed = 40237425953666301908
+
+# 20481966185286985687
+# 99382586412933725576
