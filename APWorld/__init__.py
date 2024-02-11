@@ -5,14 +5,14 @@ from BaseClasses import (
     Item,
     ItemClassification,
     Entrance,
-    Tutorial
+    Tutorial,
 )
 from .Items import (
     MinitItem,
     MinitItemData,
     item_table,
     item_frequencies,
-    item_groups
+    item_groups,
 )
 from .Locations import location_table
 from .Regions import region_table
@@ -32,7 +32,7 @@ from worlds.LauncherComponents import (
     Component,
     components,
     Type,
-    launch_subprocess
+    launch_subprocess,
 )
 import random
 from Utils import visualize_regions
@@ -40,6 +40,7 @@ from Utils import visualize_regions
 
 try:
     from EntranceRando import randomize_entrances
+    from BaseClasses import EntranceType
     er_loaded = True
 except ModuleNotFoundError:
     er_loaded = False
@@ -297,7 +298,7 @@ class MinitWorld(World):
                 # entrance.is_dead_end = er_entrance[2]
 
                 en1 = region.create_exit(er_entrance[0])
-                en1.er_type = Entrance.EntranceType.TWO_WAY
+                en1.er_type = EntranceType.TWO_WAY
                 en1.er_group = er_entrance[3]
                 if starting_entrance and er_entrance[0] in ["dog house south", starting_entrance]:
                     if er_entrance[0] == "dog house south":
@@ -311,7 +312,7 @@ class MinitWorld(World):
                         # add_manual_connect = False
                 else:
                     en2 = region.create_er_target(er_entrance[0])
-                    en2.er_type = Entrance.EntranceType.TWO_WAY
+                    en2.er_type = EntranceType.TWO_WAY
                     en2.er_group = er_entrance[3]
 
         elif er_on and not er_loaded:
