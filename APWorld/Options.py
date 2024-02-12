@@ -82,6 +82,16 @@ class MinHP(Toggle):
     display_name = "MinHP"
 
 
+class DamageBoosts(Toggle):
+    """
+    Enables high damage routes through poisoned water
+    note: this does not exclude taking one damage
+    to cross the rivers before factory and camera house
+    Multi-hit damages boosts are not currently in ER
+    """
+    display_name = "DamageBoosts"
+
+
 @dataclass
 class MinitGameOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -94,6 +104,7 @@ class MinitGameOptions(PerGameCommonOptions):
     death_amnisty_total: DeathLinkAmnesty
     er_option: EntranceRando
     min_hp: MinHP
+    damage_boosts: DamageBoosts
 
 
 # add options

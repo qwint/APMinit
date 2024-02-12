@@ -23,9 +23,9 @@ class ER_MinitRules:
         self.region_rules = {
             "Menu -> sword main": lambda state: True,
             "factory machine catwalk -> Boss Fight": lambda state:
-                (self.has_megasword(state) and self.has_darkroom(state, 2)),
+                (self.has_darkroom(state, 2) and self.has_megasword(state)),
             "factory machine generator -> Boss Fight": lambda state:
-                (self.has_megasword(state) and self.has_darkroom(state, 2)),
+                (self.has_darkroom(state, 2) and self.has_megasword(state)),
             "lighthouse land <-> lighthouse water": lambda state:
                 state.has("ItemSwim", self.player),
             "boat land <-> boat water": lambda state:
@@ -61,41 +61,41 @@ class ER_MinitRules:
             "dog house river <-> dog house east": lambda state:
                 state.has("ItemSwim", self.player),
             "quicksand main <-> quicksand left tree": lambda state:
-                state.has("ItemGlove", self.player) and self.has_sword(state),
+                self.has_sword(state) and state.has("ItemGlove", self.player),
                 # technically an option to not have glove and water boatguy but
                 # that adds weird issues so i'll just leave it as out of logic
             "quicksand main <-> quicksand right tree": lambda state:
-                state.has("ItemGlove", self.player) and self.has_sword(state),
+                self.has_sword(state) and state.has("ItemGlove", self.player),
             "boattree main <-> boattree box": lambda state:
                 self.can_passBoxes(state),
             "boattree main <-> boattree river": lambda state:
                 state.has("ItemSwim", self.player),
             "camera river south <-> camera river north": lambda state:
-                state.has("ItemThrow", self.player) and self.has_sword(state),
+                self.has_sword(state) and state.has("ItemThrow", self.player),
             "camera river south <-> camera river wet": lambda state:
                 state.has("ItemSwim", self.player),
             "camera river north <-> camera river wet": lambda state:
                 state.has("ItemSwim", self.player),
             "camera house outside <-> camera house tree": lambda state:
-                state.has("ItemGlove", self.player) and self.has_sword(state),
+                self.has_sword(state) and state.has("ItemGlove", self.player),
             "camera house outside <-> camera house inside": lambda state:
                 True,
             "3crab main <-> 3crab trees": lambda state:
-                state.has("ItemGlove", self.player) and self.has_sword(state),
+                self.has_sword(state) and state.has("ItemGlove", self.player),
             "sewer island mainland <-> sewer island water": lambda state:
                 state.has("ItemSwim", self.player),
             "throwcheck land <-> throwcheck water": lambda state:
                 state.has("ItemSwim", self.player),
             "throwcheck land -> throwcheck box": lambda state:
-                state.has("ItemGrinder", self.player)
-                and self.has_sword(state),
+                self.has_sword(state)
+                and state.has("ItemGrinder", self.player),
             "throwcheck box -> throwcheck land": lambda state:
                 self.can_passBoxes(state),
                 # could be a oneway with coffee but i'll think about that later
             "arena main <-> arena tree north": lambda state:
-                state.has("ItemGlove", self.player) and self.has_sword(state),
+                self.has_sword(state) and state.has("ItemGlove", self.player),
             "arena main <-> arena tree west": lambda state:
-                state.has("ItemGlove", self.player) and self.has_sword(state),
+                self.has_sword(state) and state.has("ItemGlove", self.player),
             "bridge switch right <-> bridge switch water": lambda state:
                 state.has("ItemSwim", self.player),
             "bridge switch left <-> bridge switch water": lambda state:
@@ -113,45 +113,46 @@ class ER_MinitRules:
             "factory cooler west <-> factory cooler east": lambda state:
                 self.has_sword(state),
             "factory loading lower main -> factory loading lower shortcut": lambda state:
-                state.has("ItemGrinder", self.player)
-                and self.has_sword(state),
+                self.has_sword(state)
+                and state.has("ItemGrinder", self.player),
             "factory loading lower shortcut -> factory loading lower main": lambda state:
-                state.has_all({"ItemSwim", "ItemCoffee"}, self.player)
-                or (state.has("ItemGrinder", self.player)
-                    and self.has_sword(state)),
+                (self.has_sword(state)
+                    and state.has("ItemGrinder", self.player))
+                or state.has_all({"ItemSwim", "ItemCoffee"}, self.player),
                 # another entrance that could have one-way logic
             "shoe shop outside <-> shoe shop shortcut": lambda state:
                 self.has_sword(state),
             "mine entrance bombs -> mine entrance pipe": lambda state:
-                state.has("ItemThrow", self.player) and self.has_sword(state)
-                and self.has_darkroom(state, 3),
+                self.has_sword(state)
+                and self.has_darkroom(state, 3)
+                and state.has("ItemThrow", self.player),
             "mine entrance pipe -> mine entrance bombs": lambda state:
-                state.has("bombs exploded", self.player)
-                and self.has_darkroom(state, 3),
+                self.has_darkroom(state, 3)
+                and state.has("bombs exploded", self.player),
                 # this needs to be a one-way
             "mine main -> mine main box": lambda state:
-                state.has("ItemGrinder", self.player)
-                and self.has_sword(state),
+                self.has_sword(state)
+                and state.has("ItemGrinder", self.player),
             "mine main box -> mine main": lambda state:
                 self.can_passBoxes(state),
             "sewer main right <-> sewer main left": lambda state:
-                state.has("ItemSwim", self.player)
-                and self.has_darkroom(state, 2),
+                self.has_darkroom(state, 2)
+                and state.has("ItemSwim", self.player),
             "sewer bat arena <-> sewer bat gate": lambda state:
                 self.has_sword(state)
                 and self.has_darkroom(state, 3),
                 # this needs to be a one-way
             "grinder south <-> grinder main": lambda state:
-                state.has("ItemSwim", self.player)
-                and self.has_darkroom(state, 1),
+                self.has_darkroom(state, 1)
+                and state.has("ItemSwim", self.player),
             "grinder east <-> grinder main": lambda state:
-                state.has("ItemSwim", self.player)
-                and self.has_darkroom(state, 1),  # maybe 2
+                self.has_darkroom(state, 1)  # maybe 2
+                and state.has("ItemSwim", self.player),
             "factory machine generator <-> factory machine catwalk": lambda state:
                 state.has("generator smashed", self.player),
             "miner chest belts <-> miner chest pipe entrance": lambda state:
-                state.has("ItemSwim", self.player)
-                and self.has_darkroom(state, 3),
+                self.has_darkroom(state, 3)
+                and state.has("ItemSwim", self.player),
 
             # unrandomized doors
             "lighthouse inside <-> lighthouse land": lambda state:
@@ -224,31 +225,33 @@ class ER_MinitRules:
             "Dog House - ItemKey": lambda state:
                 self.has_sword(state) and self.can_passBoxes(state),
                 # need to clear the plants by the boxes even with coffee
-            "Dog House - ItemWateringCan": lambda state: True,
+            "Dog House - ItemWateringCan": lambda state:
+                True,
             "Dog house - ItemBoat": lambda state:
-                state.has("ItemGlove", self.player) and self.has_sword(state),
+                self.has_sword(state) and state.has("ItemGlove", self.player),
             "Dog House - ItemBasement": lambda state:
-                state.has("ItemGlove", self.player)
-                and self.has_sword(state)
+                self.has_sword(state)
+                and state.has("ItemGlove", self.player)
                 and self.has_madeboat(state),
-            "Dog House - ItemPressPass": lambda state: True,
+            "Dog House - ItemPressPass": lambda state:
+                True,
             "Dog House - House Pot Coin": lambda state:
                 self.has_sword(state),
             "Dog House - Sewer Island Coin": lambda state:
                 self.can_openChest(state),
             "Dog House - Sewer Coin": lambda state:
-                state.has("ItemSwim", self.player)
+                self.can_openChest(state)
                 and self.has_darkroom(state, 2)
-                and self.can_openChest(state),
+                and state.has("ItemSwim", self.player),
             "Dog House - Land is Great Coin": lambda state:
                 self.can_openChest(state),
             "Dog House - Hidden Snake Coin": lambda state:
-                self.has_darkroom(state, 2) and self.can_openChest(state),
+                self.can_openChest(state) and self.has_darkroom(state, 2),
             "Dog House - Waterfall Coin": lambda state:
                 self.can_openChest(state),
             "Dog House - Treasure Island Coin": lambda state:
-                state.has("ItemSwim", self.player)
-                and self.can_openChest(state),
+                self.can_openChest(state)
+                and state.has("ItemSwim", self.player),
             "Dog House - Plant Heart": lambda state:
                 state.has("ItemWateringCan", self.player),
             "Dog House - Bull Heart": lambda state:
@@ -256,22 +259,23 @@ class ER_MinitRules:
             "Dog House - Boat Tentacle": lambda state:
                 self.has_sword(state) and self.has_madeboat(state),
             "Dog House - Treasure Island Tentacle": lambda state:
-                state.has("ItemSwim", self.player) and self.has_sword(state),
+                self.has_sword(state) and state.has("ItemSwim", self.player),
             "Dog House - Sword Toss Tentacle": lambda state:
-                state.has_all({"ItemCoffee", "ItemThrow"}, self.player)
-                and self.has_sword(state),
+                self.has_sword(state)
+                and state.has_all({"ItemCoffee", "ItemThrow"}, self.player),
             "Dog House - Sewer Tentacle": lambda state:
-                state.has("ItemSwim", self.player)
-                and self.has_sword(state) and self.has_darkroom(state, 3),
+                self.has_sword(state) and self.has_darkroom(state, 3)
+                and state.has("ItemSwim", self.player),
 
             # Desert RV
             "Desert RV - ItemThrow": lambda state:
                 self.has_sword(state),
             "Desert RV - ItemShoes": lambda state:
                 self.get_coins(state, 7),
-            "Desert RV - ItemGlove": lambda state: True,
+            "Desert RV - ItemGlove": lambda state:
+                True,
             "Desert RV - ItemTurboInk": lambda state:
-                self.get_tentacles(state, 8) and self.has_darkroom(state, 2),
+                self.has_darkroom(state, 2) and self.get_tentacles(state, 8),
             "Desert RV - Temple Coin": lambda state:
                 self.can_openChest(state),
                 # this may change if i connect the other temple puzzles
@@ -289,14 +293,14 @@ class ER_MinitRules:
             "Desert RV - Dumpster": lambda state:
                 self.has_sword(state),
             "Desert RV - Temple Heart": lambda state:
-                state.has("ItemShoes", self.player)
-                and self.has_darkroom(state, 3),
+                self.has_darkroom(state, 3)
+                and state.has("ItemShoes", self.player),
             "Desert RV - Shop Heart": lambda state:
                 self.get_coins(state, 19),
             "Desert RV - Octopus Tentacle": lambda state:
-                state.has("ItemSwim", self.player)
-                and self.has_sword(state)
-                and self.has_darkroom(state, 3),
+                self.has_sword(state)
+                and self.has_darkroom(state, 3)
+                and state.has("ItemSwim", self.player),
             "Desert RV - Beach Tentacle": lambda state:
                 self.has_sword(state),
 
@@ -305,16 +309,18 @@ class ER_MinitRules:
                 self.has_savedResidents(state),
                 # praying i can make this work
             "Hotel Room - ItemGrinder": lambda state:
-                state.has_all({"ItemSwim", "ItemCoffee"}, self.player)
-                and self.has_darkroom(state, 1),
+                self.has_darkroom(state, 1)
+                and state.has_all({"ItemSwim", "ItemCoffee"}, self.player),
             "Hotel Room - Shrub Arena Coin": lambda state:
                 self.has_sword(state),
             "Hotel Room - Miner's Chest Coin": lambda state:
                 self.can_openChest(state) and self.has_darkroom(state, 3),
-            "Factory Main - Inside Truck": lambda state: True,
-            "Hotel Room - Queue": lambda state: True,
+            "Factory Main - Inside Truck": lambda state:
+                True,
+            "Hotel Room - Queue": lambda state:
+                True,
             "Hotel Room - Hotel Backroom Coin": lambda state:
-                self.can_passBoxes(state) and self.has_sword(state),
+                self.has_sword(state) and self.can_passBoxes(state),
             "Factory Main - Drill Coin": lambda state:
                 self.has_sword(state),
             "Hotel Room - Crow Heart": lambda state:
@@ -335,10 +341,10 @@ class ER_MinitRules:
 
             # Island Shack
             "Island Shack - Teleporter Tentacle": lambda state:
-                state.has("ItemSwim", self.player)
-                and (state.has("ItemCoffee", self.player)
-                     or bool(self.world.options.obscure))
-                and self.has_sword(state),
+                self.has_sword(state)
+                and (bool(self.world.options.obscure)
+                     or state.has("ItemCoffee", self.player))
+                and state.has("ItemSwim", self.player),
 
             # Underground Tent
             "Underground Tent - ItemTrophy": lambda state: True,
@@ -347,13 +353,13 @@ class ER_MinitRules:
 
             # Undefined
             "Factory Main - ItemMegaSword": lambda state:
-                state.has_all({
+                self.has_sword(state)
+                and state.has_all({
                     "ItemWateringCan",
                     "left machine",
                     "right machine",
                     "drill smacked",  # game quirk
-                    }, self.player)
-                and self.has_sword(state),
+                    }, self.player),
 
             # events
             "generator smashed": lambda state:
@@ -367,7 +373,7 @@ class ER_MinitRules:
             "wallet saved": lambda state:
                 state.has("ItemCoffee", self.player),
             "ninja saved": lambda state:
-                state.has("ItemGlove", self.player) and self.has_sword(state),
+                self.has_sword(state) and state.has("ItemGlove", self.player),
             "bridge on": lambda state:
                 self.has_sword(state),
             "bridge saved": lambda state:
@@ -383,48 +389,56 @@ class ER_MinitRules:
             "boatguy watered": lambda state:
                 state.has("ItemWateringCan", self.player),
             "left machine": lambda state:
-                state.has("ItemCoffee", self.player)
-                and self.has_darkroom(state, 1),
+                self.has_darkroom(state, 1)
+                and state.has("ItemCoffee", self.player),
             "right machine": lambda state:
                 self.has_sword(state),
         }
 
     def get_coins(self, state, count: int) -> bool:
-        return state.count("Coin", self.player) >= count
+        return state.has("Coin", self.player, count)
 
     def get_tentacles(self, state, count: int) -> bool:
-        return state.count("Tentacle", self.player) >= count
+        return state.has("Tentacle", self.player, count)
 
     def total_hearts(self, state, count: int) -> bool:
-        return state.count("HeartPiece", self.player) + 2 >= count
+        if self.world.options.damage_boosts:
+            return state.has("HeartPiece", self.player, count - 2)
+        else:
+            return False
 
     def has_sword(self, state) -> bool:
         return state.prog_items[self.player]["has_sword"] > 0
 
     def has_megasword(self, state) -> bool:
-        return (state.has("ItemMegaSword", self.player)
-                or (state.count("Progressive Sword", self.player) >= 3)
-                or (state.count("Reverse Progressive Sword", self.player) >= 1)
-                )
+        if self.world.options.progressive_sword == "off":
+            return state.has("ItemMegaSword", self.player)
+        elif self.world.options.progressive_sword == "forward_progressive":
+            return state.count("Progressive Sword", self.player) >= 3
+        elif self.world.options.progressive_sword == "reverse_progressive":
+            return state.count("Reverse Progressive Sword", self.player) >= 1
 
     def has_brokensword(self, state) -> bool:
-        return (state.has("ItemBrokenSword", self.player)
-                or (state.count("Progressive Sword", self.player) >= 1)
-                or (state.count("Reverse Progressive Sword", self.player) >= 3)
-                )
+        if self.world.options.progressive_sword == "off":
+            return state.has("ItemBrokenSword", self.player)
+        elif self.world.options.progressive_sword == "forward_progressive":
+            return state.count("Progressive Sword", self.player) >= 1
+        elif self.world.options.progressive_sword == "reverse_progressive":
+            return state.count("Reverse Progressive Sword", self.player) >= 3
 
     def has_darkroom(self, state, value) -> bool:
-        return (state.has("ItemFlashLight", self.player)
-                or self.world.options.darkrooms >= value)
+        return (self.world.options.darkrooms >= value
+                or state.has("ItemFlashLight", self.player))
 
     def can_passBoxes(self, state) -> bool:
-        return (state.has("ItemCoffee", self.player)
-                or (state.has("ItemGrinder", self.player)
-                    and self.has_sword(state)))
+        return ((
+                    self.has_sword(state)
+                    and state.has("ItemGrinder", self.player))
+                or state.has("ItemCoffee", self.player))
 
     def can_openChest(self, state) -> bool:
-        return (state.has("ItemWateringCan", self.player)
-                or self.has_sword(state))
+        return (self.has_sword(state)
+                or state.has("ItemWateringCan", self.player))
 
     def has_savedResidents(self, state) -> bool:
         return state.has_all({

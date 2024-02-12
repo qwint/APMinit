@@ -162,7 +162,13 @@ class MinitWorld(World):
 
     def create_item(self, name: str) -> MinitItem:
         data = item_table[name]
-        return MinitItem(name, data.classification, data.code, self.player)
+        if bool(self.options.damage_boosts) and name == "HeartPiece":
+            item_clas = ItemClassification.progression_skip_balancing
+        elif self.options.darkrooms == "insane" and name == "ItemFlashLight":
+            item_clas = ItemClassification.useful
+        else:
+            item_clas = data.classification
+        return MinitItem(name, item_clas, data.code, self.player)
 
     def create_items(self):
         for item_name, item_data in item_table.items():
@@ -172,29 +178,17 @@ class MinitWorld(World):
                 if (item_name in item_frequencies):
                     for count in range(item_frequencies[item_name]):
                         self.multiworld.itempool.append(
-                            MinitItem(
-                                item_name,
-                                item_data.classification,
-                                item_data.code,
-                                self.player))
+                            self.create_item(item_name))
                 else:
                     self.multiworld.itempool.append(
-                        MinitItem(
-                            item_name,
-                            item_data.classification,
-                            item_data.code,
-                            self.player))
+                        self.create_item(item_name))
 
         non_event_locations = [location for location in self.multiworld.get_locations() if not location.event]
         for _ in range(len(non_event_locations) - len(self.multiworld.itempool)):
             item_name = self.get_filler_item_name()
             item_data = item_table[item_name]
             self.multiworld.itempool.append(
-                MinitItem(
-                    item_name,
-                    item_data.classification,
-                    item_data.code,
-                    self.player))
+                self.create_item(item_name))
 
     def make_bad_map(self) -> List[tuple[str, str]]:
         unconnected = []
@@ -418,11 +412,11 @@ class MinitWorld(World):
 
     def get_sword_item_name(self) -> str:
         if self.options.progressive_sword == "off":
-            return "Progressive Sword"
+            return "ItemSword"
         elif self.options.progressive_sword == "reverse_progressive":
             return "Reverse Progressive Sword"
         elif self.options.progressive_sword == "forward_progressive":
-            return "ItemSword"
+            return "Progressive Sword"
 
     def get_filler_item_name(self) -> str:
         if bool(self.options.min_hp):
@@ -446,13 +440,13 @@ class MinitWorld(World):
 
     def collect(self, state: "CollectionState", item: "Item") -> bool:
         change = super().collect(state, item)
-        if change and item.name in ["ItemBrokenSword", "ItemSword", "ItemMegaSword", "Reverse Progressive Sword", "Progressive Sword"]:
+        if change and item.name in item_groups["swords"]:
             state.prog_items[item.player]["has_sword"] += 1
         return change
 
     def remove(self, state: "CollectionState", item: "Item") -> bool:
         change = super().remove(state, item)
-        if change and item.name in ["ItemBrokenSword", "ItemSword", "ItemMegaSword", "Reverse Progressive Sword", "Progressive Sword"]:
+        if change and item.name in item_groups["swords"]:
             state.prog_items[item.player]["has_sword"] -= 1
             assert state.prog_items[item.player]["has_sword"] > -1
         return change

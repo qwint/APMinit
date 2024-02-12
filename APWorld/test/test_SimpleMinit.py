@@ -379,6 +379,76 @@ class TestRevProgressiveChestAccess(MinitTestBase):
         self.assertAccessDependency(locations, items, only_check_listed=True)
 
 
+# class TestStartInventoryFromPool1(MinitTestBase):
+#     options = {
+#         "start_inventory_from_pool": {"ItemTrophy": 1},
+#     }
+
+#     def test_item_removed(self):
+#         itempool = [item.name for item in self.multiworld.get_items()]
+#         assert "ItemTrophy" not in itempool
+#         assert "ItemGrinder" in itempool
+
+#         ct = 0
+#         for item in itempool:
+#             if item == "HeartPiece":
+#                 ct += 1
+#         assert ct == 7
+
+
+# class TestStartInventoryFromPool2(MinitTestBase):
+#     options = {
+#         "start_inventory_from_pool": {"ItemTrophy": 1,
+#                                       "ItemTurboInk": 1},
+#     }
+
+#     def test_item_removed(self):
+#         itempool = [item.name for item in self.multiworld.get_items()]
+#         assert "ItemTrophy" not in itempool
+#         assert "ItemTurboInk" not in itempool
+#         assert "ItemGrinder" in itempool
+
+#         ct = 0
+#         for item in itempool:
+#             if item == "HeartPiece":
+#                 ct += 1
+#         assert ct == 8
+
+
+# class TestStartInventoryFromPool3(MinitTestBase):
+#     options = {
+#         "start_inventory_from_pool": {"ItemFlashLight": 1},
+#     }
+
+#     def test_item_removed(self):
+#         itempool = [item.name for item in self.multiworld.get_items()]
+#         assert "ItemFlashLight" not in itempool
+#         assert "ItemGrinder" in itempool
+
+#         ct = 0
+#         for item in itempool:
+#             if item == "HeartPiece":
+#                 ct += 1
+#         assert ct == 7
+
+
+# class TestStartInventoryFromPool4(MinitTestBase):
+#     options = {
+#         "start_inventory": {"ItemFlashLight": 1},
+#     }
+
+#     def test_item_removed(self):
+#         itempool = [item.name for item in self.multiworld.get_items()]
+#         assert "ItemFlashLight" not in itempool
+#         assert "ItemGrinder" in itempool
+
+#         ct = 0
+#         for item in itempool:
+#             if item == "HeartPiece":
+#                 ct += 1
+#         assert ct == 7
+
+
 class TestMinHP(MinitTestBase):
     options = {
         "min_hp": True,
@@ -389,11 +459,11 @@ class TestMinHP(MinitTestBase):
         assert "HeartPiece" not in itempool
         assert "ItemGrinder" in itempool
 
-        count = 0
+        ct = 0
         for item in itempool:
             if item == "Coin":
-                count += 1
-        assert count == 25
+                ct += 1
+        assert ct == 25
 
 
 class TestFullHP(MinitTestBase):
@@ -406,16 +476,38 @@ class TestFullHP(MinitTestBase):
         assert "HeartPiece" in itempool
         assert "ItemGrinder" in itempool
 
-        count = 0
+        ct = 0
         for item in itempool:
             if item == "HeartPiece":
-                count += 1
-        assert count == 6
-        count = 0
+                ct += 1
+        assert ct == 6
+        ct = 0
         for item in itempool:
             if item == "Coin":
-                count += 1
-        assert count == 19
+                ct += 1
+        assert ct == 19
+
+
+class TestDamageBoosts(MinitTestBase):
+    options = {
+        "damage_boosts": True,
+    }
+
+    def test_hearts_progression(self):
+        state = self.multiworld.get_all_state(False)
+        assert "HeartPiece" in state.prog_items[1]
+        # heartpiece
+
+
+class TestDamageBoosts2(MinitTestBase):
+    options = {
+        "damage_boosts": False,
+    }
+
+    def test_hearts_not_progression(self):
+        state = self.multiworld.get_all_state(False)
+        assert "HeartPiece" not in state.prog_items[1]
+        # heartpiece
 
 
 class TestSeed1(selectSeedMinit):
