@@ -171,20 +171,23 @@ class MinitWorld(World):
         return MinitItem(name, item_clas, data.code, self.player)
 
     def create_items(self):
+        itemCount = 0
         for item_name, item_data in item_table.items():
             if (item_data.code and item_data.can_create(
                     self,
                     self.player)):
                 if (item_name in item_frequencies):
                     for count in range(item_frequencies[item_name]):
+                        itemCount += 1
                         self.multiworld.itempool.append(
                             self.create_item(item_name))
                 else:
+                    itemCount += 1
                     self.multiworld.itempool.append(
                         self.create_item(item_name))
 
         non_event_locations = [location for location in self.multiworld.get_locations(self.player) if not location.event]
-        for _ in range(len(non_event_locations) - len(self.multiworld.itempool)):
+        for _ in range(len(non_event_locations) - itemCount):
             item_name = self.get_filler_item_name()
             item_data = item_table[item_name]
             self.multiworld.itempool.append(
@@ -314,14 +317,14 @@ class MinitWorld(World):
                         manual_connect_start.connect(manual_connect_end.parent_region)
                         manual_connect_end.connect(manual_connect_start.parent_region)
                         self.output_connections = [
-                                                      [
+                                                      (
                                                           manual_connect_start.name,
                                                           manual_connect_end.name
-                                                      ],
-                                                      [
+                                                      ),
+                                                      (
                                                           manual_connect_end.name,
                                                           manual_connect_start.name
-                                                      ]
+                                                      )
                                                   ]
                         # print(f"connecting {manual_connect_start.name} and {manual_connect_end.name}")
                         # add_manual_connect = False
