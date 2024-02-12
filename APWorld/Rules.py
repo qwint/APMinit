@@ -165,6 +165,10 @@ class MinitRules:
             "Dog House - Sewer Tentacle": lambda state:
                 self.has_sword(state) and self.has_darkroom(state, 3)
                 and state.has("ItemSwim", self.player),
+            "Dog House - Dolphin Heart": lambda state:
+                state.has("ItemWateringCan", self.player),
+                # Non Vanilla Location: water the dolphin NPC
+                # -  south of the watering can location
 
             # Desert RV
             "Desert RV - ItemThrow": lambda state:
@@ -182,12 +186,17 @@ class MinitRules:
                 self.has_darkroom(state, 2) and self.get_tentacles(state, 8),
             "Desert RV - Temple Coin": lambda state:
                 self.has_sword(state) and self.has_darkroom(state, 2)
-                and state.can_reach("Hotel Room", player=self.player)
-                and self.can_teleport(state),
+                and ((
+                        state.can_reach("Hotel Room", player=self.player)
+                        and self.can_teleport(state))
+                     or (self.world.options.obscure
+                         and state.has("ItemSwim", self.player)
+                         # sword+darkroom+swim should cover the hotel -> temple route
+                         )
+                     ),
                 # item region implies desert rv access, can teleport implies
                 # - island shack access, existing implies dog house access,
                 # - only need to check hotel room access
-                # need to revisit logic for obscure swim rules
             "Desert RV - Fire Bat Coin": lambda state:
                 self.has_darkroom(state, 1) and self.can_openChest(state)
                 and state.has("ItemWateringCan", self.player),
@@ -258,10 +267,6 @@ class MinitRules:
                 # - to give more wiggle room outside obscure logic
                 # this logic changes if i rando the bone,
                 # - don't think i will though
-            "Factory Main - Cooler Tentacle": lambda state:
-                self.has_sword(state),
-                # alt logic: through underground and loading dock
-                # - without pass but likely req shoes
 
             # Island Shack
             "Island Shack - Teleporter Tentacle": lambda state:
@@ -279,10 +284,6 @@ class MinitRules:
             # Underground Tent
             "Underground Tent - ItemTrophy": lambda state:
                 state.has("ItemSwim", self.player),
-            "Dog House - Dolphin Heart": lambda state:
-                state.has("ItemWateringCan", self.player),
-                # Non Vanilla Location: water the dolphin NPC
-                # -  south of the watering can location
 
             # Factory Main
             "Factory Main - ItemMegaSword": lambda state:
@@ -294,8 +295,9 @@ class MinitRules:
                     "right machine",
                     "drill smacked",
                     }, self.player),
-                # drill shortcut for swordless entry assumed
-
+                # drill shortcut is a vanilla req
+            "Factory Main - Cooler Tentacle": lambda state:
+                self.has_sword(state),
 
             # events
             "generator smashed": lambda state:
@@ -377,17 +379,6 @@ class MinitRules:
                 or state.has("ItemFlashLight", self.player))
 
     def has_savedResidents(self, state) -> bool:
-        # can save all the residents to access the hotel roof
-        # - swimmer - true
-        # - hostage - sword
-        # - wallet - coffee and sword and glove
-        # - ninja - sword and glove
-        # - bridge - bridge(darkroom? and sword and throw)
-        # - hidden - coffee
-        # return (self.has_sword(state) and state.has("ItemCoffee", self.player)
-        #         and state.has("ItemGlove", self.player)
-        #         and (self.has_bridge(state)
-        #              or self.factory_to_hotel_backtrack(state)))
         return state.has_all({
             "swimmer saved",
             "hostage saved",
@@ -396,16 +387,6 @@ class MinitRules:
             "bridge saved",
             "hidden saved",
             }, self.player)
-
-    # def has_bridge(self, state) -> bool:
-    #     return (state.has("ItemSwim", self.player)
-    #             or (self.has_darkroom(state, 2)
-    #                 and state.has("ItemThrow", self.player)
-    #                 and self.has_sword(state)))
-    #     # this is also accessible through the factory
-    #     # - in the case that your factory access is desert > sword + grinder
-    #     # - and you have press pass, but those are covered by
-    #     # - factory_to_hotel_backtrack when necessary
 
     def has_madeboat(self, state) -> bool:
         return state.has_all({
@@ -416,9 +397,6 @@ class MinitRules:
         # boatman requires both the watering trigger and having gloves trigger
         # -  to be met before he can spawn, take the boatwood
         # - and repair the boat
-    # def has_drillShortcut(self, state) -> bool:
-    #     return  self.has_sword(state) and (self.region_factory_hotel(state) or self.region_factory_desert(state))
-    #     #allows you to get into the factory with enough time to wait for queue
 
     def can_openChest(self, state) -> bool:
         return (self.has_sword(state)
@@ -431,11 +409,6 @@ class MinitRules:
                 or state.has("ItemCoffee", self.player))
 
     def can_teleport(self, state) -> bool:
-        # return (self.has_madeboat(state)
-        #         and state.has("ItemBasement", self.player)
-        #         and self.has_sword(state)
-        #         and (state.has("ItemSwim", self.player)
-        #              or state.has("ItemCoffee", self.player)))
         return state.has_all({
                     "teleporter switch1",
                     "teleporter switch4",
@@ -455,49 +428,10 @@ class MinitRules:
         else:
             return False
 
-    # def region_DogHouse(self, state) -> bool:
-    #     return True
-
-    # def region_DesertRV(self, state) -> bool:
-    #     return (self.region_DogHouse(state)
-    #             and (self.has_sword(state)
-    #                  and state.has("ItemGlove", self.player))
-    #             or ((self.has_sword(state)
-    #                 or state.has("ItemSwim", self.player))
-    #                 and self.has_darkroom(state, 2))
-    #             or state.has("ItemSwim", self.player))
-
-    # def region_HotelRoom(self, state) -> bool:
-    #     return (self.region_DogHouse(state)
-    #             and (self.has_sword(state)
-    #                  and state.has("ItemGlove", self.player))
-    #             or state.has("ItemSwim", self.player))
-
-    # def region_factory_hotel(self, state) -> bool:
-    #     return ((self.has_sword(state)
-    #             and state.has("ItemPressPass", self.player)
-    #             and ((self.has_darkroom(state, 3)
-    #                   and state.has("ItemThrow", self.player))
-    #             or state.has("ItemSwim", self.player)))
-    #             or (state.has("ItemSwim", self.player)
-    #                 and self.has_darkroom(state, 2)))
-
-    # def region_factory_desert(self, state) -> bool:
-    #     return ((self.has_sword(state)
-    #             and state.has("ItemGrinder", self.player))
-    #             or state.has_all({
-    #                 "ItemSwim",
-    #                 "ItemCoffee"
-    #                 }, self.player))
-
     def factory_to_hotel_backtrack(self, state) -> bool:
         return (state.can_reach("Factory Main", player=self.player)
                 and self.has_sword(state)
                 and state.has("ItemPressPass", self.player))
-
-    # def region_BossFight(self, state) -> bool:
-    #     return (self.has_megasword(state)
-    #             and self.has_darkroom(state, 2))
 
     def set_Minit_rules(self) -> None:
         multiworld = self.world.multiworld

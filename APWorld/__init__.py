@@ -183,7 +183,7 @@ class MinitWorld(World):
                     self.multiworld.itempool.append(
                         self.create_item(item_name))
 
-        non_event_locations = [location for location in self.multiworld.get_locations() if not location.event]
+        non_event_locations = [location for location in self.multiworld.get_locations(self.player) if not location.event]
         for _ in range(len(non_event_locations) - len(self.multiworld.itempool)):
             item_name = self.get_filler_item_name()
             item_data = item_table[item_name]
@@ -267,11 +267,11 @@ class MinitWorld(World):
     def create_regions(self):
 
         er_on = bool(self.options.er_option)
-
+        starting_entrance = ""
         if er_on and er_loaded:
             self.add_regions_and_locations(er_on)  # will move this back up when er is finished
             # current code for using the Generic ER randomizer
-            if self.multiworld.players == 1:
+            if True: #self.multiworld.players == 1:
                 # if there is a one-player world, make at least one
                 # of the early entrances into a check
                 # that you can pick up for free
@@ -313,6 +313,16 @@ class MinitWorld(World):
                     if manual_connect_start and manual_connect_end:
                         manual_connect_start.connect(manual_connect_end.parent_region)
                         manual_connect_end.connect(manual_connect_start.parent_region)
+                        self.output_connections = [
+                                                      [
+                                                          manual_connect_start.name,
+                                                          manual_connect_end.name
+                                                      ],
+                                                      [
+                                                          manual_connect_end.name,
+                                                          manual_connect_start.name
+                                                      ]
+                                                  ]
                         # print(f"connecting {manual_connect_start.name} and {manual_connect_end.name}")
                         # add_manual_connect = False
                 else:
@@ -384,7 +394,7 @@ class MinitWorld(World):
 
             # shouldn't be needed later:
             assert ["lighthouse lookout", "coffee shop pot stairs", "sewer island", "shoe shop inside", "camera house inside", "dog house inside", "lighthouse inside", "island house", "shoe shop downstairs", "dog house basement"] not in self.er_region_list
-            self.output_connections = randomize_entrances(
+            self.output_connections += randomize_entrances(
                     world=self,
                     regions=self.er_region_list,
                     coupled=True,
