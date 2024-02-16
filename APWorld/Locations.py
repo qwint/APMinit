@@ -1,6 +1,6 @@
-from BaseClasses import Location
+# from BaseClasses import Location
 from worlds.AutoWorld import World
-from typing import NamedTuple, Dict, Optional, Callable
+from typing import NamedTuple, Optional, Callable  # Dict
 
 
 class MinitLocationData(NamedTuple):

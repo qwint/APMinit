@@ -4,12 +4,12 @@ from BaseClasses import (
     Location,
     Item,
     ItemClassification,
-    Entrance,
+    # Entrance,
     Tutorial,
 )
 from .Items import (
     MinitItem,
-    MinitItemData,
+    # MinitItemData,
     item_table,
     item_frequencies,
     item_groups,
@@ -24,7 +24,7 @@ from .ERData import (
     door_names,
 )
 from .Options import MinitGameOptions
-from worlds.generic.Rules import add_rule, set_rule, forbid_item
+# from worlds.generic.Rules import add_rule, set_rule, forbid_item
 from .Rules import MinitRules
 from .ER_Rules import ER_MinitRules
 from typing import Dict, Any, List
@@ -34,7 +34,7 @@ from worlds.LauncherComponents import (
     Type,
     launch_subprocess,
 )
-import random
+# import random
 from Utils import visualize_regions
 
 
@@ -121,9 +121,9 @@ components.append(Component(
     ))
 
 
-class MinitItem(Item):
-    game = "Minit"
-
+# class MinitItem(Item):
+#     game = "Minit"
+# in items.py and already imported
 
 class MinitWorld(World):
     """

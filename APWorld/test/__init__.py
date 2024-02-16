@@ -1,14 +1,20 @@
 from test.bases import WorldTestBase
-from argparse import Namespace
-from test.general import gen_steps
-from worlds.AutoWorld import call_all
-from worlds import AutoWorld
+# from argparse import Namespace
+# from test.general import gen_steps
+# from worlds.AutoWorld import call_all
+# from worlds import AutoWorld
 import typing
-from BaseClasses import CollectionState, Item, MultiWorld
+from BaseClasses import CollectionState  # , Item, MultiWorld
+from .. import MinitWorld
+# if TYPE_CHECKING:
+#     from .. import MinitWorld
+# else:
+#     MinitWorld = object
 
 
 class MinitTestBase(WorldTestBase):
     game = "Minit"
+    world: MinitWorld
 
     def assertAccessIndependency(
             self,
@@ -63,8 +69,9 @@ class MinitTestBase(WorldTestBase):
 
 class selectSeedMinit(WorldTestBase):
     game = "Minit"
-    player: typing.ClassVar[int] = 1
+    # player: typing.ClassVar[int] = 1
     seed = 0
+    world: MinitWorld
 
     def world_setup(self, *args, **kwargs):
         super().world_setup(self.seed)

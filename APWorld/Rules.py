@@ -1,7 +1,7 @@
 from BaseClasses import CollectionState
-from typing import Dict, Set, Callable, TYPE_CHECKING
-from worlds.generic.Rules import set_rule, add_rule
-from .Options import MinitGameOptions
+from typing import Dict, Callable, TYPE_CHECKING  # Set
+from worlds.generic.Rules import set_rule  # add_rule
+# from .Options import MinitGameOptions
 
 if TYPE_CHECKING:
     from . import MinitWorld

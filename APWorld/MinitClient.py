@@ -5,7 +5,8 @@ from NetUtils import JSONtoTextParser, JSONMessagePart, ClientStatus
 from CommonClient import (
     CommonContext,
     gui_enabled,
-    logger, get_base_parser,
+    # logger,  # ??
+    get_base_parser,
     server_loop,
     ClientCommandProcessor
 )

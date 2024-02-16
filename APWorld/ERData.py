@@ -1,4 +1,10 @@
-from typing import NamedTuple, Callable, Dict, List, Optional
+from typing import (
+    # NamedTuple,
+    # Callable,
+    Dict,
+    List,
+    # Optional,
+    )
 # from BaseClasses import CollectionState
 
 er_static_connections: Dict[str, List[str]] = {
