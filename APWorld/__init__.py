@@ -162,6 +162,10 @@ class MinitWorld(World):
 
     def create_item(self, name: str) -> MinitItem:
         data = item_table[name]
+        if not hasattr(self, "options"):
+            # create items as normal if made without options
+            return MinitItem(name, data.classification, data.code, self.player)
+
         if bool(self.options.damage_boosts) and name == "HeartPiece":
             item_clas = ItemClassification.progression_skip_balancing
         elif self.options.darkrooms == "insane" and name == "ItemFlashLight":
@@ -375,14 +379,18 @@ class MinitWorld(World):
             }
 
     def interpret_slot_data(self, slot_data: Dict[str, Any]):
-        if slot_data["ER_connections"]:
-            e_dict = {entrance.name: entrance for region in self.multiworld.get_regions(self.player) for entrance in region.entrances}
+        try:
+            if slot_data["ER_connections"]:
+                e_dict = {entrance.name: entrance for region in self.multiworld.get_regions(self.player) for entrance in region.entrances}
 
-            for connection in slot_data["ER_connections"]:
-                assert connection[0] in e_dict, f"entrance {connection[0]} in slot data not in world"
-                assert connection[1] in e_dict, f"entrance {connection[1]} in slot data not in world"
+                for connection in slot_data["ER_connections"]:
+                    assert connection[0] in e_dict, f"entrance {connection[0]} in slot data not in world"
+                    assert connection[1] in e_dict, f"entrance {connection[1]} in slot data not in world"
 
-                e_dict[connection[0]].connected_region = e_dict[connection[1]].parent_region
+                    e_dict[connection[0]].connected_region = e_dict[connection[1]].parent_region
+        except AssertionError:
+            import logging
+            logging.getLogger("Client").info(f"Tracker: ER Handling failed because of unknown entrances, confirm your AP install can support ER")
 
     def set_rules(self):
         if self.options.er_option == "off":
