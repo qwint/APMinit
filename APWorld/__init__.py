@@ -138,7 +138,6 @@ class MinitWorld(World):
     options: MinitGameOptions
     web = MinitWebWorld()
     output_connections: List[tuple[str, str]]
-    er_region_list: List[Region]
     spoiler_hints: Dict[str, str]
 
     item_name_to_id = {
@@ -160,7 +159,6 @@ class MinitWorld(World):
 
     def __init__(self, multiworld: "MultiWorld", player: int):
         super().__init__(multiworld, player)
-        self.er_region_list = []
         self.spoiler_hints = {}
 
     def create_item(self, name: str) -> MinitItem:
@@ -308,8 +306,6 @@ class MinitWorld(World):
                 region = self.multiworld.get_region(
                     er_entrance[1],
                     self.player)
-                if region not in self.er_region_list:
-                    self.er_region_list.append(region)
                 # entrance.is_dead_end = er_entrance[2]
 
                 en1 = region.create_exit(er_entrance[0])
@@ -387,7 +383,7 @@ class MinitWorld(World):
         hint_data.update({self.player: {}})
 
         all_state = self.multiworld.get_all_state(True)
-        # sometimes some of my regions aren't in path for some reason?
+        # sometimes some of my regions aren't in path for some reason? and other comments stolen from Treble
         all_state.update_reachable_regions(self.player)
         paths = all_state.path
         # start = self.multiworld.get_region("dog house west", self.player)
@@ -445,11 +441,8 @@ class MinitWorld(World):
             minitRules = ER_MinitRules(self)
             minitRules.set_Minit_rules()
 
-            # shouldn't be needed later:
-            assert ["lighthouse lookout", "coffee shop pot stairs", "sewer island", "shoe shop inside", "camera house inside", "dog house inside", "lighthouse inside", "island house", "shoe shop downstairs", "dog house basement"] not in self.er_region_list
             self.output_connections += randomize_entrances(
                     world=self,
-                    regions=self.er_region_list,
                     coupled=True,
                     get_target_groups=minit_get_target_groups,
                     preserve_group_order=False
