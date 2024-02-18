@@ -27,7 +27,7 @@ from .Options import MinitGameOptions
 # from worlds.generic.Rules import add_rule, set_rule, forbid_item
 from .Rules import MinitRules
 from .ER_Rules import ER_MinitRules
-from typing import Dict, Any, List
+from typing import Dict, Any, List, TextIO
 from worlds.LauncherComponents import (
     Component,
     components,
@@ -138,6 +138,7 @@ class MinitWorld(World):
     web = MinitWebWorld()
     output_connections: List[tuple[str, str]]
     er_region_list: List[Region]
+    spoiler_hints: Dict[str, str]
 
     item_name_to_id = {
         name: data.code
@@ -159,6 +160,7 @@ class MinitWorld(World):
     def __init__(self, multiworld: "MultiWorld", player: int):
         super().__init__(multiworld, player)
         self.er_region_list = []
+        self.spoiler_hints = {}
 
     def create_item(self, name: str) -> MinitItem:
         data = item_table[name]
@@ -368,6 +370,45 @@ class MinitWorld(World):
             return ["toilet"]
         if chosen_goal == 2:
             return ["toilet", "boss"]  # any
+
+    def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
+        if self.options.er_option == "off" or not er_loaded:
+            return
+
+        spoiler_handle.write(f"Entrance Rando Location Paths:\n")
+        for location, path in self.spoiler_hints.items():
+            spoiler_handle.write(f"\t{location}: {path}\n")
+
+    def extend_hint_information(self, hint_data: Dict[int, Dict[int, str]]) -> None:
+        if self.options.er_option == "off" or not er_loaded:
+            return
+
+        hint_data.update({self.player: {}})
+
+        all_state = self.multiworld.get_all_state(True)
+        # sometimes some of my regions aren't in path for some reason?
+        all_state.update_reachable_regions(self.player)
+        paths = all_state.path
+        # start = self.multiworld.get_region("dog house west", self.player)
+        # start_connections = [entrance.name for entrance in start.exits]  # if entrance not in {"Home", "Shrink Down"}]
+        transition_names = [er_entrance[0] for er_entrance in er_entrances]  # + start_connections
+        for loc in self.multiworld.get_locations(self.player):
+            # if (loc.parent_region.name in {"Tower HQ", "The Shop", "Music Box", "The Craftsman's Corner"}
+            #         or loc.address is None):
+            path_to_loc = []
+            name, connection = paths[loc.parent_region]
+            while connection != ("Menu", None):
+                name, connection = connection
+                if name in transition_names:
+                    path_to_loc.append(name)
+
+            text = ""
+            for transition in reversed(path_to_loc):
+                text += f"{transition} => "
+            text = text.rstrip("=> ")
+            self.spoiler_hints[loc.name] = text
+            if loc.address is not None:
+                hint_data[self.player][loc.address] = text
 
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
