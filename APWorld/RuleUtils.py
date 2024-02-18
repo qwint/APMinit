@@ -9,21 +9,21 @@ def total_hearts(World, state, count: int) -> bool:
 
 
 def has_megasword(World, state) -> bool:
-    if World.options.progressive_sword == "off":
-        return state.has("ItemMegaSword", World.player)
-    elif World.options.progressive_sword == "forward_progressive":
-        return state.count("Progressive Sword", World.player) >= 3
-    elif World.options.progressive_sword == "reverse_progressive":
-        return state.count("Reverse Progressive Sword", World.player) >= 1
+    return (state.has_any({
+            "ItemMegaSword",
+            "Reverse Progressive Sword",
+            }, World.player)
+            or state.has("Progressive Sword", World.player, 3)
+            )
 
 
 def has_brokensword(World, state) -> bool:
-    if World.options.progressive_sword == "off":
-        return state.has("ItemBrokenSword", World.player)
-    elif World.options.progressive_sword == "forward_progressive":
-        return state.count("Progressive Sword", World.player) >= 1
-    elif World.options.progressive_sword == "reverse_progressive":
-        return state.count("Reverse Progressive Sword", World.player) >= 3
+    return (state.has_any({
+            "ItemBrokenSword",
+            "Progressive Sword",
+            }, World.player)
+            or state.has("Reverse Progressive Sword", World.player, 3)
+            )
 
 
 def has_darkroom(World, state, value) -> bool:
