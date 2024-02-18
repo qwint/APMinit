@@ -27,6 +27,7 @@ from .Options import MinitGameOptions
 # from worlds.generic.Rules import add_rule, set_rule, forbid_item
 from .Rules import MinitRules
 from .ER_Rules import ER_MinitRules
+from . import RuleUtils
 from typing import Dict, Any, List, TextIO
 from worlds.LauncherComponents import (
     Component,
@@ -462,12 +463,12 @@ class MinitWorld(World):
                 state.has("Boss dead", self.player)
         elif self.options.chosen_goal == "toilet_goal":  # toilet
             self.multiworld.completion_condition[self.player] = lambda state: \
-                minitRules.has_brokensword(state) and \
+                RuleUtils.has_brokensword(self, state) and \
                 state.has("Sword Flushed", self.player)
         elif self.options.chosen_goal == "any_goal":  # any
             self.multiworld.completion_condition[self.player] = lambda state: \
                 state.has("Boss dead", self.player) or \
-                (minitRules.has_brokensword(state) and
+                (RuleUtils.has_brokensword(self, state) and
                     state.has("Sword Flushed", self.player))
         if bool(self.options.starting_sword):
             self.multiworld.local_early_items[self.player][self.get_sword_item_name()] = 1
