@@ -144,7 +144,7 @@ class ER_MinitRules:
             "sewer main right <-> sewer main left": lambda state:
                 self.has_darkroom(state, 2)
                 and state.has("ItemSwim", self.player),
-            "sewer bat arena <-> sewer bat gate": lambda state:
+            "sewer bat arena -> sewer bat gate": lambda state:
                 self.has_sword(state)
                 and self.has_darkroom(state, 3),
                 # this needs to be a one-way
@@ -204,19 +204,57 @@ class ER_MinitRules:
             "island house <-> Overworld": lambda state:
                 True,
             "island house <-> island teleporter": lambda state:
-                state.has("ItemBasement", self.player),
+                state.has("ItemBasement", self.player) and self.has_darkroom(state, 1),
             "tent room main <-> underground house": lambda state:
                 True,
             "factory mega entrance <-> factory central": lambda state:
                 True,
             "factory mega entrance <-> megasword upper": lambda state:
-                state.has("generator smashed", self.player),
+                state.has("generator smashed", self.player) and self.has_darkroom(state, 1),
             "dog house basement <-> hotel room": lambda state:
                 True,
             "dog house basement <-> shoe shop downstairs": lambda state:
                 True,
             "dog house basement <-> island teleporter": lambda state:
-                True,
+                self.has_darkroom(state, 1),
+            "temple octopus <-> temple octopus north": lambda state:
+                self.has_darkroom(state, 3),
+            "temple firebat test west <-> temple firebat test east": lambda state:
+                self.has_darkroom(state, 1),
+            "temple coin test south <-> temple coin test north": lambda state:
+                False,  # TODO add complex logic to check if all spawns are reachable
+            "submarine east <-> submarine west": lambda state:
+                self.has_darkroom(state, 1),
+            "teleporter maze west <-> teleporter maze west": lambda state:
+                self.has_darkroom(state, 1),
+            "mine main <-> mine main dark": lambda state:
+                self.has_darkroom(state, 1),
+            "factory switch test <-> factory switch test west": lambda state:
+                self.has_darkroom(state, 1),
+            "factory switch test <-> factory switch test south": lambda state:
+                self.has_darkroom(state, 1),
+            "miner chest pipe L west <-> miner chest pipe L south": lambda state:
+                self.has_darkroom(state, 3),
+            "trophy pipe hall right <-> trophy pipe hall left": lambda state:
+                self.has_darkroom(state, 3),
+            "tent room pipe I right <-> tent room pipe I left": lambda state:
+                self.has_darkroom(state, 2),
+            "tent room main <-> tent room main left": lambda state:
+                self.has_darkroom(state, 2),
+            "trophy maze lower main <-> trophy maze lower main north right": lambda state:
+                self.has_darkroom(state, 3),
+            "trophy maze lower main <-> trophy maze lower main north left": lambda state:
+                self.has_darkroom(state, 3),
+            "trophy maze lower main <-> trophy maze lower main east right": lambda state:
+                self.has_darkroom(state, 3),
+            "trophy maze lower main <-> trophy maze lower main east left": lambda state:
+                self.has_darkroom(state, 3),
+            "trophy maze lower hall left <-> trophy maze lower hall right": lambda state:
+                self.has_darkroom(state, 3),
+            "trophy maze upper main left <-> trophy maze upper main right": lambda state:
+                self.has_darkroom(state, 3),
+            "trophy maze upper hall south <-> trophy maze upper hall west": lambda state:
+                self.has_darkroom(state, 3),
         }
 
         self.location_rules = {
@@ -252,9 +290,9 @@ class ER_MinitRules:
             "Dog House - Land is Great Coin": lambda state:
                 self.can_openChest(state),
             "Dog House - Hidden Snake Coin": lambda state:
-                self.can_openChest(state) and self.has_darkroom(state, 2),
+                self.can_openChest(state) and self.has_darkroom(state, 3),
             "Dog House - Waterfall Coin": lambda state:
-                self.can_openChest(state),
+                self.can_openChest(state) and self.has_darkroom(state, 1),
             "Dog House - Treasure Island Coin": lambda state:
                 self.can_openChest(state)
                 and state.has("ItemSwim", self.player),
@@ -279,11 +317,11 @@ class ER_MinitRules:
             "Desert RV - ItemShoes": lambda state:
                 self.get_coins(state, 7),
             "Desert RV - ItemGlove": lambda state:
-                True,
+                self.has_darkroom(state, 1),
             "Desert RV - ItemTurboInk": lambda state:
                 self.has_darkroom(state, 2) and self.get_tentacles(state, 8),
             "Desert RV - Temple Coin": lambda state:
-                self.can_openChest(state),
+                self.has_sword(state) and self.has_darkroom(state, 2),
                 # this may change if i connect the other temple puzzles
             "Desert RV - Fire Bat Coin": lambda state:
                 self.can_openChest(state) and self.has_darkroom(state, 2),
@@ -315,7 +353,7 @@ class ER_MinitRules:
                 self.has_savedResidents(state),
                 # praying i can make this work
             "Hotel Room - ItemGrinder": lambda state:
-                self.has_darkroom(state, 1)
+                self.has_darkroom(state, 2)
                 and state.has_all({"ItemSwim", "ItemCoffee"}, self.player),
             "Hotel Room - Shrub Arena Coin": lambda state:
                 self.has_sword(state),
@@ -348,12 +386,14 @@ class ER_MinitRules:
             # Island Shack
             "Island Shack - Teleporter Tentacle": lambda state:
                 self.has_sword(state)
+                and self.has_darkroom(state, 1)
                 and (bool(self.world.options.obscure)
                      or state.has("ItemCoffee", self.player))
                 and state.has("ItemSwim", self.player),
 
             # Underground Tent
-            "Underground Tent - ItemTrophy": lambda state: True,
+            "Underground Tent - ItemTrophy": lambda state: 
+                self.has_darkroom(state, 1),
             "Dog House - Dolphin Heart": lambda state:
                 state.has("ItemWateringCan", self.player),
 
@@ -387,7 +427,7 @@ class ER_MinitRules:
             "hidden saved": lambda state:
                 self.can_passBoxes(state),
             "teleporter switch1": lambda state:
-                self.has_sword(state),
+                self.has_sword(state) and self.has_darkroom(state, 3),
             "teleporter switch4": lambda state:
                 self.has_sword(state),
             "teleporter switch6": lambda state:

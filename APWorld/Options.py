@@ -23,7 +23,7 @@ class Darkrooms(Choice):
     Puts Darkroom navigation without FlashLight in logic.
     off: makes any darkness out of logic without flashlight
     minor: only regions where the majority of travel is lit are in logic
-    on: common darkrooms that require precise movement will be in logic
+    on: common darkrooms that require precise movement or specific map knowledge will be in logic
     insane: darkness will never be considered out of logic
     """
     display_name = "Darkrooms"
