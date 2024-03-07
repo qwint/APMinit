@@ -26,7 +26,7 @@ try:
     tracker_loaded = True
 except ModuleNotFoundError:
     from CommonClient import CommonContext as SuperContext
-    logger.info("please install the universal tracker :)")
+    print("please install the universal tracker :)")
 
 
 logger = logging.getLogger("Client")
@@ -390,6 +390,7 @@ def handleItems(ctx: CommonContext):
     swordsF = 0
     swordsR = 0
     for item in ctx.items_received:
+        # TODO - change to lookup ids for actual item names
         if item[0] == 60000:
             coins += 1
         elif item[0] == 60001:
