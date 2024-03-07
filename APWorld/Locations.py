@@ -12,258 +12,263 @@ class MinitLocationData(NamedTuple):
     show_in_spoiler: bool = True
 
 
+def baseID(delta: int) -> int:
+    baseID = 60600
+    return baseID + delta
+
+
 location_table = {
 
     # Dog House
     "Dog House - ItemCoffee": MinitLocationData(
-        code=60600,
+        code=baseID( 0),
         region="Dog House",
         er_region="coffee shop inside",),
     "Dog House - ItemFlashLight": MinitLocationData(
-        code=60601,
+        code=baseID( 1),
         region="Dog House",
         er_region="lighthouse lookout",),
     "Dog House - ItemKey": MinitLocationData(
-        code=60602,
+        code=baseID( 2),
         region="Dog House",
         er_region="key room",),
     "Dog House - ItemWateringCan": MinitLocationData(
-        code=60603,
+        code=baseID( 3),
         region="Dog House",
         er_region="watering can",),
     "Dog house - ItemBoat": MinitLocationData(
-        code=60604,
+        code=baseID( 4),
         region="Dog House",
         er_region="boattree main",),
     "Dog House - ItemBasement": MinitLocationData(
-        code=60605,
+        code=baseID( 5),
         region="Dog House",
         er_region="Overworld island shack",),
     "Dog House - ItemPressPass": MinitLocationData(
-        code=60606,
+        code=baseID( 6),
         region="Dog House",
         er_region="camera house inside",),
     "Dog House - House Pot Coin": MinitLocationData(
         # coin1 - coin
-        code=60607,
+        code=baseID( 7),
         region="Dog House",
         er_region="dog house inside",),
     "Dog House - Sewer Island Coin": MinitLocationData(
         # coin2 - chest
-        code=60608,
+        code=baseID( 8),
         region="Dog House",
         er_region="sewer island",),
     "Dog House - Sewer Coin": MinitLocationData(
         # coin3 - chest
-        code=60609,
+        code=baseID( 9),
         region="Dog House",
         er_region="sewer upper",),
     "Dog House - Land is Great Coin": MinitLocationData(
         # coin4 - chest
-        code=60610,
+        code=baseID(10),
         region="Dog House",
         er_region="above lighthouse land",),
     "Dog House - Hidden Snake Coin": MinitLocationData(
         # coin5 - chest
-        code=60611,
+        code=baseID(11),
         region="Dog House",
         er_region="snake west",),
     "Dog House - Waterfall Coin": MinitLocationData(
         # coin6 - chest
-        code=60612,
+        code=baseID(12),
         region="Dog House",
         er_region="waterfall cave",),
     "Dog House - Treasure Island Coin": MinitLocationData(
         # coin7 - chest
-        code=60613,
+        code=baseID(13),
         region="Dog House",
         er_region="Overworld treasure island",),
     "Dog House - Plant Heart": MinitLocationData(
         # heartPiece1
-        code=60614,
+        code=baseID(14),
         region="Dog House",
         er_region="plant main",),
     "Dog House - Bull Heart": MinitLocationData(
         # heartPiece2
-        code=60615,
+        code=baseID(15),
         region="Dog House",
         er_region="bull room",),
     "Dog House - Boat Tentacle": MinitLocationData(
         # tentacle1
-        code=60616,
+        code=baseID(16),
         region="Dog House",
         er_region="boat land",),
     "Dog House - Treasure Island Tentacle": MinitLocationData(
         # tentacle2
-        code=60617,
+        code=baseID(17),
         region="Dog House",
         er_region="Overworld treasure island",),
     "Dog House - Sword Toss Tentacle": MinitLocationData(
         # tentacle3
-        code=60618,
+        code=baseID(18),
         region="Dog House",
         er_region="throwcheck box",),
     "Dog House - Sewer Tentacle": MinitLocationData(
         # tentacle4
-        code=60619,
+        code=baseID(19),
         region="Dog House",
         er_region="sewer tentacle",),
 
     # Desert RV
     "Desert RV - ItemThrow": MinitLocationData(
-        code=60620,
+        code=baseID(20),
         region="Desert RV",
         er_region="Overworld desert",),
     "Desert RV - ItemShoes": MinitLocationData(
-        code=60621,
+        code=baseID(21),
         region="Desert RV",
         er_region="shoe shop inside",),
     "Desert RV - ItemGlove": MinitLocationData(
-        code=60622,
+        code=baseID(22),
         region="Desert RV",
         er_region="glove inside",),
     "Desert RV - ItemTurboInk": MinitLocationData(
-        code=60623,
+        code=baseID(23),
         region="Desert RV",
         er_region="temple octopus",),
     "Desert RV - Temple Coin": MinitLocationData(
         # coin8 - chest
-        code=60624,
+        code=baseID(24),
         region="Desert RV",
         er_region="temple coin chest",),
     "Desert RV - Fire Bat Coin": MinitLocationData(
         # coin9 - chest
-        code=60625,
+        code=baseID(25),
         region="Desert RV",
         er_region="temple firebat chest",),
     "Desert RV - Truck Supplies Coin": MinitLocationData(
         # coin10 - chest
-        code=60626,
+        code=baseID(26),
         region="Desert RV",
         er_region="factory loading lower shortcut",),
     "Desert RV - Broken Truck": MinitLocationData(
         # coin13 - chest
-        code=60627,
+        code=baseID(27),
         region="Desert RV",
         er_region="Overworld desert",),
     "Desert RV - Quicksand Coin": MinitLocationData(
         # coin16 - chest
-        code=60628,
+        code=baseID(28),
         region="Desert RV",
         er_region="quicksand main",),
     "Desert RV - Dumpster": MinitLocationData(
         # coin19 - coin but you need to hit it
-        code=60629,
+        code=baseID(29),
         region="Desert RV",
         er_region="shoe shop outside",),
     "Desert RV - Temple Heart": MinitLocationData(
         # heartPiece3
-        code=60630,
+        code=baseID(30),
         region="Desert RV",
         er_region="temple heart",),
     "Desert RV - Shop Heart": MinitLocationData(
         # heartPiece4
-        code=60631,
+        code=baseID(31),
         region="Desert RV",
         er_region="shoe shop downstairs",),
     "Desert RV - Octopus Tentacle": MinitLocationData(
         # tentacle5
-        code=60632,
+        code=baseID(32),
         region="Desert RV",
         er_region="temple tentacle",),
     "Desert RV - Beach Tentacle": MinitLocationData(
         # tentacle8
-        code=60633,
+        code=baseID(33),
         region="Desert RV",
         er_region="desert beach land",),
 
     # Hotel Room
     "Hotel Room - ItemSwim": MinitLocationData(
-        code=60634,
+        code=baseID(34),
         region="Hotel Room",
         er_region="hotel outside",),
     "Hotel Room - ItemGrinder": MinitLocationData(
-        code=60635,
+        code=baseID(35),
         region="Hotel Room",
         er_region="grinder main",),
     "Hotel Room - Shrub Arena Coin": MinitLocationData(
         # coin11 - coin but you need to stab them
-        code=60636,
+        code=baseID(36),
         region="Hotel Room",
         er_region="arena main",),
     "Hotel Room - Miner's Chest Coin": MinitLocationData(
         # coin12 - chest
-        code=60637,
+        code=baseID(37),
         region="Hotel Room",
         er_region="miner chest belts",),
     "Factory Main - Inside Truck": MinitLocationData(
         # coin14 - coin
-        code=60638,
+        code=baseID(38),
         region="Factory Main",
         er_region="factory loading upper",),
     "Hotel Room - Queue": MinitLocationData(
         # coin15 - coin
-        code=60639,
+        code=baseID(39),
         region="Hotel Room",
         er_region="factory queue",),
     "Hotel Room - Hotel Backroom Coin": MinitLocationData(
         # coin17 - chest
-        code=60640,
+        code=baseID(40),
         region="Hotel Room",
         er_region="hotel backroom",),
     "Factory Main - Drill Coin": MinitLocationData(
         # coin18 - coin
-        code=60641,
+        code=baseID(41),
         region="Factory Main",
         er_region="factory drill",),
     "Hotel Room - Crow Heart": MinitLocationData(
         # heartPiece5
-        code=60642,
+        code=baseID(42),
         region="Hotel Room",
         er_region="crowroom",),
     "Hotel Room - Dog Heart": MinitLocationData(
         # heartPiece6
-        code=60643,
+        code=baseID(43),
         region="Hotel Room",
         er_region="dog house inside",),
     "Factory Main - Cooler Tentacle": MinitLocationData(
         # tentacle7
-        code=60644,
+        code=baseID(44),
         region="Factory Main",
         er_region="factory cooler east",),
 
     # Island Shack
     "Island Shack - Teleporter Tentacle": MinitLocationData(
         # tentacle6
-        code=60645,
+        code=baseID(45),
         region="Island Shack",
         er_region="teleporter tentacle",),
 
     # Underground Tent
     "Underground Tent - ItemTrophy": MinitLocationData(
-        code=60646,
+        code=baseID(46),
         region="Underground Tent",
         er_region="trophy room",),
 
     # Undefined
     # "REGION - ItemCamera": MinitLocationData(
     #     # logic:
-    #     code=60647,
+    #     code=baseID(47),
     #     region="Dog House",
     #    er_region="camera house inside",),
     # itemCamera location is replaced by press pass,
     # - will be handled the same in game
 
     "Factory Main - ItemMegaSword": MinitLocationData(
-        code=60648,
+        code=baseID(48),
         region="Factory Main",
         er_region="megasword lower",),
     "Dog House - ItemSword": MinitLocationData(
-        code=60649,
+        code=baseID(49),
         region="Dog House",
         er_region="sword main",),
     "Dog House - Dolphin Heart": MinitLocationData(
-        code=60651,
+        code=baseID(51),
         region="Dog House",
         er_region="dolphin land",),
 

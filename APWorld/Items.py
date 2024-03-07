@@ -13,87 +13,92 @@ class MinitItemData(NamedTuple):
     can_create: Callable[[World, int], bool] = lambda world, player: True
 
 
+def baseID(delta: int) -> int:
+    baseID = 60000
+    return baseID + delta
+
+
 item_table: Dict[str, MinitItemData] = {
     "Coin": MinitItemData(
-        code=60000,
+        code=baseID( 0),
         classification=ItemClassification.progression_skip_balancing),
     "HeartPiece": MinitItemData(
-        code=60001,
+        code=baseID( 1),
         classification=ItemClassification.useful,
         can_create=lambda world, player:
         not bool(world.options.min_hp)),
     "Tentacle": MinitItemData(
-        code=60002,
+        code=baseID( 2),
         classification=ItemClassification.progression),
     "ItemCoffee": MinitItemData(
-        code=60003,
+        code=baseID( 3),
         classification=ItemClassification.progression),
     "ItemFlashLight": MinitItemData(
-        code=60004,
+        code=baseID( 4),
         classification=ItemClassification.progression),
         # potentially reclassify if darkrooms in logic
     "ItemSwim": MinitItemData(
-        code=60005,
+        code=baseID( 5),
         classification=ItemClassification.progression),
     "ItemKey": MinitItemData(
-        code=60006,
+        code=baseID( 6),
         classification=ItemClassification.progression),
     "ItemWateringCan": MinitItemData(
-        code=60007,
+        code=baseID( 7),
         classification=ItemClassification.progression),
     "ItemThrow": MinitItemData(
-        code=60008,
+        code=baseID( 8),
         classification=ItemClassification.progression),
     "ItemShoes": MinitItemData(
-        code=60009,
+        code=baseID( 9),
         classification=ItemClassification.progression),
     "ItemGlove": MinitItemData(
-        code=60010,
+        code=baseID(10),
         classification=ItemClassification.progression),
     "ItemBoat": MinitItemData(
-        code=60011,
+        code=baseID(11),
         classification=ItemClassification.progression),
     # "ItemCamera": MinitItemData(
-    #     code=60012,
+    #     code=baseID(12),
     #     classification=ItemClassification.filler),
     # camera will never be granted as an item for AP
     "ItemBasement": MinitItemData(
-        code=60013,
+        code=baseID(13),
         classification=ItemClassification.progression),
     "ItemMegaSword": MinitItemData(
-        code=60014,
+        code=baseID(14),
         classification=ItemClassification.progression,
         can_create=lambda world, player:
         world.options.progressive_sword == "off"),
     "ItemBrokenSword": MinitItemData(
-        code=60015,
+        code=baseID(15),
         classification=ItemClassification.progression,
         can_create=lambda world, player:
         world.options.progressive_sword == "off"),
     "ItemTurboInk": MinitItemData(
-        code=60016,
+        code=baseID(16),
         classification=ItemClassification.useful),
     "ItemGrinder": MinitItemData(
-        code=60017,
+        code=baseID(17),
         classification=ItemClassification.progression),
     "ItemTrophy": MinitItemData(
-        code=60018,
+        code=baseID(18),
         classification=ItemClassification.filler),
     "ItemPressPass": MinitItemData(
-        code=60019,
+        code=baseID(19),
         classification=ItemClassification.progression),
     "ItemSword": MinitItemData(
-        code=60020,
+        code=baseID(20),
         classification=ItemClassification.progression,
         can_create=lambda world, player:
         world.options.progressive_sword == "off"),
     "Progressive Sword": MinitItemData(
-        code=60021,
+        code=baseID(21),
         classification=ItemClassification.progression,
         can_create=lambda world, player:
         world.options.progressive_sword == "forward_progressive"),
     "Reverse Progressive Sword": MinitItemData(
-        code=60022,
+        code=baseID(22),
         classification=ItemClassification.progression,
         can_create=lambda world, player:
         world.options.progressive_sword == "reverse_progressive"),
