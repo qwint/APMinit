@@ -1,3 +1,4 @@
+from BaseClasses import Entrance, Region
 from typing import (
     # NamedTuple,
     # Callable,
@@ -101,6 +102,7 @@ er_static_connections: Dict[str, List[str]] = {
     "trophy maze lower hall left": ["trophy maze lower hall right"],
     "trophy maze upper main left": ["trophy maze upper main right"],
     "trophy maze upper hall south": ["trophy maze upper hall west"],
+    "temple main": ["temple main east"],
 }
 
 # vanilla_connections: Dict[str, List[str]] = {
@@ -198,6 +200,7 @@ er_regions: List[str] = [
     "trophy maze lower hall left", "trophy maze lower hall right",
     "trophy maze upper main left", "trophy maze upper main right",
     "trophy maze upper hall south", "trophy maze upper hall west",
+    "temple main east"
 ]
 
 er_entrances: List[List[any]] = [
@@ -378,7 +381,7 @@ er_entrances: List[List[any]] = [
     ["factory loading lower shortcut", "factory loading lower shortcut", False, "land", "rom13_8", 304, 128, "fixed", 0],
     ["factory loading deadend", "factory loading deadend", True, "land", "rom14_7", 0, 96, "y", 32],
     ["factory loading desert north", "factory loading desert", True, "land", "rom14_7", 16, 0, "x", 288],
-    ["factory loading desert east", "factory loading desert", True, "land", "rom14_7", 304, 0, "y", 256],
+    ["factory loading desert east", "factory loading desert", True, "land", "rom14_7", 304, 0, "y", 208],
     ["shoe shop outside south", "shoe shop outside", False, "land", "rom14_8", 48, 224, "x", 192],
     # ["shoe shop outside door", "shoe shop outside", False, "land", "rom14_8", 192, 176, "fixed", 0],  # doorup
     ["shoe shop shortcut", "shoe shop shortcut", False, "land", "rom14_8", 0, 128, "fixed", 0],
@@ -452,7 +455,7 @@ er_entrances: List[List[any]] = [
     # ["shoe shop downstairs door", "shoe shop downstairs", False, "land", "dun14_8", 160, 96, "fixed", 0],
     # ["shoe shop downstairs teleport", "shoe shop downstairs", False, "land", "dun14_8", 144, 64, "fixed", 0],
     ["temple main north", "temple main", False, "land", "dun14_10", 144, 0, "x", 32],
-    ["temple main east", "temple main", False, "land", "dun14_10", 304, 104, "y", 32],
+    ["temple main east", "temple main east", False, "land", "dun14_10", 304, 104, "y", 32],
     ["temple main south", "temple main", False, "land", "dun14_10", 144, 224, "x", 32],
     ["temple main west", "temple main", False, "land", "dun14_10", 0, 112, "fixed", 0],
     # ["temple main door", "temple main", False, "land", "dun14_10", 160, 112, "fixed", 0],

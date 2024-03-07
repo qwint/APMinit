@@ -256,6 +256,8 @@ class ER_MinitRules:
                 RuleUtils.has_darkroom(self.world, state, 3),
             "trophy maze upper hall south <-> trophy maze upper hall west": lambda state:
                 RuleUtils.has_darkroom(self.world, state, 3),
+            "temple main <-> temple main east": lambda state:
+                state.has("ItemWateringCan", self.player),
         }
 
         self.location_rules = {
