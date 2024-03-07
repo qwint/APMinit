@@ -134,6 +134,7 @@ class MinitWorld(World):
     game = "Minit"
     required_client_version = (0, 4, 4)
     data_version = 0  # needs to change after the item/location renaming
+                      # need to double check how real this is/willbe
     options_dataclass = MinitGameOptions
     options: MinitGameOptions
     web = MinitWebWorld()
