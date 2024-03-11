@@ -116,7 +116,6 @@ def launch_client():
 
 components.append(Component(
     "Minit Client",
-    "MinitClient",
     func=launch_client,
     component_type=Type.CLIENT,
     ))
