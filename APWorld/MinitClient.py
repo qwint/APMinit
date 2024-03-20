@@ -1,11 +1,10 @@
 import asyncio
-import logging
 import typing
 from NetUtils import JSONtoTextParser, JSONMessagePart, ClientStatus
 from CommonClient import (
     CommonContext,
     gui_enabled,
-    # logger,  # ??
+    logger,
     get_base_parser,
     server_loop,
     ClientCommandProcessor
@@ -26,10 +25,7 @@ try:
     tracker_loaded = True
 except ModuleNotFoundError:
     from CommonClient import CommonContext as SuperContext
-    print("please install the universal tracker :)")
 
-
-logger = logging.getLogger("Client")
 
 DEBUG = False
 GAMENAME = "Minit"
@@ -60,8 +56,7 @@ class MinitCommandProcessor(ClientCommandProcessor):
         except FileNotFoundError:
             logger.info("Patch cancelled")
         except ValueError:
-            logger.info("Selected game is not vanilla, \
-                please reset the game and repatch")
+            logger.info("Selected game is not vanilla, please reset the game and repatch")
 
     def _cmd_amnisty(self, total: int = 1):
         """Set the Death Amnisty value. Default 1."""
@@ -103,7 +98,6 @@ class ProxyGameContext(SuperContext):
     def run_gui(self):
 
         from kvui import GameManager
-        logger.info("please install the universal tracker :)")
 
         class ProxyManager(GameManager):
             logging_pairs = [
@@ -115,6 +109,8 @@ class ProxyGameContext(SuperContext):
                 container = super().build()
                 if tracker_loaded:
                     self.ctx.build_gui(self)
+                else:
+                    logger.info("to enable a tracker, install Universal Tracker")
 
                 return container
 
