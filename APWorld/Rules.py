@@ -13,6 +13,7 @@ else:
 class MinitRules:
     world: MinitWorld
     player: int
+    darkrooms: int
     region_rules: Dict[str, Callable[[CollectionState], bool]]
 
     location_rules: Dict[str, Callable[[CollectionState], bool]]
@@ -20,14 +21,13 @@ class MinitRules:
     def __init__(self, world: MinitWorld) -> None:
         self.world = world
         self.player = world.player
+        self.darkrooms = self.world.options.darkrooms
 
         self.region_rules = {
             "Menu -> Dog House": lambda state:
                 True,
             "Dog House -> Island Shack": lambda state:
-                (bool(self.world.options.obscure)
-                 and state.has("ItemSwim", self.player))
-                or (state.has_all({
+                (state.has_all({
                     "ItemBoat",
                     "boatguy watered",
                     "ItemGlove",
@@ -36,7 +36,7 @@ class MinitRules:
                 # - by baiting the shark
             "Dog House -> Desert RV": lambda state:
                 (state.has("has_sword", self.player) and
-                    (RuleUtils.has_darkroom(self.world, state, 2)
+                    (RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
                      or state.has("ItemGlove", self.player)))
                 or state.has("ItemSwim", self.player),
             "Dog House -> Hotel Room": lambda state:
@@ -55,23 +55,23 @@ class MinitRules:
                         }, self.player)),
             "Hotel Room -> Underground Tent": lambda state:
                 state.has("has_sword", self.player)
-                and RuleUtils.has_darkroom(self.world, state, 3)
+                and RuleUtils.has_darkroom(self.player, state, 3, self.darkrooms)
                 and state.has("ItemGrinder", self.player),
             "Hotel Room -> Factory Main": lambda state:
-                (RuleUtils.has_darkroom(self.world, state, 2)
+                (RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
                     and state.has("ItemSwim", self.player))
                 or (
                     state.has("has_sword", self.player)
                     and state.has("ItemPressPass", self.player)
                     and ((
-                            RuleUtils.has_darkroom(self.world, state, 3)
+                            RuleUtils.has_darkroom(self.player, state, 3, self.darkrooms)
                             and state.has("ItemThrow", self.player))
                          or state.has("ItemSwim", self.player)
                          )
                 ),
             "Factory Main -> Boss Fight": lambda state:
-                RuleUtils.has_darkroom(self.world, state, 2)
-                and RuleUtils.has_megasword(self.world, state),
+                RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
+                and RuleUtils.has_megasword(self.player, state),
             "Factory Main -> Hotel Room": lambda state:
                 self.factory_to_hotel_backtrack(state),
         }
@@ -82,16 +82,14 @@ class MinitRules:
             "Dog House - ItemCoffee": lambda state:
                 state.has("has_sword", self.player),
             "Dog House - ItemFlashLight": lambda state:
-                (bool(self.world.options.obscure)
-                    and state.has("ItemSwim", self.player))
-                or ((
-                     state.has("has_sword", self.player)
-                     or state.has("ItemSwim", self.player))
-                    and state.has("ItemKey", self.player)),
+                ((
+                  state.has("has_sword", self.player)
+                  or state.has("ItemSwim", self.player))
+                 and state.has("ItemKey", self.player)),
                 # obscure: you can swim behind the lighthouse
                 # - and pick up the item
             "Dog House - ItemKey": lambda state:
-                state.has("has_sword", self.player) and RuleUtils.can_passBoxes(self.world, state),
+                state.has("has_sword", self.player) and RuleUtils.can_passBoxes(self.player, state),
                 # can swim past the plants,
                 # but need to clear the plants by the boxes
             "Dog House - ItemWateringCan": lambda state:
@@ -100,9 +98,7 @@ class MinitRules:
                 state.has("has_sword", self.player) and state.has("ItemGlove", self.player),
             "Dog House - ItemBasement": lambda state:
                 state.has("has_sword", self.player) and state.has("ItemGlove", self.player)
-                and ((bool(self.world.options.obscure)
-                      and state.has("ItemSwim", self.player))
-                     or state.has_all({
+                and (state.has_all({
                         "ItemBoat",
                         "boatguy watered",
                         "ItemGlove",
@@ -111,7 +107,7 @@ class MinitRules:
                 # - by baiting the shark
             "Dog House - ItemPressPass": lambda state:
                 (
-                    (RuleUtils.can_passBoxes(self.world, state)
+                    (RuleUtils.can_passBoxes(self.player, state)
                         and ((state.has("has_sword", self.player)
                               and state.has("ItemThrow", self.player))
                              or state.has("ItemSwim", self.player)))
@@ -120,46 +116,40 @@ class MinitRules:
                         and (state.has_all({
                                 "ItemGrinder",
                                 "ItemGlove"
-                                }, self.player))
-                        or (RuleUtils.total_hearts(self.world, state, 4)
-                            and state.has("ItemSwim", self.player))))
-                or (RuleUtils.total_hearts(self.world, state, 7)
-                    and bool(self.world.options.obscure)
-                    and state.can_reach("Hotel Room", player=self.player)
-                    and state.has("ItemSwim", self.player)),
+                                }, self.player)))),
                 # obscure: you can, with clean movement and damage tanks,
                 # - swim from the factory bridge to press pass house
                 # - without any other items
             "Dog House - House Pot Coin": lambda state:
                 state.has("has_sword", self.player),
             "Dog House - Sewer Island Coin": lambda state:
-                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.world, state, 3)
-                and RuleUtils.can_openChest(self.world, state),
+                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.player, state, 3, self.darkrooms)
+                and RuleUtils.can_openChest(self.player, state),
             "Dog House - Sewer Coin": lambda state:
-                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.world, state, 3)
-                and RuleUtils.can_openChest(self.world, state)
+                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.player, state, 3, self.darkrooms)
+                and RuleUtils.can_openChest(self.player, state)
                 and state.has("ItemSwim", self.player),
             "Dog House - Land is Great Coin": lambda state:
-                RuleUtils.can_openChest(self.world, state)
+                RuleUtils.can_openChest(self.player, state)
                 and ((
                         state.has("has_sword", self.player)
                         and state.has("ItemCoffee", self.player))
                      or state.has("ItemSwim", self.player)),
             "Dog House - Hidden Snake Coin": lambda state:
                 (state.has("has_sword", self.player) or state.has("ItemSwim", self.player))
-                and RuleUtils.has_darkroom(self.world, state, 2) and RuleUtils.can_openChest(self.world, state),
+                and RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms) and RuleUtils.can_openChest(self.player, state),
             "Dog House - Waterfall Coin": lambda state:
-                RuleUtils.can_openChest(self.world, state)
+                RuleUtils.can_openChest(self.player, state)
                 and state.has("ItemSwim", self.player),
             "Dog House - Treasure Island Coin": lambda state:
-                RuleUtils.can_openChest(self.world, state)
+                RuleUtils.can_openChest(self.player, state)
                 and state.has("ItemSwim", self.player),
             "Dog House - Plant Heart": lambda state:
                 state.has("ItemWateringCan", self.player),
             "Dog House - Bull Heart": lambda state:
                 state.has("has_sword", self.player)
                 and (state.can_reach("Desert RV", player=self.player)
-                     or RuleUtils.has_darkroom(self.world, state, 2)),
+                     or RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)),
             "Dog House - Boat Tentacle": lambda state:
                 state.has("has_sword", self.player)
                 and state.has_all({
@@ -177,7 +167,7 @@ class MinitRules:
                     "ItemGlove",
                     }, self.player),
             "Dog House - Sewer Tentacle": lambda state:
-                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.world, state, 3)
+                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.player, state, 3, self.darkrooms)
                 and state.has("ItemSwim", self.player),
             "Dog House - Dolphin Heart": lambda state:
                 state.has("ItemWateringCan", self.player),
@@ -197,9 +187,9 @@ class MinitRules:
                     "ItemSwim",
                     }, self.player),
             "Desert RV - ItemTurboInk": lambda state:
-                RuleUtils.has_darkroom(self.world, state, 2) and state.has("Tentacle", self.player, 8),
+                RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms) and state.has("Tentacle", self.player, 8),
             "Desert RV - Temple Coin": lambda state:
-                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.world, state, 2)
+                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
                 and ((
                         state.can_reach("Hotel Room", player=self.player)
                         and state.has_all({
@@ -208,35 +198,31 @@ class MinitRules:
                             "teleporter switch6",
                             "ItemBasement",
                             }, self.player))
-                     or (self.world.options.obscure
-                         and state.has("ItemSwim", self.player)
-                         # sword+darkroom+swim should cover the hotel -> temple route
-                         )
                      ),
                 # item region implies desert rv access, can teleport implies
                 # - island shack access, existing implies dog house access,
                 # - only need to check hotel room access
             "Desert RV - Fire Bat Coin": lambda state:
-                RuleUtils.has_darkroom(self.world, state, 1) and RuleUtils.can_openChest(self.world, state)
+                RuleUtils.has_darkroom(self.player, state, 1, self.darkrooms) and RuleUtils.can_openChest(self.player, state)
                 and state.has("ItemWateringCan", self.player),
             "Desert RV - Truck Supplies Coin": lambda state:
-                state.has("has_sword", self.player) and RuleUtils.can_openChest(self.world, state),
+                state.has("has_sword", self.player) and RuleUtils.can_openChest(self.player, state),
             "Desert RV - Broken Truck": lambda state:
-                RuleUtils.can_openChest(self.world, state),
+                RuleUtils.can_openChest(self.player, state),
             "Desert RV - Quicksand Coin": lambda state:
-                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.world, state, 2),
+                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms),
                 # vanilla does require sword because the wateringcan drops
                 # - while drowing in quicksand
             "Desert RV - Dumpster": lambda state:
                 state.has("has_sword", self.player),
             "Desert RV - Temple Heart": lambda state:
-                RuleUtils.has_darkroom(self.world, state, 3)
+                RuleUtils.has_darkroom(self.player, state, 3, self.darkrooms)
                 and state.has("ItemShoes", self.player),
             "Desert RV - Shop Heart": lambda state:
                 state.has("ItemBasement", self.player)
                 and state.has("Coin", self.player, 19),
             "Desert RV - Octopus Tentacle": lambda state:
-                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.world, state, 2)
+                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
                 and state.has("ItemSwim", self.player),
             "Desert RV - Beach Tentacle": lambda state:
                 state.has("has_sword", self.player),
@@ -256,7 +242,7 @@ class MinitRules:
                     "hidden saved",
                     }, self.player),
             "Hotel Room - ItemGrinder": lambda state:
-                RuleUtils.has_darkroom(self.world, state, 2)
+                RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
                 and state.has_all({
                     "ItemSwim",
                     "ItemCoffee"
@@ -264,8 +250,8 @@ class MinitRules:
             "Hotel Room - Shrub Arena Coin": lambda state:
                 state.has("has_sword", self.player),
             "Hotel Room - Miner's Chest Coin": lambda state:
-                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.world, state, 3)
-                and RuleUtils.can_openChest(self.world, state)
+                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.player, state, 3, self.darkrooms)
+                and RuleUtils.can_openChest(self.player, state)
                 and state.has("ItemGrinder", self.player),
             "Factory Main - Inside Truck": lambda state:
                 True,
@@ -273,17 +259,16 @@ class MinitRules:
                 self.factory_to_hotel_backtrack(state)
                 or state.has_any({"ItemSwim", "bridge on"}, self.player),
             "Hotel Room - Hotel Backroom Coin": lambda state:
-                RuleUtils.can_passBoxes(self.world, state) and state.has("has_sword", self.player),
+                RuleUtils.can_passBoxes(self.player, state) and state.has("has_sword", self.player),
             "Factory Main - Drill Coin": lambda state:
                 state.has("has_sword", self.player),
             "Hotel Room - Crow Heart": lambda state:
                 state.has("has_sword", self.player)
-                and RuleUtils.can_passBoxes(self.world, state)
+                and RuleUtils.can_passBoxes(self.player, state)
                 and state.has("ItemGlove", self.player),
             "Hotel Room - Dog Heart": lambda state:
                 state.has("has_sword", self.player) and state.has("ItemGlove", self.player)
-                and (bool(self.world.options.obscure)
-                     or state.has_any({
+                and (state.has_any({
                         "ItemSwim",
                         "ItemShoes"
                         }, self.player)
@@ -300,11 +285,9 @@ class MinitRules:
                 # - don't think i will though
 
             # Island Shack
-            "Island Shack - Teleporter Tentacle": lambda state:
+            "Island Shack - Teleporter Tentacle": lambda state, obscure=self.world.options.obscure:
                 state.has("has_sword", self.player)
-                and (
-                    bool(self.world.options.obscure)
-                    or state.has("ItemCoffee", self.player))
+                and (state.has("ItemCoffee", self.player))
                 and state.has_all({
                         "ItemBasement",
                         "ItemSwim",
@@ -319,7 +302,7 @@ class MinitRules:
             # Factory Main
             "Factory Main - ItemMegaSword": lambda state:
                 state.has("has_sword", self.player)
-                and RuleUtils.has_darkroom(self.world, state, 1)
+                and RuleUtils.has_darkroom(self.player, state, 1, self.darkrooms)
                 and state.has_all({
                     "ItemWateringCan",
                     "left machine",
@@ -352,14 +335,14 @@ class MinitRules:
                 and (
                      state.has("ItemSwim", self.player)
                      or (
-                        RuleUtils.has_darkroom(self.world, state, 2)
+                        RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
                         and state.has("ItemThrow", self.player))
                      or self.factory_to_hotel_backtrack(state)
                 ),
             "bridge saved": lambda state:
                 state.has("bridge on", self.player),
             "hidden saved": lambda state:
-                RuleUtils.can_passBoxes(self.world, state),
+                RuleUtils.can_passBoxes(self.player, state),
             "teleporter switch1": lambda state:
                 state.has("has_sword", self.player),
             "teleporter switch4": lambda state:
@@ -377,7 +360,7 @@ class MinitRules:
             "boatguy watered": lambda state:
                 state.has("ItemWateringCan", self.player),
             "left machine": lambda state:
-                RuleUtils.has_darkroom(self.world, state, 1)
+                RuleUtils.has_darkroom(self.player, state, 1, self.darkrooms)
                 and state.has_all({
                     "ItemCoffee",
                     "ItemSwim"
@@ -385,6 +368,155 @@ class MinitRules:
             "right machine": lambda state:
                 state.has("has_sword", self.player),
         }
+
+        obscure = {
+            "Dog House -> Island Shack": lambda state:
+                state.has("ItemSwim", self.player)
+                or (state.has_all({
+                    "ItemBoat",
+                    "boatguy watered",
+                    "ItemGlove",
+                    }, self.player)),
+                # obscure: you can swim from treasure island
+                # - by baiting the shark
+            "Dog House - ItemFlashLight": lambda state:
+                state.has("ItemSwim", self.player)
+                or ((
+                     state.has("has_sword", self.player)
+                     or state.has("ItemSwim", self.player))
+                    and state.has("ItemKey", self.player)),
+                # obscure: you can swim behind the lighthouse
+                # - and pick up the item
+            "Dog House - ItemBasement": lambda state:
+                state.has("has_sword", self.player) and state.has("ItemGlove", self.player)
+                and ((state.has("ItemSwim", self.player))
+                     or state.has_all({
+                        "ItemBoat",
+                        "boatguy watered",
+                        "ItemGlove",
+                        }, self.player)),
+                # obscure: you can swim from treasure island
+                # - by baiting the shark
+            "Hotel Room - Dog Heart": lambda state:
+                state.has("has_sword", self.player) and state.has("ItemGlove", self.player),
+                # obscure: with good movemnt can do this in 50s
+                # -  with just sword glove, adding teleport/swim/shoes
+                # - to give more wiggle room outside obscure logic
+                # this logic changes if i rando the bone,
+                # - don't think i will though
+
+            "Island Shack - Teleporter Tentacle": lambda state:
+                state.has("has_sword", self.player)
+                and state.has_all({
+                        "ItemBasement",
+                        "ItemSwim",
+                        }, self.player),
+                # obscure: attacking in coyote frames from the right teleporter
+                # - lets you do this with just sword/swim
+
+
+            # assume other logic is off and they can get replaced later
+            "Desert RV - Temple Coin": lambda state:
+                state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
+                and ((
+                        state.can_reach("Hotel Room", player=self.player)
+                        and state.has_all({
+                            "teleporter switch1",
+                            "teleporter switch4",
+                            "teleporter switch6",
+                            "ItemBasement",
+                            }, self.player))
+                     or (state.has("ItemSwim", self.player)
+                         # sword+darkroom+swim should cover the hotel -> temple route
+                         )
+                     ),
+                # item region implies desert rv access, can teleport implies
+                # - island shack access, existing implies dog house access,
+                # - only need to check hotel room access
+            "Dog House - ItemPressPass": lambda state:
+                (
+                    (RuleUtils.can_passBoxes(self.player, state)
+                        and ((state.has("has_sword", self.player)
+                              and state.has("ItemThrow", self.player))
+                             or state.has("ItemSwim", self.player)))
+                    or (state.has("has_sword", self.player)
+                        and state.can_reach("Hotel Room", player=self.player)
+                        and (state.has_all({
+                                "ItemGrinder",
+                                "ItemGlove"
+                                }, self.player)))),
+                # obscure: you can, with clean movement and damage tanks,
+                # - swim from the factory bridge to press pass house
+                # - without any other items
+        }
+
+        damage_boost_obscure = {
+            "Dog House - ItemPressPass": lambda state:
+                (
+                    (RuleUtils.can_passBoxes(self.player, state)
+                        and ((state.has("has_sword", self.player)
+                              and state.has("ItemThrow", self.player))
+                             or state.has("ItemSwim", self.player)))
+                    or (state.has("has_sword", self.player)
+                        and state.can_reach("Hotel Room", player=self.player)
+                        and (state.has_all({
+                                "ItemGrinder",
+                                "ItemGlove"
+                                }, self.player))
+                        or (RuleUtils.total_hearts(self.player, state, 4)
+                            and state.has("ItemSwim", self.player))))
+                or (RuleUtils.total_hearts(self.player, state, 7)
+                    and state.can_reach("Hotel Room", player=self.player)
+                    and state.has("ItemSwim", self.player)),
+                # obscure: you can, with clean movement and damage tanks,
+                # - swim from the factory bridge to press pass house
+                # - without any other items
+        }
+
+        # darkroom: = {
+        #     "Dog House -> Desert RV": lambda state: True or False,
+        #     "Hotel Room -> Underground Tent": lambda state: True or False,
+        #     "Hotel Room -> Factory Main": lambda state: True or False,
+        #     "Factory Main -> Boss Fight": lambda state: True or False,
+        #     "Dog House - Sewer Island Coin": lambda state: True or False,
+        #     "Dog House - Sewer Coin": lambda state: True or False,
+        #     "Dog House - Hidden Snake Coin": lambda state: True or False,
+        #     "Dog House - Bull Heart": lambda state: True or False,
+        #     "Dog House - Sewer Tentacle": lambda state: True or False,
+        #     "Desert RV - ItemTurboInk": lambda state: True or False,
+        #     "Desert RV - Fire Bat Coin": lambda state: True or False,
+        #     "Desert RV - Quicksand Coin": lambda state: True or False,
+        #     "Desert RV - Temple Heart": lambda state: True or False,
+        #     "Desert RV - Octopus Tentacle": lambda state: True or False,
+        #     "Hotel Room - ItemGrinder": lambda state: True or False,
+        #     "Hotel Room - Miner's Chest Coin": lambda state: True or False,
+        #     "Factory Main - ItemMegaSword": lambda state: True or False,
+        #     "bridge on": lambda state: True or False,
+        #     "left machine": lambda state: True or False,
+        # }
+
+        # darkroom_obscure: = {
+        #     "Desert RV - Temple Coin": lambda state, obscure=self.world.options.obscure: True or False,
+        # }
+
+        def apply_rules(optional_rules):
+            for key, rule in optional_rules.values():
+                if key in region_rules:
+                    self.region_rules[key] = rule
+                else:
+                    self.location_rules[key] = rule
+
+        if self.world.options.obscure:
+            apply_rules(obscure)
+
+            if self.world.options.obscure and self.world.options.damage_boost:
+                apply_rules(damage_boost_obscure)
+
+        # if self.world.options.dark_room:
+        #     apply_rules(darkroom)
+
+        #     if self.world.options.obscure and self.world.options.dark_room:
+        #         apply_rules(darkroom_obscure)
 
     def factory_to_hotel_backtrack(self, state) -> bool:
         return (state.can_reach("Factory Main", player=self.player)

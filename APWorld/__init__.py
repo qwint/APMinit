@@ -28,7 +28,7 @@ from .Options import MinitGameOptions
 from .Rules import MinitRules
 from .ER_Rules import ER_MinitRules
 from . import RuleUtils
-from typing import Dict, Any, List, TextIO
+from typing import Dict, Any, List, TextIO, Tuple
 from worlds.LauncherComponents import (
     Component,
     components,
@@ -134,7 +134,7 @@ class MinitWorld(World):
     options_dataclass = MinitGameOptions
     options: MinitGameOptions
     web = MinitWebWorld()
-    output_connections: List[tuple[str, str]]
+    output_connections: List[Tuple[str, str]]
     spoiler_hints: Dict[str, str]
 
     item_name_to_id = {
@@ -190,7 +190,8 @@ class MinitWorld(World):
             item_count = self.add_to_pool(self.get_filler_item_name(), item_count)
         assert item_count == total_locations, f"{item_count} == {total_locations}"
 
-    def make_bad_map(self) -> List[tuple[str, str]]:
+    def make_bad_map(self) -> List[Tuple[str, str]]:
+        """only needed for ER POC before Generic ER gets merged"""
         """only needed for ER POC before Generic ER gets merged"""
         unconnected = []
         output = []
@@ -448,12 +449,12 @@ class MinitWorld(World):
                 state.has("Boss dead", self.player)
         elif self.options.chosen_goal == "toilet_goal":  # toilet
             self.multiworld.completion_condition[self.player] = lambda state: \
-                RuleUtils.has_brokensword(self, state) and \
+                RuleUtils.has_brokensword(self.player, state) and \
                 state.has("Sword Flushed", self.player)
         elif self.options.chosen_goal == "any_goal":  # any
             self.multiworld.completion_condition[self.player] = lambda state: \
                 state.has("Boss dead", self.player) or \
-                (RuleUtils.has_brokensword(self, state) and
+                (RuleUtils.has_brokensword(self.player, state) and
                     state.has("Sword Flushed", self.player))
         if bool(self.options.starting_sword):
             self.multiworld.local_early_items[self.player][self.get_sword_item_name()] = 1
