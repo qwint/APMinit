@@ -28,14 +28,13 @@ from .Options import MinitGameOptions
 from .Rules import MinitRules
 from .ER_Rules import ER_MinitRules
 from . import RuleUtils
-from typing import Dict, Any, List, TextIO
+from typing import Dict, Any, List, TextIO, Tuple
 from worlds.LauncherComponents import (
     Component,
     components,
     Type,
     launch_subprocess,
 )
-# import random
 from Utils import visualize_regions
 
 
@@ -132,12 +131,10 @@ class MinitWorld(World):
 
     game = "Minit"
     required_client_version = (0, 4, 4)
-    data_version = 0  # needs to change after the item/location renaming
-                      # need to double check how real this is/willbe
     options_dataclass = MinitGameOptions
     options: MinitGameOptions
     web = MinitWebWorld()
-    output_connections: List[tuple[str, str]]
+    output_connections: List[Tuple[str, str]]
     spoiler_hints: Dict[str, str]
 
     item_name_to_id = {
@@ -163,11 +160,8 @@ class MinitWorld(World):
 
     def create_item(self, name: str) -> MinitItem:
         data = item_table[name]
-        if not hasattr(self, "options"):
-            # create items as normal if made without options
-            return MinitItem(name, data.classification, data.code, self.player)
 
-        if bool(self.options.damage_boosts) and name == "HeartPiece":
+        if self.options.damage_boosts and name == "HeartPiece":
             item_clas = ItemClassification.progression_skip_balancing
         elif self.options.darkrooms == "insane" and name == "ItemFlashLight":
             item_clas = ItemClassification.useful
@@ -175,35 +169,34 @@ class MinitWorld(World):
             item_clas = data.classification
         return MinitItem(name, item_clas, data.code, self.player)
 
+    def add_to_pool(self, name: str, count: int):
+        self.multiworld.itempool.append(
+            self.create_item(name))
+        return count + 1
+
     def create_items(self):
-        itemCount = 0
+        item_count = 0
         for item_name, item_data in item_table.items():
-            if (item_data.code and item_data.can_create(
-                    self,
-                    self.player)):
-                if (item_name in item_frequencies):
-                    for count in range(item_frequencies[item_name]):
-                        itemCount += 1
-                        self.multiworld.itempool.append(
-                            self.create_item(item_name))
+            if item_data.code and item_data.can_create(self):
+                if item_name in item_frequencies:
+                    frequency = item_frequencies[item_name]
                 else:
-                    itemCount += 1
-                    self.multiworld.itempool.append(
-                        self.create_item(item_name))
+                    frequency = 1
+                for count in range(frequency):
+                    item_count = self.add_to_pool(item_name, item_count)
 
-        non_event_locations = [location for location in self.multiworld.get_locations(self.player) if not location.event]
-        for _ in range(len(non_event_locations) - itemCount):
-            item_name = self.get_filler_item_name()
-            item_data = item_table[item_name]
-            self.multiworld.itempool.append(
-                self.create_item(item_name))
+        total_locations = len(self.multiworld.get_unfilled_locations(self.player))
+        for _ in range(total_locations - item_count):
+            item_count = self.add_to_pool(self.get_filler_item_name(), item_count)
+        assert item_count == total_locations, f"{item_count} == {total_locations}"
 
-    def make_bad_map(self) -> List[tuple[str, str]]:
+    def make_bad_map(self) -> List[Tuple[str, str]]:
+        """only needed for ER POC before Generic ER gets merged"""
         unconnected = []
         output = []
         for entrance in er_entrances:
-            if entrance[0] not in door_names:
-                unconnected.append(entrance[0])
+            if entrance.entrance_name not in door_names:
+                unconnected.append(entrance.entrance_name)
         self.random.shuffle(unconnected)
         try:
             while unconnected:
@@ -229,7 +222,7 @@ class MinitWorld(World):
                 self.multiworld))
 
         for loc_name, loc_data in location_table.items():
-            if not loc_data.can_create(self, self.player):
+            if not loc_data.can_create(self):
                 continue
             if er_on:
                 loc_region = loc_data.er_region
@@ -304,17 +297,17 @@ class MinitWorld(World):
 
             for er_entrance in er_entrances:
                 region = self.multiworld.get_region(
-                    er_entrance[1],
+                    er_entrance.region_name,
                     self.player)
                 # entrance.is_dead_end = er_entrance[2]
 
-                en1 = region.create_exit(er_entrance[0])
+                en1 = region.create_exit(er_entrance.entrance_name)
                 en1.er_type = EntranceType.TWO_WAY
-                en1.er_group = er_entrance[3]
-                if starting_entrance and er_entrance[0] in ["dog house south", starting_entrance]:
-                    if er_entrance[0] == "dog house south":
+                en1.er_group = er_entrance.group_type
+                if starting_entrance and er_entrance.entrance_name in ["dog house south", starting_entrance]:
+                    if er_entrance.entrance_name == "dog house south":
                         manual_connect_start = en1
-                    if er_entrance[0] == starting_entrance:
+                    if er_entrance.entrance_name == starting_entrance:
                         manual_connect_end = en1
                     if manual_connect_start and manual_connect_end:
                         manual_connect_start.connect(manual_connect_end.parent_region)
@@ -332,13 +325,15 @@ class MinitWorld(World):
                         # print(f"connecting {manual_connect_start.name} and {manual_connect_end.name}")
                         # add_manual_connect = False
                 else:
-                    en2 = region.create_er_target(er_entrance[0])
+                    en2 = region.create_er_target(er_entrance.entrance_name)
                     en2.er_type = EntranceType.TWO_WAY
-                    en2.er_group = er_entrance[3]
+                    en2.er_group = er_entrance.group_type
 
         elif er_on and not er_loaded:
+            # also only needed for ER POC before Generic ER gets merged
             self.add_regions_and_locations(False)
             self.output_connections = self.make_bad_map()
+
         else:
             self.add_regions_and_locations(er_on)  # will move this back up when er is finished
             self.output_connections = None
@@ -360,13 +355,13 @@ class MinitWorld(World):
             # ]
             # self.output_connections = self.make_bad_map()
 
-    def parse_goals(self, chosen_goal: int) -> List[str]:
-        if chosen_goal == 0:  # boss fight
+    def parse_goals(self) -> List[str]:
+        if self.options.chosen_goal == "boss_fight":
             return ["boss"]
-        if chosen_goal == 1:  # toilet
+        elif self.options.chosen_goal == "toilet_goal":
             return ["toilet"]
-        if chosen_goal == 2:
-            return ["toilet", "boss"]  # any
+        elif self.options.chosen_goal == "any_goal":
+            return ["toilet", "boss"]
 
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
         if self.options.er_option == "off" or not er_loaded:
@@ -388,7 +383,7 @@ class MinitWorld(World):
         paths = all_state.path
         # start = self.multiworld.get_region("dog house west", self.player)
         # start_connections = [entrance.name for entrance in start.exits]  # if entrance not in {"Home", "Shrink Down"}]
-        transition_names = [er_entrance[0] for er_entrance in er_entrances]  # + start_connections
+        transition_names = [er_entrance.entrance_name for er_entrance in er_entrances]  # + start_connections
         for loc in self.multiworld.get_locations(self.player):
             # if (loc.parent_region.name in {"Tower HQ", "The Shop", "Music Box", "The Craftsman's Corner"}
             #         or loc.address is None):
@@ -413,7 +408,7 @@ class MinitWorld(World):
             "death_link": self.options.death_link.value,
             "death_amnisty_total": self.options.death_amnisty_total.value,
             "ER_connections": self.output_connections,
-            "goals": self.parse_goals(self.options.chosen_goal),
+            "goals": self.parse_goals(),
             }
 
     def interpret_slot_data(self, slot_data: Dict[str, Any]):
@@ -432,14 +427,11 @@ class MinitWorld(World):
 
     def set_rules(self):
         if self.options.er_option == "off":
-            minitRules = MinitRules(self)
-            minitRules.set_Minit_rules()
+            MinitRules(self).set_Minit_rules()
         elif self.options.er_option == "on" and not er_loaded:
-            minitRules = MinitRules(self)
-            minitRules.set_Minit_rules()
+            MinitRules(self).set_Minit_rules()
         elif self.options.er_option == "on" and er_loaded:
-            minitRules = ER_MinitRules(self)
-            minitRules.set_Minit_rules()
+            ER_MinitRules(self).set_Minit_rules()
 
             self.output_connections += randomize_entrances(
                     world=self,
@@ -447,21 +439,21 @@ class MinitWorld(World):
                     get_target_groups=minit_get_target_groups,
                     preserve_group_order=False
                     ).pairings
-            visualize_regions(
-                self.multiworld.get_region("Menu", self.player),
-                "output/regionmap.puml")
+            # visualize_regions(
+            #     self.multiworld.get_region("Menu", self.player),
+            #     "output/regionmap.puml")
 
         if self.options.chosen_goal == "boss_fight":  # boss fight
             self.multiworld.completion_condition[self.player] = lambda state: \
                 state.has("Boss dead", self.player)
         elif self.options.chosen_goal == "toilet_goal":  # toilet
             self.multiworld.completion_condition[self.player] = lambda state: \
-                RuleUtils.has_brokensword(self, state) and \
+                RuleUtils.has_brokensword(self.player, state) and \
                 state.has("Sword Flushed", self.player)
         elif self.options.chosen_goal == "any_goal":  # any
             self.multiworld.completion_condition[self.player] = lambda state: \
                 state.has("Boss dead", self.player) or \
-                (RuleUtils.has_brokensword(self, state) and
+                (RuleUtils.has_brokensword(self.player, state) and
                     state.has("Sword Flushed", self.player))
         if bool(self.options.starting_sword):
             self.multiworld.local_early_items[self.player][self.get_sword_item_name()] = 1
@@ -487,9 +479,9 @@ class MinitWorld(World):
                 starting_items.append("ItemBrokenSword")
                 starting_items.append("ItemSword")
                 starting_items.append("ItemMegaSword")
-            if self.options.progressive_sword == "reverse_progressive":
+            elif self.options.progressive_sword == "reverse_progressive":
                 starting_items.append("Reverse Progressive Sword")
-            if self.options.progressive_sword == "forward_progressive":
+            elif self.options.progressive_sword == "forward_progressive":
                 starting_items.append("Progressive Sword")
             self.random.shuffle(starting_items)
             self.multiworld.local_early_items[self.player][starting_items.pop()] = 1
