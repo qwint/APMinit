@@ -163,9 +163,9 @@ class MinitWorld(World):
 
     def create_item(self, name: str) -> MinitItem:
         data = item_table[name]
-        if not hasattr(self, "options"):
-            # create items as normal if made without options
-            return MinitItem(name, data.classification, data.code, self.player)
+        # if not hasattr(self, "options"):
+        #     # create items as normal if made without options
+        #     return MinitItem(name, data.classification, data.code, self.player)
 
         if bool(self.options.damage_boosts) and name == "HeartPiece":
             item_clas = ItemClassification.progression_skip_balancing
@@ -191,8 +191,8 @@ class MinitWorld(World):
                     self.multiworld.itempool.append(
                         self.create_item(item_name))
 
-        non_event_locations = [location for location in self.multiworld.get_locations(self.player) if not location.event]
-        for _ in range(len(non_event_locations) - itemCount):
+        total_locations = len(self.multiworld.get_unfilled_locations(self.player))
+        for _ in range(total_locations - itemCount):
             item_name = self.get_filler_item_name()
             item_data = item_table[item_name]
             self.multiworld.itempool.append(
