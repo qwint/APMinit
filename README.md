@@ -28,7 +28,7 @@ it will prompt for a seed, choose the previously generated file in /output
 
 For Connecting
 run ArchipelagoLauncher.exe
-open the "Minit Clint" through the Launcher
+open the "Minit Client" through the Launcher
 use the top bar to enter the host and port of the Archipelago server running already (ex. "localhost:38281" if you are hosting it locally and your port is 38281) 
 when prompted for you Slot Name, enter whatever your username in the .yaml file is, if left default it will likely be "Player1"
 you now have the proxy client connected to the AP server
