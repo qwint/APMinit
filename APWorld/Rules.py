@@ -393,6 +393,7 @@ class MinitRules:
 
     def set_Minit_rules(self) -> None:
         multiworld = self.world.multiworld
+        # if option: change relevant rules
 
         for region in multiworld.get_regions(self.player):
             for entrance in region.entrances:

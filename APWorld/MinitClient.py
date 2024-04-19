@@ -282,27 +282,27 @@ def handleErConnections(ctx: CommonContext):
             left = connection[0]
             right = connection[1]
             for e in er_entrances:
-                if e[0] == left:
+                if e.entrance_name == left:
                     left_entrance = e
-                if e[0] == right:
+                if e.entrance_name == right:
                     right_entrance = e
 
             print(f"left_entrance: {left_entrance}")
             print(f"right_entrance: {right_entrance}")
-            left_tile = left_entrance[4]
+            left_tile = left_entrance.room_tile
             print(f"left_tile: {left_tile}")
-            left_name = left_entrance[0]
+            left_name = left_entrance.entrance_name
             print(f"left_name: {left_name}")
 
             index = 0
             for entrance in erMessage["Entrances"][left_tile]:
                 if left_name == entrance["CName"]:
                     erMessage["Entrances"][left_tile][index]["out"] = {
-                        "tile": right_entrance[4],
-                        "x": right_entrance[5],
-                        "y": right_entrance[6],
-                        "offDir": right_entrance[7],
-                        "offNum": right_entrance[8],
+                        "tile": right_entrance.room_tile,
+                        "x": right_entrance.x_cord,
+                        "y": right_entrance.y_cord,
+                        "offDir": right_entrance.offset_direction,
+                        "offNum": right_entrance.offset_value,
                         }
                 index += 1
 

@@ -1,4 +1,3 @@
-# from BaseClasses import Location
 from worlds.AutoWorld import World
 from typing import NamedTuple, Optional, Callable  # Dict
 
@@ -7,9 +6,11 @@ class MinitLocationData(NamedTuple):
     region: str
     er_region: str
     code: int = None
-    can_create: Callable[[World, int], bool] = lambda world, player: True
     locked_item: Optional[str] = None
+
     show_in_spoiler: bool = True
+    can_create: Callable[[World], bool] = lambda world: True
+    # unused for now but keeping the structure for later
 
 
 def baseID(delta: int) -> int:

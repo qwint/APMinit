@@ -1,7 +1,6 @@
 from BaseClasses import CollectionState
 from typing import (
     Dict,
-    # Set,
     Callable,
     TYPE_CHECKING,
     List,
@@ -464,12 +463,12 @@ class ER_MinitRules:
                 state.has("has_sword", self.player),
         }
 
-    def rev(self, e_name: str) -> List[str]:
+    def rev(self, e_name: str) -> (str, str):
         e_list = e_name.split(" -> ")
         if len(e_list) == 2:
-            return [f"{e_list[1]} <-> {e_list[0]}", f"{e_list[0]} <-> {e_list[1]}"]
+            return f"{e_list[1]} <-> {e_list[0]}", f"{e_list[0]} <-> {e_list[1]}"
         else:
-            return ["", ""]
+            return "", ""
 
     def set_Minit_rules(self) -> None:
         multiworld = self.world.multiworld
@@ -478,16 +477,16 @@ class ER_MinitRules:
                 if entrance.name in self.region_rules:
                     set_rule(entrance, self.region_rules[entrance.name])
                 else:
-                    twoWayName = self.rev(entrance.name)
-                    if twoWayName[0] in self.region_rules:
+                    left_name, right_name = self.rev(entrance.name)
+                    if left_name in self.region_rules:
                         set_rule(
                             entrance,
-                            self.region_rules[twoWayName[0]]
+                            self.region_rules[left_name]
                             )
-                    elif twoWayName[1] in self.region_rules:
+                    elif right_name in self.region_rules:
                         set_rule(
                             entrance,
-                            self.region_rules[twoWayName[1]]
+                            self.region_rules[right_name]
                             )
             for location in region.locations:
                 if location.name in self.location_rules:
