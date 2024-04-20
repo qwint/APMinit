@@ -80,7 +80,7 @@ class ProxyGameContext(SuperContext):
     game = GAMENAME
     httpServer_task: typing.Optional["asyncio.Task[None]"] = None
     command_processor = MinitCommandProcessor
-    tags = {"AP", "DeathLink"}
+    tags = {"DeathLink"}
     last_sent_death: float = time.time()
     slot_data: dict[str, any]
     death_amnisty_total: int
