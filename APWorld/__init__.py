@@ -267,9 +267,11 @@ class MinitWorld(World):
         #     self.output_connections = self.make_bad_map()
 
     def create_regions(self):
+        from worlds.generic.Rules import forbid_item
 
         er_on = bool(self.options.er_option)
         starting_entrance = ""
+        early_location_list: List[Location] = []
         if er_on and er_loaded:
             self.add_regions_and_locations(er_on)  # will move this back up when er is finished
             # current code for using the Generic ER randomizer
@@ -291,6 +293,13 @@ class MinitWorld(World):
                     ]  # consider removing the deadends because they could have a higher chance of killing the seed
                 self.random.shuffle(free_checks)
                 starting_entrance = free_checks.pop()
+
+                starting_region = self.multiworld.get_region(starting_entrance,self.player).name
+                early_location_list = [
+                    self.multiworld.get_location(location_name, self.player)
+                    for location_name, location_data in location_table.values()
+                    if location_data.er_region == starting_region
+                ]
                 # print(f"adding {starting_entrance} to starting region to make single player ER playable")
                 manual_connect_start = None
                 manual_connect_end = None
@@ -334,10 +343,26 @@ class MinitWorld(World):
             # also only needed for ER POC before Generic ER gets merged
             self.add_regions_and_locations(False)
             self.output_connections = self.make_bad_map()
+            for name in [
+                "Dog House - Dolphin Heart",
+                "Dog House - Plant Heart",
+                "Desert RV - ItemGlove",
+                "Hotel Room - Queue",
+                "Dog House - ItemSword",
+            ]:
+                early_location_list.append(self.multiworld.get_location(name, self.player))
 
         else:
             self.add_regions_and_locations(er_on)  # will move this back up when er is finished
             self.output_connections = None
+            for name in [
+                "Dog House - Dolphin Heart",
+                "Dog House - Plant Heart",
+                "Desert RV - ItemGlove",
+                "Hotel Room - Queue",
+                "Dog House - ItemSword",
+            ]:
+                early_location_list.append(self.multiworld.get_location(name, self.player))
             # self.output_connections = [
             #     ("dog house inside door", "dog house door",),
             #     ("dog house door", "dog house inside door",),
@@ -355,6 +380,11 @@ class MinitWorld(World):
             #     ("coffee shop inside", "dog house south",),
             # ]
             # self.output_connections = self.make_bad_map()
+
+        for location in early_location_list:
+            forbid_item(location, "Coin", self.player)
+        # forbid_item(early_location, "HeartPiece", self.player)
+        # forbid_item(early_location, "Tentacle", self.player)
 
     def parse_goals(self) -> List[str]:
         if self.options.chosen_goal == "boss_fight":
@@ -473,19 +503,21 @@ class MinitWorld(World):
         else:
             return "HeartPiece"
 
-    def pre_fill(self) -> None:
-        if self.multiworld.players == 1 and not bool(self.options.starting_sword):
-            starting_items = ["ItemSwim", "ItemWateringCan"]
-            if self.options.progressive_sword == "off":
-                starting_items.append("ItemBrokenSword")
-                starting_items.append("ItemSword")
-                starting_items.append("ItemMegaSword")
-            elif self.options.progressive_sword == "reverse_progressive":
-                starting_items.append("Reverse Progressive Sword")
-            elif self.options.progressive_sword == "forward_progressive":
-                starting_items.append("Progressive Sword")
-            self.random.shuffle(starting_items)
-            self.multiworld.local_early_items[self.player][starting_items.pop()] = 1
+    # def pre_fill(self) -> None:
+    #     from worlds.generic.Rules import forbid_item
+    #     forbid_item(self.multiworld.get_location("Dog House - ItemSword", self.player), "Coin", self.player)
+        # if self.multiworld.players == 1 and not bool(self.options.starting_sword):
+        #     starting_items = ["ItemSwim", "ItemWateringCan"]
+        #     if self.options.progressive_sword == "off":
+        #         starting_items.append("ItemBrokenSword")
+        #         starting_items.append("ItemSword")
+        #         starting_items.append("ItemMegaSword")
+        #     elif self.options.progressive_sword == "reverse_progressive":
+        #         starting_items.append("Reverse Progressive Sword")
+        #     elif self.options.progressive_sword == "forward_progressive":
+        #         starting_items.append("Progressive Sword")
+        #     self.random.shuffle(starting_items)
+        #     self.multiworld.local_early_items[self.player][starting_items.pop()] = 1
 
     def collect(self, state: "CollectionState", item: "Item") -> bool:
         change = super().collect(state, item)
