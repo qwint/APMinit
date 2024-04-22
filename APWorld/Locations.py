@@ -88,7 +88,7 @@ location_table = {
         # heartPiece1
         code=baseID(14),
         region="Dog House",
-        er_region="plant main",),
+        er_region="plant tile",),
     "Dog House - Bull Heart": MinitLocationData(
         # heartPiece2
         code=baseID(15),
@@ -98,7 +98,7 @@ location_table = {
         # tentacle1
         code=baseID(16),
         region="Dog House",
-        er_region="boat land",),
+        er_region="boat tile",),
     "Dog House - Treasure Island Tentacle": MinitLocationData(
         # tentacle2
         code=baseID(17),
@@ -181,7 +181,7 @@ location_table = {
         # tentacle8
         code=baseID(33),
         region="Desert RV",
-        er_region="desert beach land",),
+        er_region="desert beach tile",),
 
     # Hotel Room
     "Hotel Room - ItemSwim": MinitLocationData(
@@ -191,17 +191,17 @@ location_table = {
     "Hotel Room - ItemGrinder": MinitLocationData(
         code=baseID(35),
         region="Hotel Room",
-        er_region="grinder main",),
+        er_region="grinder tile",),
     "Hotel Room - Shrub Arena Coin": MinitLocationData(
         # coin11 - coin but you need to stab them
         code=baseID(36),
         region="Hotel Room",
-        er_region="arena main",),
+        er_region="arena tile",),
     "Hotel Room - Miner's Chest Coin": MinitLocationData(
         # coin12 - chest
         code=baseID(37),
         region="Hotel Room",
-        er_region="miner chest belts",),
+        er_region="miner chest tile",),
     "Factory Main - Inside Truck": MinitLocationData(
         # coin14 - coin
         code=baseID(38),
@@ -236,7 +236,7 @@ location_table = {
         # tentacle7
         code=baseID(44),
         region="Factory Main",
-        er_region="factory cooler east",),
+        er_region="factory cooler tile",),
 
     # Island Shack
     "Island Shack - Teleporter Tentacle": MinitLocationData(
@@ -267,11 +267,11 @@ location_table = {
     "Dog House - ItemSword": MinitLocationData(
         code=baseID(49),
         region="Dog House",
-        er_region="sword main",),
+        er_region="sword tile",),
     "Dog House - Dolphin Heart": MinitLocationData(
         code=baseID(51),
         region="Dog House",
-        er_region="dolphin land",),
+        er_region="dolphin tile",),
 
     "Fight the Boss": MinitLocationData(
         region="Boss Fight",
@@ -300,7 +300,7 @@ location_table = {
         ),
     "hostage saved": MinitLocationData(
         region="Hotel Room",
-        er_region="arena main",
+        er_region="arena tile",
         locked_item="hostage saved",
         ),
     "wallet saved": MinitLocationData(
@@ -350,12 +350,12 @@ location_table = {
         ),
     "left machine": MinitLocationData(
         region="Factory Main",
-        er_region="grinder main",
+        er_region="grinder tile",
         locked_item="left machine",
         ),
     "right machine": MinitLocationData(
         region="Factory Main",
-        er_region="factory switch test",
+        er_region="factory switch tile",
         locked_item="right machine",
         ),
 }
