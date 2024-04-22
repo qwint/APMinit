@@ -294,10 +294,24 @@ class MinitWorld(World):
                 self.random.shuffle(free_checks)
                 starting_entrance = free_checks.pop()
 
-                starting_region = self.multiworld.get_region(starting_entrance,self.player).name
+                starting_region = starting_entrance
+                if starting_entrance == "camera house outside south":
+                    starting_region = "camera house inside"
+                elif starting_entrance in ["glove outside east", "glove outside west"]:
+                    starting_region = "glove inside"
+                elif starting_entrance in [
+                                            "factory loading upper north",
+                                            "factory loading upper east",
+                                            "factory loading upper south",
+                                            "factory snakehall north",
+                                            ]:
+                    starting_region = "factory loading upper"
+                else:
+                    starting_region = starting_entrance
+
                 early_location_list = [
                     self.multiworld.get_location(location_name, self.player)
-                    for location_name, location_data in location_table.values()
+                    for location_name, location_data in location_table.items()
                     if location_data.er_region == starting_region
                 ]
                 # print(f"adding {starting_entrance} to starting region to make single player ER playable")
