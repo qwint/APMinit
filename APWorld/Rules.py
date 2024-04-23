@@ -500,8 +500,8 @@ class MinitRules:
         # }
 
         def apply_rules(optional_rules):
-            for key, rule in optional_rules.values():
-                if key in region_rules:
+            for key, rule in optional_rules.items():
+                if key in self.region_rules:
                     self.region_rules[key] = rule
                 else:
                     self.location_rules[key] = rule
@@ -509,7 +509,7 @@ class MinitRules:
         if self.world.options.obscure:
             apply_rules(obscure)
 
-            if self.world.options.obscure and self.world.options.damage_boost:
+            if self.world.options.obscure and self.world.options.damage_boosts:
                 apply_rules(damage_boost_obscure)
 
         # if self.world.options.dark_room:

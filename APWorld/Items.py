@@ -40,8 +40,10 @@ item_table: Dict[str, MinitItemData] = {
     "ItemShoes": MinitItemData(code=baseID(9), classification=prog),
     "ItemGlove": MinitItemData(code=baseID(10), classification=prog),
     "ItemBoat": MinitItemData(code=baseID(11), classification=prog),
-    # "ItemCamera": MinitItemData(code=baseID(12), classification=filler),
-    # camera will never be granted as an item for AP
+    # could be granted again, will play with the idea
+    "ItemCamera": MinitItemData(
+        code=baseID(12), classification=filler,
+        can_create=lambda world: False),
     "ItemBasement": MinitItemData(code=baseID(13), classification=prog),
     "ItemMegaSword": MinitItemData(
         code=baseID(14), classification=prog,

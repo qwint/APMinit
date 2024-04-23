@@ -60,15 +60,12 @@ except ModuleNotFoundError:
 # TODO - pull all required game mods out and reapply to clean up patch file
 
 # add options
-# TODO - figure out how to progressive sword
 # TODO - add puzzleless to de-prio longer/confusing puzzles
 # TODO - add random start locations
 
 # known low prio
 # TODO - clean up game mod logging to necessities
 # TODO - clean up item/location names
-# TODO - refactor code
-# TODO - add swim as an option for getting 1/4 of temple coin
 
 # deathlink testing
 # deaths during pause seem to dissapear
@@ -83,7 +80,9 @@ except ModuleNotFoundError:
 
 # bug reports
 # hotel backroom coin is accessible without breaking the pot
+# - confirmed, no idea how to fix
 # fanfares sometimes clip you into walls without a way out
+# - confirmed, not that worried because you always can respawn
 # generation breaks sometimes, unknown cause
 
 # ideas to explore
