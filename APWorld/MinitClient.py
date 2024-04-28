@@ -1,6 +1,6 @@
 import asyncio
 import typing
-from NetUtils import JSONtoTextParser, JSONMessagePart, ClientStatus
+from NetUtils import ClientStatus, RawJSONtoTextParser
 from CommonClient import (
     CommonContext,
     gui_enabled,
@@ -30,19 +30,11 @@ except ModuleNotFoundError:
 DEBUG = False
 GAMENAME = "Minit"
 ITEMS_HANDLING = 0b111
-my_locations = []
-for item_name, item_data in item_table.items():
-    my_locations.append(item_data.code)
 
 
 def data_path(file_name: str):
     import pkgutil
     return pkgutil.get_data(__name__, "data/" + file_name)
-
-
-class ProxyGameJSONToTextParser(JSONtoTextParser):
-    def _handle_color(self, node: JSONMessagePart):
-        return self._handle_text(node)  # No colors for the in-game text
 
 
 class MinitCommandProcessor(ClientCommandProcessor):
@@ -89,7 +81,7 @@ class ProxyGameContext(SuperContext):
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
-        self.gamejsontotext = ProxyGameJSONToTextParser(self)
+        self.gamejsontotext = RawJSONtoTextParser(self)
         self.items_handling = ITEMS_HANDLING
         self.locations_checked = []
         self.datapackage = []
@@ -449,7 +441,7 @@ def launch():
     import colorama
 
     parser = get_base_parser(
-        description="Gameless Archipelago Client, for text interfacing."
+        description="Minit Archipelago Client."
         )
     parser.add_argument(
         '--name',
