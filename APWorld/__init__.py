@@ -399,14 +399,6 @@ class MinitWorld(World):
         # forbid_item(early_location, "HeartPiece", self.player)
         # forbid_item(early_location, "Tentacle", self.player)
 
-    def parse_goals(self) -> List[str]:
-        if self.options.chosen_goal == "boss_fight":
-            return ["boss"]
-        elif self.options.chosen_goal == "toilet_goal":
-            return ["toilet"]
-        elif self.options.chosen_goal == "any_goal":
-            return ["toilet", "boss"]
-
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
         if self.options.er_option == "off" or not er_loaded:
             return
@@ -447,13 +439,14 @@ class MinitWorld(World):
                 hint_data[self.player][loc.address] = text
 
     def fill_slot_data(self) -> Dict[str, Any]:
-        return {
-            "slot_number": self.player,  # unneeded?
-            "death_link": self.options.death_link.value,
-            "death_amnisty_total": self.options.death_amnisty_total.value,
-            "ER_connections": self.output_connections,
-            "goals": self.parse_goals(),
-            }
+        slot_data = self.options.as_dict(
+                "death_link",
+                "death_amnisty_total",
+            )
+        slot_data["ER_connections"] = self.output_connections
+        slot_data["goals"] = self.options.chosen_goal.parse_goals()
+
+        return slot_data
 
     def interpret_slot_data(self, slot_data: Dict[str, Any]):
         try:

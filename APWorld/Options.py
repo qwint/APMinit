@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+from typing import List
 from Options import (
     Toggle,
     Choice,
@@ -71,6 +71,14 @@ class Goal(Choice):
     option_toilet_goal = 1
     option_any_goal = 2
     default = 0
+
+    def parse_goals(self) -> List[str]:
+        if self == "boss_fight":
+            return ["boss"]
+        elif self == "toilet_goal":
+            return ["toilet"]
+        elif self == "any_goal":
+            return ["toilet", "boss"]
 
 
 class EntranceRando(Choice):
