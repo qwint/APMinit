@@ -134,12 +134,17 @@ class ProxyGameContext(SuperContext):
         if cmd == 'Connected':
             self.slot_data = args["slot_data"]
             self.death_amnisty_total = self.slot_data["death_amnisty_total"]
+            # if load(ctx.locations_info):
+            #     load(ctx.locations_info)
+            # else:
             Utils.async_start(self.send_msgs([{
                 "cmd": "LocationScouts",
                 "locations": list(self.missing_locations),
                 "create_as_hint": 0
                 }]))
             self.goals = self.slot_data["goals"]
+        # if cmd == 'LocationInfo':
+        #     save(ctx.locations_info)
         # if cmd == 'ReceivedItems':
         #     #TODO make this actually send minit a ping
         #      - or check if it can be handled with ctx.watcher_event instead
@@ -421,7 +426,6 @@ async def main(args):
         name="http server loop"
         )
 
-    ctx.auth = args.name
     ctx.server_task = asyncio.create_task(
         server_loop(ctx),
         name="server loop"
@@ -443,23 +447,13 @@ def launch():
     parser = get_base_parser(
         description="Minit Archipelago Client."
         )
-    parser.add_argument(
-        '--name',
-        default=None,
-        help="Slot Name to connect as."
-        )
-    parser.add_argument("url", nargs="?", help="Archipelago connection url")
-    args = parser.parse_args()
-
-    if args.url:
-        url = urllib.parse.urlparse(args.url)
-        args.connect = url.netloc
-        if url.username:
-            args.name = urllib.parse.unquote(url.username)
-        if url.password:
-            args.password = urllib.parse.unquote(url.password)
+    args, unknown = parser.parse_known_args()
 
     colorama.init()
 
     asyncio.run(main(args))
     colorama.deinit()
+
+
+if __name__ == '__main__':
+    launch()
