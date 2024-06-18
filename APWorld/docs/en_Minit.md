@@ -2,7 +2,7 @@
 
 ## Where is the options page?
 
-The [player options page for Minit](../player-settings) contains all the options you need to configure and export a config file.
+The [player options page for Minit](../player-options) contains all the options you need to configure and export a config file.
 
 ## What is the goal of Minit when randomized?
 
