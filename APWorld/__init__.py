@@ -157,6 +157,11 @@ class MinitWorld(World):
         super().__init__(multiworld, player)
         self.spoiler_hints = {}
 
+    def generate_early(self):
+        if self.options.er_option and not er_loaded:
+            from Options import OptionError
+            raise OptionError("Please use the Generic Entrance Rando branch for ER")
+
     def create_item(self, name: str) -> MinitItem:
         data = item_table[name]
 
@@ -406,6 +411,42 @@ class MinitWorld(World):
         spoiler_handle.write(f"Entrance Rando Location Paths:\n")
         for location, path in self.spoiler_hints.items():
             spoiler_handle.write(f"\t{location}: {path}\n")
+
+    # copied from BaseClasses CollectionState in order to rewrite it to
+    # path from all houses and grab the shortest path for hint data
+    # also reference Tunic's https://github.com/ArchipelagoMW/Archipelago/blob/main/worlds/tunic/__init__.py#L307C9-L307C32
+    #
+    # def update_reachable_regions(self, player: int):
+    #     self.stale[player] = False
+    #     reachable_regions = self.reachable_regions[player]
+    #     blocked_connections = self.blocked_connections[player]
+    #     queue = deque(self.blocked_connections[player])
+    #     start = self.multiworld.get_region("Menu", player)
+
+    #     # init on first call - this can't be done on construction since the regions don't exist yet
+    #     if start not in reachable_regions:
+    #         reachable_regions.add(start)
+    #         blocked_connections.update(start.exits)
+    #         queue.extend(start.exits)
+
+    #     # run BFS on all connections, and keep track of those blocked by missing items
+    #     while queue:
+    #         connection = queue.popleft()
+    #         new_region = connection.connected_region
+    #         if new_region in reachable_regions:
+    #             blocked_connections.remove(connection)
+    #         elif connection.can_reach(self):
+    #             assert new_region, f"tried to search through an Entrance \"{connection}\" with no Region"
+    #             reachable_regions.add(new_region)
+    #             blocked_connections.remove(connection)
+    #             blocked_connections.update(new_region.exits)
+    #             queue.extend(new_region.exits)
+    #             self.path[new_region] = (new_region.name, self.path.get(connection, None))
+
+    #             # Retry connections if the new region can unblock them
+    #             for new_entrance in self.multiworld.indirect_connections.get(new_region, set()):
+    #                 if new_entrance in blocked_connections and new_entrance not in queue:
+    #                     queue.append(new_entrance)
 
     def extend_hint_information(self, hint_data: Dict[int, Dict[int, str]]) -> None:
         if self.options.er_option == "off" or not er_loaded:
