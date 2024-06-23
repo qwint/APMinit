@@ -1059,13 +1059,7 @@ door_names: List[str] = [
     "dog house basement hotel",
 ]
 
-
-def minit_get_target_groups(group: str) -> List[str]:
-    # if self.options.unmatched_room_rando:
-    #     return ["land", "water"]
-    if group == "land":
-        return ["land"]
-    elif group == "water":
-        return ["water"]
-    elif group == "Default":
-        return ["Default"]
+minit_target_group_lookup: Dict[str, List[str]] = {
+    "land": ["land"],
+    "water": ["water"],
+}

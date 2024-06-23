@@ -457,8 +457,8 @@ class ER_MinitRules:
         }
 
         def apply_rules(optional_rules):
-            for key, rule in optional_rules.values():
-                if key in region_rules:
+            for key, rule in optional_rules.items():
+                if key in self.region_rules:
                     self.region_rules[key] = rule
                 else:
                     self.location_rules[key] = rule

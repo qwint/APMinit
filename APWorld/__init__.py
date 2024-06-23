@@ -19,7 +19,7 @@ from .Regions import region_table
 from .ERData import (
     er_regions,
     er_entrances,
-    minit_get_target_groups,
+    minit_target_group_lookup,
     er_static_connections,
     door_names,
 )
@@ -37,9 +37,8 @@ from worlds.LauncherComponents import (
 )
 from Utils import visualize_regions
 
-
 try:
-    from EntranceRando import randomize_entrances
+    from entrance_rando import randomize_entrances
     from BaseClasses import EntranceType
     er_loaded = True
 except ModuleNotFoundError:
@@ -276,8 +275,8 @@ class MinitWorld(World):
         er_on = bool(self.options.er_option)
         starting_entrance = ""
         early_location_list: List[Location] = []
+        self.add_regions_and_locations(er_on)
         if er_on and er_loaded:
-            self.add_regions_and_locations(er_on)  # will move this back up when er is finished
             # current code for using the Generic ER randomizer
             if True: #self.multiworld.players == 1:
                 # if there is a one-player world, make at least one
@@ -295,21 +294,20 @@ class MinitWorld(World):
                     "factory queue",  # deadend
                     "trophy room",  # deadend
                     ]  # consider removing the deadends because they could have a higher chance of killing the seed
-                self.random.shuffle(free_checks)
-                starting_entrance = free_checks.pop()
+                room_lookup = {
+                    "camera house outside south": "camera house inside",
+                    "glove outside east": "glove inside",
+                    "glove outside west": "glove inside",
+                    "factory loading upper north": "factory loading upper",
+                    "factory loading upper east": "factory loading upper",
+                    "factory loading upper south": "factory loading upper",
+                    "factory snakehall north": "factory loading upper",
+                }
 
-                starting_region = starting_entrance
-                if starting_entrance == "camera house outside south":
-                    starting_region = "camera house inside"
-                elif starting_entrance in ["glove outside east", "glove outside west"]:
-                    starting_region = "glove inside"
-                elif starting_entrance in [
-                                            "factory loading upper north",
-                                            "factory loading upper east",
-                                            "factory loading upper south",
-                                            "factory snakehall north",
-                                            ]:
-                    starting_region = "factory loading upper"
+                starting_entrance = self.random.choices(free_checks)[0]
+
+                if starting_entrance in room_lookup:
+                    starting_region = room_lookup[starting_entrance]
                 else:
                     starting_region = starting_entrance
 
@@ -330,8 +328,8 @@ class MinitWorld(World):
                 # entrance.is_dead_end = er_entrance[2]
 
                 en1 = region.create_exit(er_entrance.entrance_name)
-                en1.er_type = EntranceType.TWO_WAY
-                en1.er_group = er_entrance.group_type
+                en1.randomization_type = EntranceType.TWO_WAY
+                en1.randomization_group = er_entrance.group_type
                 if starting_entrance and er_entrance.entrance_name in ["dog house south", starting_entrance]:
                     if er_entrance.entrance_name == "dog house south":
                         manual_connect_start = en1
@@ -354,24 +352,24 @@ class MinitWorld(World):
                         # add_manual_connect = False
                 else:
                     en2 = region.create_er_target(er_entrance.entrance_name)
-                    en2.er_type = EntranceType.TWO_WAY
-                    en2.er_group = er_entrance.group_type
+                    en2.randomization_type = EntranceType.TWO_WAY
+                    en2.randomization_group = er_entrance.group_type
 
-        elif er_on and not er_loaded:
-            # also only needed for ER POC before Generic ER gets merged
-            self.add_regions_and_locations(False)
-            self.output_connections = self.make_bad_map()
-            for name in [
-                "Dog House - Dolphin Heart",
-                "Dog House - Plant Heart",
-                "Desert RV - ItemGlove",
-                "Hotel Room - Queue",
-                "Dog House - ItemSword",
-            ]:
-                early_location_list.append(self.multiworld.get_location(name, self.player))
+        # should never be called with the new OptionError
+        # elif er_on and not er_loaded:
+        #     # also only needed for ER POC before Generic ER gets merged
+        #     self.add_regions_and_locations(False)
+        #     self.output_connections = self.make_bad_map()
+        #     for name in [
+        #         "Dog House - Dolphin Heart",
+        #         "Dog House - Plant Heart",
+        #         "Desert RV - ItemGlove",
+        #         "Hotel Room - Queue",
+        #         "Dog House - ItemSword",
+        #     ]:
+        #         early_location_list.append(self.multiworld.get_location(name, self.player))
 
         else:
-            self.add_regions_and_locations(er_on)  # will move this back up when er is finished
             self.output_connections = None
             for name in [
                 "Dog House - Dolphin Heart",
@@ -514,7 +512,7 @@ class MinitWorld(World):
             self.output_connections += randomize_entrances(
                     world=self,
                     coupled=True,
-                    get_target_groups=minit_get_target_groups,
+                    target_group_lookup=minit_target_group_lookup,
                     preserve_group_order=False
                     ).pairings
             # visualize_regions(
