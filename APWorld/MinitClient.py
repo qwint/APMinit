@@ -184,7 +184,7 @@ class ProxyGameContext(SuperContext):
         """handle POST at /Death"""
         if self.slot_data["death_link"]:
             response = handleDeathlink(self)
-            await self.send_death("ran out of time")
+            await self.send_death(f"{self.player_names[self.slot]} ran out of time")  # consider more silly messages
             return web.json_response(response)
         else:
             return web.json_response("deathlink disabled")
