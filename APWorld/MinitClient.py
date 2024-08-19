@@ -88,8 +88,17 @@ class ProxyGameContext(SuperContext):
         self.death_amnisty_total = 1  # should be rewritten by slot data
         self.death_amnisty_count = 0
 
-    def run_gui(self):
+    def make_gui(self):
+        if hasattr(super(), "make_gui"):
+            ui = super().make_gui()
+        else:
+            # back compat, can remove later
+            ui - super_make_gui()
+        ui.base_title = "Minit CLIENT"
+        return ui
 
+    def super_make_gui(self):
+        # back compat, can remove later
         from kvui import GameManager
 
         class ProxyManager(GameManager):
@@ -107,10 +116,13 @@ class ProxyGameContext(SuperContext):
 
                 return container
 
-        self.ui = ProxyManager(self)
         if tracker_loaded:
             self.load_kv()
+        return ProxyManager(self)
 
+    def run_gui(self):
+        # back compat, can remove later
+        self.ui = self.make_gui()
         self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     def patch_game(self):
