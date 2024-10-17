@@ -106,15 +106,21 @@ class MinitWebWorld(WebWorld):
     tutorials = [setup]
 
 
-def launch_client():
+def launch_client(*args):
+    import sys
     from .MinitClient import launch
-    launch_subprocess(launch, name="MinitClient")
+    if not sys.stdout or "--nogui" not in sys.argv:
+        launch_subprocess(launch, name="MinitClient", args=args)
+    else:
+        launch(args)
 
 
 components.append(Component(
     "Minit Client",
     func=launch_client,
     component_type=Type.CLIENT,
+    supports_uri=True,
+    game_name="Minit"
     ))
 
 

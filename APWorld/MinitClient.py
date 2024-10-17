@@ -7,7 +7,7 @@ from CommonClient import (
     logger,
     get_base_parser,
     server_loop,
-    ClientCommandProcessor
+    ClientCommandProcessor,
 )
 import json
 from typing import List
@@ -93,7 +93,7 @@ class ProxyGameContext(SuperContext):
             ui = super().make_gui()
         else:
             # back compat, can remove later
-            ui - super_make_gui()
+            ui = super().super_make_gui()
         ui.base_title = "Minit CLIENT"
         return ui
 
@@ -119,11 +119,6 @@ class ProxyGameContext(SuperContext):
         if tracker_loaded:
             self.load_kv()
         return ProxyManager(self)
-
-    def run_gui(self):
-        # back compat, can remove later
-        self.ui = self.make_gui()
-        self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     def patch_game(self):
         validator = RomFile()
@@ -428,6 +423,26 @@ def handleDatapackage(ctx: CommonContext):
     return datapackagemessage
 
 
+def handle_url_arg(args: "argparse.Namespace") -> "argparse.Namespace":
+    import urllib
+    try:
+        from CommonClient import handle_url_arg as cc_handle
+    except ImportError:
+        # handle if text client is launched using the "archipelago://name:pass@host:port" url from webhost
+        if args.url:
+            url = urllib.parse.urlparse(args.url)
+            if url.scheme == "archipelago":
+                args.connect = url.netloc
+                if url.username:
+                    args.name = urllib.parse.unquote(url.username)
+                if url.password:
+                    args.password = urllib.parse.unquote(url.password)
+            else:
+                parser.error(f"bad url, found {args.url}, expected url in form of archipelago://archipelago.gg:38281")
+        return args
+    return cc_handle(args)
+
+
 async def main(args):
     from .proxyServer import Webserver, http_server_loop
 
@@ -453,13 +468,16 @@ async def main(args):
     await ctx.shutdown()
 
 
-def launch():
+def launch(*args):
     import colorama
 
     parser = get_base_parser(
         description="Minit Archipelago Client."
         )
-    args, unknown = parser.parse_known_args()
+    parser.add_argument("url", type=str, nargs="?", help="Archipelago Webhost uri to auto connect to.")
+    args = parser.parse_args(args)
+
+    args = handle_url_arg(args)
 
     colorama.init()
 
@@ -468,4 +486,5 @@ def launch():
 
 
 if __name__ == '__main__':
-    launch()
+    import sys
+    launch(*sys.argv[-1:])
