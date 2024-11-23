@@ -1,8 +1,9 @@
 import asyncio
 import typing
+import subprocess
 from NetUtils import ClientStatus, RawJSONtoTextParser
 from CommonClient import (
-    # CommonContext,
+    CommonContext,
     gui_enabled,
     logger,
     get_base_parser,
@@ -15,7 +16,6 @@ import os
 import bsdiff4
 from aiohttp import web
 import Utils
-import settings
 from .Items import item_table
 from .ERData import er_entrances, game_entrances
 tracker_loaded = False
@@ -29,7 +29,7 @@ except ModuleNotFoundError:
 DEBUG = False
 GAMENAME = "Minit"
 ITEMS_HANDLING = 0b111
-
+PATCH_VERSION = 1.0
 
 def data_path(file_name: str):
     import pkgutil
@@ -39,11 +39,10 @@ def data_path(file_name: str):
 class MinitCommandProcessor(ClientCommandProcessor):
 
     def _cmd_patch(self):
-        """Patch the game."""
+        """Patch and launch the game."""
         try:
             if isinstance(self.ctx, ProxyGameContext):
                 self.ctx.patch_game()
-                self.output("Patched.")
         except FileNotFoundError:
             logger.info("Patch cancelled")
         except ValueError:
@@ -55,16 +54,6 @@ class MinitCommandProcessor(ClientCommandProcessor):
         self.ctx.death_amnisty_count = 0
         logger.info(f"Amnisty set to {self.ctx.death_amnisty_total}. \
             Deaths towards Amnisty reset.")
-
-
-class RomFile(settings.UserFilePath):
-    description = "Minit Vanilla File"
-    md5s = [
-        "cd676b395dc2a25df10a569c17226dde", #steam
-        "1432716643381ced3ad0195078e8e314", #epic
-        # "6263766b38038911efff98423822890e", #itch.io, does not work
-        ]
-    # the hashes for vanilla to be verified by the /patch command
 
 
 class ProxyGameContext(SuperContext):
@@ -120,20 +109,26 @@ class ProxyGameContext(SuperContext):
         return ProxyManager(self)
 
     def patch_game(self):
-        validator = RomFile()
+        from . import MinitWorld
+        rom_file = MinitWorld.settings.rom_file
+        rom_file.validate(rom_file)
 
-        source_data_win = Utils.open_filename(
-            'Select Minit data.win',
-            (('data.win', ('.win',)),))
-        validator.validate(source_data_win)
-        with open(os.path.join(source_data_win), "rb") as f:
-            patchedFile = bsdiff4.patch(f.read(), data_path("patch.bsdiff"))
-        with open(os.path.join(source_data_win), "wb") as f:
-            f.write(patchedFile)
-        logger.info(
-            "patched " +
-            source_data_win +
-            ". You can launch the .exe game to run the patched game.")
+        basepath = os.path.dirname(rom_file)
+        patched_name = f"ap_v{PATCH_VERSION}_data.win"
+
+        if not os.path.isfile(os.path.join(basepath, patched_name)):
+            with open(rom_file, "rb") as f:
+                patchedFile = bsdiff4.patch(f.read(), data_path("patch.bsdiff"))
+            with open(os.path.join(os.path.dirname(rom_file), patched_name), "wb") as f:
+                f.write(patchedFile)
+            logger.info("Patch complete")
+        else:
+            logger.info("Found patched file, skipping patching process")
+        subprocess.Popen([
+            os.path.join(basepath, "minit.exe"),
+            "-game",
+            os.path.join(basepath, patched_name)
+        ])
 
     def on_package(self, cmd: str, args: dict):
         super().on_package(cmd, args)
