@@ -2,7 +2,7 @@ import asyncio
 import typing
 from NetUtils import ClientStatus, RawJSONtoTextParser
 from CommonClient import (
-    CommonContext,
+    # CommonContext,
     gui_enabled,
     logger,
     get_base_parser,
@@ -10,7 +10,6 @@ from CommonClient import (
     ClientCommandProcessor,
 )
 import json
-from typing import List
 import time
 import os
 import bsdiff4
@@ -77,7 +76,7 @@ class ProxyGameContext(SuperContext):
     slot_data: dict[str, any]
     death_amnisty_total: int
     death_amnisty_count: int
-    goals: List[str]
+    goals: typing.List[str]
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)
