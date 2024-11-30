@@ -40,13 +40,9 @@ class MinitCommandProcessor(ClientCommandProcessor):
 
     def _cmd_patch(self):
         """Patch and launch the game."""
-        try:
-            if isinstance(self.ctx, ProxyGameContext):
-                self.ctx.patch_game()
-        except FileNotFoundError:
-            logger.info("Patch cancelled")
-        except ValueError:
-            logger.info("Selected game is not vanilla, please reset the game and repatch")
+        if isinstance(self.ctx, ProxyGameContext):
+            self.ctx.patch_game()
+
 
     def _cmd_amnisty(self, total: int = 1):
         """Set the Death Amnisty value. Default 1."""
@@ -82,7 +78,7 @@ class ProxyGameContext(SuperContext):
         else:
             # back compat, can remove later
             ui = super().super_make_gui()
-        ui.base_title = "Minit CLIENT"
+        ui.base_title = "Minit Client"
         return ui
 
     def super_make_gui(self):
@@ -110,8 +106,15 @@ class ProxyGameContext(SuperContext):
 
     def patch_game(self):
         from . import MinitWorld
-        rom_file = MinitWorld.settings.rom_file
-        rom_file.validate(rom_file)
+        try:
+            rom_file = MinitWorld.settings.rom_file
+            rom_file.validate(rom_file)
+        except FileNotFoundError:
+            logger.info("Patch cancelled")
+            return
+        except ValueError:
+            logger.info("Selected game is not vanilla, please reset the game and repatch")
+            return
 
         basepath = os.path.dirname(rom_file)
         patched_name = f"ap_v{PATCH_VERSION}_data.win"
@@ -124,8 +127,14 @@ class ProxyGameContext(SuperContext):
             logger.info("Patch complete")
         else:
             logger.info("Found patched file, skipping patching process")
+        executible = "minit.exe"
+        if not os.path.isfile(os.path.join(basepath, executible)):
+            executible = "minitGMS2.exe"
+            if not os.path.isfile(os.path.join(basepath, executible)):
+                logger.info("No known Minit executible in the install folder")
+                return
         subprocess.Popen([
-            os.path.join(basepath, "minit.exe"),
+            os.path.join(basepath, executible),
             "-game",
             os.path.join(basepath, patched_name)
         ])
@@ -416,25 +425,24 @@ def handleDatapackage(ctx: CommonContext):
     datapackagemessage = [{"cmd": "blah", "data": "blah"}]
     return datapackagemessage
 
-
-def handle_url_arg(args: "argparse.Namespace") -> "argparse.Namespace":
-    import urllib
-    try:
-        from CommonClient import handle_url_arg as cc_handle
-    except ImportError:
-        # handle if text client is launched using the "archipelago://name:pass@host:port" url from webhost
-        if args.url:
-            url = urllib.parse.urlparse(args.url)
-            if url.scheme == "archipelago":
-                args.connect = url.netloc
-                if url.username:
-                    args.name = urllib.parse.unquote(url.username)
-                if url.password:
-                    args.password = urllib.parse.unquote(url.password)
-            else:
-                parser.error(f"bad url, found {args.url}, expected url in form of archipelago://archipelago.gg:38281")
-        return args
-    return cc_handle(args)
+import urllib.parse
+# in PR 4068 so will eventually be in main
+def handle_url_arg(args: "argparse.Namespace",
+                   parser: "typing.Optional[argparse.ArgumentParser]" = None) -> "argparse.Namespace":
+    """ handle if text client is launched using the "archipelago://name:pass@host:port" url from webhost """
+    if args.url:
+        url = urllib.parse.urlparse(args.url)
+        if url.scheme == "archipelago":
+            args.connect = url.netloc
+            if url.username:
+                args.name = urllib.parse.unquote(url.username)
+            if url.password:
+                args.password = urllib.parse.unquote(url.password)
+        else:
+            if not parser:
+                parser = get_base_parser()
+            parser.error(f"bad url, found {args.url}, expected url in form of archipelago://archipelago.gg:38281")
+    return args
 
 
 async def main(args):
@@ -468,10 +476,10 @@ def launch(*args):
     parser = get_base_parser(
         description="Minit Archipelago Client."
         )
-    parser.add_argument("url", type=str, nargs="?", help="Archipelago Webhost uri to auto connect to.")
+    parser.add_argument("url", nargs="?", help="Archipelago Webhost uri to auto connect to.")
     args = parser.parse_args(args)
 
-    args = handle_url_arg(args)
+    args = handle_url_arg(args, parser=parser)
 
     colorama.init()
 

@@ -131,7 +131,7 @@ def launch_client(*args):
     if not sys.stdout or "--nogui" not in sys.argv:
         launch_subprocess(launch, name="MinitClient", args=args)
     else:
-        launch(args)
+        launch(*args)
 
 
 components.append(Component(
