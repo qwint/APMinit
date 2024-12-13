@@ -8,14 +8,15 @@ class MinitItem(Item):
 
 
 class MinitItemData(NamedTuple):
-    code: int = None
+    offset: int = None
     classification: ItemClassification = ItemClassification.filler
     can_create: Callable[[World], bool] = lambda world: True
 
-
-def baseID(delta: int) -> int:
-    baseID = 60000
-    return baseID + delta
+    @property
+    def code(self):
+        if self.offset is None:
+            raise Exception(f"Invalid item code, offset = {self.offset}")
+        return 60000 + self.offset
 
 
 prog_skip = ItemClassification.progression_skip_balancing
@@ -25,48 +26,48 @@ filler = ItemClassification.filler
 
 
 item_table: Dict[str, MinitItemData] = {
-    "Coin": MinitItemData(code=baseID(0), classification=prog_skip),
+    "Coin": MinitItemData(offset=0, classification=prog_skip),
     "HeartPiece": MinitItemData(
-        code=baseID(1), classification=useful,
+        offset=1, classification=useful,
         can_create=lambda world:
         not bool(world.options.min_hp)),
-    "Tentacle": MinitItemData(code=baseID(2), classification=prog),
-    "ItemCoffee": MinitItemData(code=baseID(3), classification=prog),
-    "ItemFlashLight": MinitItemData(code=baseID(4), classification=prog),
-    "ItemSwim": MinitItemData(code=baseID(5), classification=prog),
-    "ItemKey": MinitItemData(code=baseID(6), classification=prog),
-    "ItemWateringCan": MinitItemData(code=baseID(7), classification=prog),
-    "ItemThrow": MinitItemData(code=baseID(8), classification=prog),
-    "ItemShoes": MinitItemData(code=baseID(9), classification=prog),
-    "ItemGlove": MinitItemData(code=baseID(10), classification=prog),
-    "ItemBoat": MinitItemData(code=baseID(11), classification=prog),
+    "Tentacle": MinitItemData(offset=2, classification=prog),
+    "ItemCoffee": MinitItemData(offset=3, classification=prog),
+    "ItemFlashLight": MinitItemData(offset=4, classification=prog),
+    "ItemSwim": MinitItemData(offset=5, classification=prog),
+    "ItemKey": MinitItemData(offset=6, classification=prog),
+    "ItemWateringCan": MinitItemData(offset=7, classification=prog),
+    "ItemThrow": MinitItemData(offset=8, classification=prog),
+    "ItemShoes": MinitItemData(offset=9, classification=prog),
+    "ItemGlove": MinitItemData(offset=10, classification=prog),
+    "ItemBoat": MinitItemData(offset=11, classification=prog),
     # could be granted again, will play with the idea
     "ItemCamera": MinitItemData(
-        code=baseID(12), classification=filler,
+        offset=12, classification=filler,
         can_create=lambda world: False),
-    "ItemBasement": MinitItemData(code=baseID(13), classification=prog),
+    "ItemBasement": MinitItemData(offset=13, classification=prog),
     "ItemMegaSword": MinitItemData(
-        code=baseID(14), classification=prog,
+        offset=14, classification=prog,
         can_create=lambda world:
         world.options.progressive_sword == "off"),
     "ItemBrokenSword": MinitItemData(
-        code=baseID(15), classification=prog,
+        offset=15, classification=prog,
         can_create=lambda world:
         world.options.progressive_sword == "off"),
-    "ItemTurboInk": MinitItemData(code=baseID(16), classification=useful),
-    "ItemGrinder": MinitItemData(code=baseID(17), classification=prog),
-    "ItemTrophy": MinitItemData(code=baseID(18), classification=filler),
-    "ItemPressPass": MinitItemData(code=baseID(19), classification=prog),
+    "ItemTurboInk": MinitItemData(offset=16, classification=useful),
+    "ItemGrinder": MinitItemData(offset=17, classification=prog),
+    "ItemTrophy": MinitItemData(offset=18, classification=filler),
+    "ItemPressPass": MinitItemData(offset=19, classification=prog),
     "ItemSword": MinitItemData(
-        code=baseID(20), classification=prog,
+        offset=20, classification=prog,
         can_create=lambda world:
         world.options.progressive_sword == "off"),
     "Progressive Sword": MinitItemData(
-        code=baseID(21), classification=prog,
+        offset=21, classification=prog,
         can_create=lambda world:
         world.options.progressive_sword == "forward_progressive"),
     "Reverse Progressive Sword": MinitItemData(
-        code=baseID(22), classification=prog,
+        offset=22, classification=prog,
         can_create=lambda world:
         world.options.progressive_sword == "reverse_progressive"),
 
