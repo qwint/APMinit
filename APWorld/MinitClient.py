@@ -1,6 +1,14 @@
 import asyncio
 import typing
 import subprocess
+import json
+import time
+import os
+import bsdiff4
+import urllib.parse
+import aiohttp.web
+
+import Utils
 from NetUtils import ClientStatus, RawJSONtoTextParser
 from CommonClient import (
     CommonContext,
@@ -10,12 +18,7 @@ from CommonClient import (
     server_loop,
     ClientCommandProcessor,
 )
-import json
-import time
-import os
-import bsdiff4
-from aiohttp import web
-import Utils
+
 from .Items import item_table
 from .ERData import er_entrances, game_entrances
 tracker_loaded = False
@@ -31,6 +34,7 @@ GAMENAME = "Minit"
 ITEMS_HANDLING = 0b111
 PATCH_VERSION = 1.0
 
+
 def data_path(file_name: str):
     import pkgutil
     return pkgutil.get_data(__name__, "data/" + file_name)
@@ -42,7 +46,6 @@ class MinitCommandProcessor(ClientCommandProcessor):
         """Patch and launch the game."""
         if isinstance(self.ctx, ProxyGameContext):
             self.ctx.patch_game()
-
 
     def _cmd_amnisty(self, total: int = 1):
         """Set the Death Amnisty value. Default 1."""
@@ -56,7 +59,7 @@ class ProxyGameContext(SuperContext):
     game = GAMENAME
     httpServer_task: typing.Optional["asyncio.Task[None]"] = None
     command_processor = MinitCommandProcessor
-    tags = {"DeathLink"}
+    tags = set()
     last_sent_death: float = time.time()
     slot_data: dict[str, any]
     death_amnisty_total: int
@@ -153,6 +156,8 @@ class ProxyGameContext(SuperContext):
                 "create_as_hint": 0
                 }]))
             self.goals = self.slot_data["goals"]
+            Utils.async_start(self.update_death_link(self.slot_data["death_link"]))
+
         # if cmd == 'LocationInfo':
         #     save(ctx.locations_info)
         # if cmd == 'ReceivedItems':
@@ -174,62 +179,62 @@ class ProxyGameContext(SuperContext):
         await self.get_username()
         await self.send_connect()
 
-    async def locationHandler(self, request: web.Request) -> web.Response:
+    async def locationHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle POST at /Locations that uses scouts to return useful info"""
         requestjson = await request.json()
         response = handleLocations(self, requestjson)
         localResponse = handleLocalLocations(self, requestjson)
         await self.send_msgs(response)
-        return web.json_response(localResponse)
+        return aiohttp.web.json_response(localResponse)
 
-    async def goalHandler(self, request: web.Request) -> web.Response:
+    async def goalHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle POST at /Goal"""
         requestjson = await request.text()
         response = handleGoal(self, requestjson)
         if response:
             await self.send_msgs(response)
-        return web.json_response(response)
+        return aiohttp.web.json_response(response)
 
-    async def deathHandler(self, request: web.Request) -> web.Response:
+    async def deathHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle POST at /Death"""
         if self.slot_data["death_link"]:
             response = handleDeathlink(self)
             await self.send_death(f"{self.player_names[self.slot]} ran out of time")  # consider more silly messages
-            return web.json_response(response)
+            return aiohttp.web.json_response(response)
         else:
-            return web.json_response("deathlink disabled")
+            return aiohttp.web.json_response("deathlink disabled")
 
-    async def deathpollHandler(self, request: web.Request) -> web.Response:
+    async def deathpollHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle GET at /Deathpoll"""
         if self.slot_data["death_link"]:
             cTime = 0
             while (cTime < 20):
                 if self.last_death_link > self.last_sent_death:
                     self.last_sent_death = self.last_death_link
-                    return web.json_response({"Deathlink": True})
+                    return aiohttp.web.json_response({"Deathlink": True})
                 else:
                     cTime += 1
                     await asyncio.sleep(1)
-            return web.json_response({"Deathlink": False})
+            return aiohttp.web.json_response({"Deathlink": False})
         else:
-            return web.json_response("deathlink disabled")
+            return aiohttp.web.json_response("deathlink disabled")
 
-    async def itemsHandler(self, request: web.Request) -> web.Response:
+    async def itemsHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle GET at /Items"""
         response = handleItems(self)
-        return web.json_response(response)
+        return aiohttp.web.json_response(response)
 
-    async def datapackageHandler(self, request: web.Request) -> web.Response:
+    async def datapackageHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle GET at /Datapackage"""
         response = handleDatapackage(self)
         # response = {'datapackage':'FROM MINIT - need to figure out data'}
         # await self.send_msgs(response)
-        return web.json_response(response)
+        return aiohttp.web.json_response(response)
 
-    async def erConnHandler(self, request: web.Request) -> web.Response:
+    async def erConnHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle GET at /ErConnections"""
         response = handleErConnections(self)
-        return web.json_response(response)
+        return aiohttp.web.json_response(response)
 
 
 def handleErConnections(ctx: CommonContext):
@@ -425,7 +430,7 @@ def handleDatapackage(ctx: CommonContext):
     datapackagemessage = [{"cmd": "blah", "data": "blah"}]
     return datapackagemessage
 
-import urllib.parse
+
 # in PR 4068 so will eventually be in main
 def handle_url_arg(args: "argparse.Namespace",
                    parser: "typing.Optional[argparse.ArgumentParser]" = None) -> "argparse.Namespace":
