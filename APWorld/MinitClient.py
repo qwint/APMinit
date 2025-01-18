@@ -182,9 +182,8 @@ class ProxyGameContext(SuperContext):
     async def locationHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle POST at /Locations that uses scouts to return useful info"""
         requestjson = await request.json()
-        response = handleLocations(self, requestjson)
+        handleLocations(self, requestjson)
         localResponse = handleLocalLocations(self, requestjson)
-        await self.send_msgs(response)
         return aiohttp.web.json_response(localResponse)
 
     async def goalHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
@@ -348,11 +347,7 @@ def handleLocations(ctx: CommonContext, request: json) -> json:
     # TODO - make this actually send the difference
     needed_updates = set(request["Locations"]).difference(
         ctx.locations_checked)
-    locationmessage = [{
-        "cmd": "LocationChecks",
-        "locations": list(needed_updates)
-        }]
-    return locationmessage
+    Utils.async_start(ctx.check_locations(needed_updates))
 
 
 def handleLocalLocations(ctx: CommonContext, request: json) -> json:
