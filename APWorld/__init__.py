@@ -126,6 +126,16 @@ class MinitWebWorld(WebWorld):
 
 
 def launch_client(*args):
+    try:
+        from worlds.LauncherComponents import launch as launch_component
+        from .MinitClient import launch
+        launch_component(launch, name="MinitClient", args=args)
+    except ImportError:
+        launch_if_needed(*args)
+
+
+# TODO remove eventually once 0.6.0 is old enough
+def launch_if_needed(*args):
     import sys
     from .MinitClient import launch
     if not sys.stdout or "--nogui" not in sys.argv:
