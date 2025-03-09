@@ -476,7 +476,7 @@ class ER_MinitRules:
     def set_Minit_rules(self) -> None:
         multiworld = self.world.multiworld
         for region in multiworld.get_regions(self.player):
-            for entrance in region.entrances:
+            for entrance in region.exits:
                 if entrance.name in self.region_rules:
                     set_rule(entrance, self.region_rules[entrance.name])
                 else:

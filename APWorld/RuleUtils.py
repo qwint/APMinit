@@ -1,6 +1,3 @@
-import Utils
-
-
 def total_hearts(player: int, state, count: int) -> bool:
     return state.has("HeartPiece", player, count - 2)
 
