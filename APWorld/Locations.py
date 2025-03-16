@@ -359,4 +359,14 @@ location_table = {
         er_region="factory switch tile",
         locked_item="right machine",
         ),
+    "2 crab access": MinitLocationData(
+        region="Dog House",
+        er_region="2crab land west",
+        locked_item="2 crab access",
+        ),
+    "3 crab access": MinitLocationData(
+        region="Dog House",
+        er_region="3crab main south",
+        locked_item="3 crab access",
+        ),
 }
