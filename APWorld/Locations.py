@@ -361,12 +361,12 @@ location_table = {
         ),
     "2 crab access": MinitLocationData(
         region="Dog House",
-        er_region="2crab land west",
+        er_region="2crab tile",
         locked_item="2 crab access",
         ),
     "3 crab access": MinitLocationData(
         region="Dog House",
-        er_region="3crab main south",
+        er_region="3crab main",
         locked_item="3 crab access",
         ),
 }
