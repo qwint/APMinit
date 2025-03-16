@@ -78,8 +78,8 @@ class ER_MinitRules:
                 and state.has("ItemGrinder", self.player),
             "factory loading lower shortcut -> factory loading lower main": lambda state:
                 (state.has("has_sword", self.player)
-                    and state.has("ItemGrinder", self.player))
-                or state.has_all({"ItemSwim", "ItemCoffee"}, self.player),
+                    and state.has("ItemGrinder", self.player)),
+                # or state.has_all({"ItemSwim", "ItemCoffee"}, self.player),
                 # another entrance that could have one-way logic
             "mine entrance bombs -> mine entrance pipe": lambda state:
                 state.has("has_sword", self.player)
@@ -196,21 +196,20 @@ class ER_MinitRules:
             "3crab south water west":  self.helpers["swim"],
             "3crab south water south":  self.helpers["swim"],
             "sewer island water north":  self.helpers["swim"],
-            "sewer island water east":  lambda state: False,
+            # "sewer island water east":  lambda state: False,
             # TODO: check sword requirement (including one-way)
             "sewer island water south":  self.helpers["swim"],
             "sewer island water west":  self.helpers["swim"],
             "throwcheck water south":  self.helpers["swim"],
             "throwcheck water west":  self.helpers["swim"],
             "bridge switch left <-> bridge switch right":  lambda state: False,
-            "bridge switch water":  lambda state: False,
-            "bridge left <-> bridge right":  self.helpers["swim"],
-            "bridge water north":  lambda state: False,
-            "bridge water south":  lambda state: False,
-            "mine entrance river north":  lambda state: False,
-            "mine entrance river south":  lambda state: False,
-            "poison river corner north":  lambda state: False,
-            "poison river corner south":  lambda state: False,
+            # "bridge switch water":  lambda state: False,
+            # "bridge water north":  lambda state: False,
+            # "bridge water south":  lambda state: False,
+            # "mine entrance river north":  lambda state: False,
+            # "mine entrance river south":  lambda state: False,
+            # "poison river corner north":  lambda state: False,
+            # "poison river corner south":  lambda state: False,
 
             # # darkroom only
             "submarine east":  self.helpers["darkroom1"],
