@@ -268,7 +268,7 @@ location_table = {
     "Dog House - ItemSword": MinitLocationData(
         offset=49,
         region="Dog House",
-        er_region="sword tile",),
+        er_region="sword east",),
     "Dog House - Dolphin Heart": MinitLocationData(
         offset=51,
         region="Dog House",
