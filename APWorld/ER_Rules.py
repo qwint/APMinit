@@ -61,8 +61,6 @@ class ER_MinitRules:
                 state.has("has_sword", self.player) and state.has("ItemThrow", self.player),
             "camera river north -> camera river south": lambda state:
                 state.has("has_sword", self.player),
-            "camera river south <-> camera river wet":  self.helpers["swim"],
-            "camera river north <-> camera river wet":  self.helpers["swim"],
             "camera house tree":  self.helpers["tree"],
             # "camera house outside <-> camera house inside": lambda state: True,
             "3crab trees":  self.helpers["tree"],
@@ -80,8 +78,8 @@ class ER_MinitRules:
                 and state.has("ItemGrinder", self.player),
             "factory loading lower shortcut -> factory loading lower main": lambda state:
                 (state.has("has_sword", self.player)
-                    and state.has("ItemGrinder", self.player))
-                or state.has_all({"ItemSwim", "ItemCoffee"}, self.player),
+                    and state.has("ItemGrinder", self.player)),
+                # or state.has_all({"ItemSwim", "ItemCoffee"}, self.player),
                 # another entrance that could have one-way logic
             "mine entrance bombs -> mine entrance pipe": lambda state:
                 state.has("has_sword", self.player)
@@ -116,12 +114,15 @@ class ER_MinitRules:
                 and state.has("ItemSwim", self.player),
 
             # unrandomized doors
-            # "lighthouse inside <-> lighthouse land": lambda state: True,
+            "lighthouse inside <-> lighthouse": lambda state: 
+                state.has("ItemKey", self.player),
+            "lighthouse <-> lighthouse lookout": lambda state: False,
+                # obscure: you can swim and grab it from beneith
             # "lighthouse inside <-> lighthouse lookout": lambda state: True,
             "coffee shop pot stairs <-> sewer main right":  self.helpers["darkroom2"],  # maybe 3
             # "dog house inside <-> dog house west": lambda state: True,
             # "glove outside <-> glove inside": lambda state: True,
-            # "boattree river <-> waterfall cave": lambda state: True,
+            "boattree main <-> waterfall cave":  self.helpers["swim"],
             # "hotel outside <-> hotel reception": lambda state: True,
             # "hotel outside <-> hotel backroom": lambda state: True,
             # "hotel reception <-> hotel room": lambda state: True,
@@ -193,21 +194,20 @@ class ER_MinitRules:
             "3crab south water west":  self.helpers["swim"],
             "3crab south water south":  self.helpers["swim"],
             "sewer island water north":  self.helpers["swim"],
-            "sewer island water east":  self.helpers["swim"],
+            # "sewer island water east":  lambda state: False,
             # TODO: check sword requirement (including one-way)
             "sewer island water south":  self.helpers["swim"],
             "sewer island water west":  self.helpers["swim"],
             "throwcheck water south":  self.helpers["swim"],
             "throwcheck water west":  self.helpers["swim"],
-            "bridge switch left <-> bridge switch right":  self.helpers["swim"],
-            "bridge switch water":  self.helpers["swim"],
-            "bridge left <-> bridge right":  self.helpers["swim"],
-            "bridge water north":  self.helpers["swim"],
-            "bridge water south":  self.helpers["swim"],
-            "mine entrance river north":  self.helpers["swim"],
-            "mine entrance river south":  self.helpers["swim"],
-            "poison river corner north":  self.helpers["swim"],
-            "poison river corner south":  self.helpers["swim"],
+            "bridge switch left <-> bridge switch right":  lambda state: False,
+            # "bridge switch water":  lambda state: False,
+            # "bridge water north":  lambda state: False,
+            # "bridge water south":  lambda state: False,
+            # "mine entrance river north":  lambda state: False,
+            # "mine entrance river south":  lambda state: False,
+            # "poison river corner north":  lambda state: False,
+            # "poison river corner south":  lambda state: False,
 
             # # darkroom only
             "submarine east":  self.helpers["darkroom1"],
@@ -264,12 +264,14 @@ class ER_MinitRules:
         }
 
         self.location_rules = {
-
             # Dog House
-            "Dog House - ItemCoffee":  self.helpers["sword"],
-            # TODO: needs logic to kill the crabs
+            "Dog House - ItemCoffee": lambda state:
+                state.has("has_sword", self.player)
+                and state.has_all({
+                    "2 crab access",
+                    "3 crab access",
+                    }, self.player),
             # "Dog House - ItemFlashLight": lambda state: True,
-            # TODO: this ignores obscure logic rn
             "Dog House - ItemKey": lambda state:
                 state.has("has_sword", self.player) and RuleUtils.can_passBoxes(self.player, state),
                 # need to clear the plants by the boxes even with coffee
@@ -452,6 +454,9 @@ class ER_MinitRules:
                 state.has("has_sword", self.player)
                 and RuleUtils.has_darkroom(self.player, state, 1, self.darkrooms)
                 and state.has("ItemSwim", self.player),
+            
+            # Flashlight from Below
+            "lighthouse <-> lighthouse lookout": self.helpers["swim"],
         }
 
         def apply_rules(optional_rules):
