@@ -97,18 +97,18 @@ except ModuleNotFoundError:
 
 
 class MinitSettings(Group):
-    class RomFile(FilePath):
+    class GMDataFile(FilePath):
         """Path to Minit Vanilla data file"""
         description = "Minit Vanilla File"
         md5s = [
-            "cd676b395dc2a25df10a569c17226dde", #steam
-            "1432716643381ced3ad0195078e8e314", #epic
-            # "6263766b38038911efff98423822890e", #itch.io, does not work
+            "cd676b395dc2a25df10a569c17226dde",  # steam
+            "1432716643381ced3ad0195078e8e314",  # epic
+            # "6263766b38038911efff98423822890e",  # itch.io, does not work
             ]
         # the hashes for vanilla to be verified by the /patch command
         required = True
 
-    rom_file: RomFile = RomFile("")
+    data_file: GMDataFile = GMDataFile("")
 
 
 class MinitWebWorld(WebWorld):
@@ -153,10 +153,6 @@ components.append(Component(
     ))
 
 
-# class MinitItem(Item):
-#     game = "Minit"
-# in items.py and already imported
-
 class MinitWorld(World):
     """
     Minit is a peculiar little adventure played sixty seconds at a time.
@@ -188,11 +184,8 @@ class MinitWorld(World):
         if data.locked_item}
     item_name_groups = item_groups
 
-    def __init__(self, multiworld: "MultiWorld", player: int):
-        super().__init__(multiworld, player)
-        self.spoiler_hints = {}
-
     def generate_early(self):
+        self.spoiler_hints = {}
         if self.options.er_option and not er_loaded:
             from Options import OptionError
             raise OptionError("Please use the Generic Entrance Rando branch for ER")
@@ -228,25 +221,6 @@ class MinitWorld(World):
         for _ in range(total_locations - item_count):
             item_count = self.add_to_pool(self.get_filler_item_name(), item_count)
         assert item_count == total_locations, f"{item_count} == {total_locations}"
-
-    def make_bad_map(self) -> List[Tuple[str, str]]:
-        """only needed for ER POC before Generic ER gets merged"""
-        """only needed for ER POC before Generic ER gets merged"""
-        unconnected = []
-        output = []
-        for entrance in er_entrances:
-            if entrance.entrance_name not in door_names:
-                unconnected.append(entrance.entrance_name)
-        self.random.shuffle(unconnected)
-        try:
-            while unconnected:
-                left = unconnected.pop()
-                right = unconnected.pop()
-                output.append((left, right))
-                output.append((right, left))
-        except IndexError:
-            print("too many connections, leaving 1 unconnected")
-        return output
 
     def add_regions_and_locations(self, er_on: bool):
         if er_on:
@@ -391,20 +365,6 @@ class MinitWorld(World):
                     en2.randomization_type = EntranceType.TWO_WAY
                     en2.randomization_group = er_entrance.group_type
 
-        # should never be called with the new OptionError
-        # elif er_on and not er_loaded:
-        #     # also only needed for ER POC before Generic ER gets merged
-        #     self.add_regions_and_locations(False)
-        #     self.output_connections = self.make_bad_map()
-        #     for name in [
-        #         "Dog House - Dolphin Heart",
-        #         "Dog House - Plant Heart",
-        #         "Desert RV - ItemGlove",
-        #         "Hotel Room - Queue",
-        #         "Dog House - ItemSword",
-        #     ]:
-        #         early_location_list.append(self.multiworld.get_location(name, self.player))
-
         else:
             self.output_connections = None
             for name in [
@@ -496,21 +456,17 @@ class MinitWorld(World):
         # start_connections = [entrance.name for entrance in start.exits]  # if entrance not in {"Home", "Shrink Down"}]
         transition_names = [er_entrance.entrance_name for er_entrance in er_entrances]  # + start_connections
         for loc in self.multiworld.get_locations(self.player):
-            # if (loc.parent_region.name in {"Tower HQ", "The Shop", "Music Box", "The Craftsman's Corner"}
-            #         or loc.address is None):
             path_to_loc = []
             name, connection = paths[loc.parent_region]
-            while connection != ("Menu", None):
+            while connection != ("Menu", None) and name is not None:
                 name, connection = connection
-                if name in transition_names:
+                if name in transition_names:  # this should probably also filter out same-named regions somehow :/
                     path_to_loc.append(name)
 
-            text = ""
-            for transition in reversed(path_to_loc):
-                text += f"{transition} => "
-            text = text.rstrip("=> ")
+            text = " => ".join(reversed(path_to_loc))
             self.spoiler_hints[loc.name] = text
             if loc.address is not None:
+                # we want spoiler paths to events but not hint text
                 hint_data[self.player][loc.address] = text
 
     def fill_slot_data(self) -> Dict[str, Any]:

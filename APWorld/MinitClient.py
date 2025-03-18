@@ -28,6 +28,33 @@ try:
 except ModuleNotFoundError:
     from CommonClient import CommonContext as SuperContext
 
+try:
+    from CommonClient import handle_url_arg
+except ImportError:
+    # back compat, can delete once 0.6.0 is old enough
+    def handle_url_arg(args: "argparse.Namespace", parser: "typing.Optional[argparse.ArgumentParser]" = None) -> "argparse.Namespace":
+        """
+        Parse the url arg "archipelago://name:pass@host:port" from launcher into correct launch args for CommonClient
+        If alternate data is required the urlparse response is saved back to args.url if valid
+        """
+        if not args.url:
+            return args
+
+        url = urllib.parse.urlparse(args.url)
+        if url.scheme != "archipelago":
+            if not parser:
+                parser = get_base_parser()
+            parser.error(f"bad url, found {args.url}, expected url in form of archipelago://archipelago.gg:38281")
+            return args
+
+        args.url = url
+        args.connect = url.netloc
+        if url.username:
+            args.name = urllib.parse.unquote(url.username)
+        if url.password:
+            args.password = urllib.parse.unquote(url.password)
+
+        return args
 
 DEBUG = False
 GAMENAME = "Minit"
@@ -76,56 +103,31 @@ class ProxyGameContext(SuperContext):
         self.death_amnisty_count = 0
 
     def make_gui(self):
-        if hasattr(super(), "make_gui"):
-            ui = super().make_gui()
-        else:
-            # back compat, can remove later
-            ui = super().super_make_gui()
+        ui = super().make_gui()
         ui.base_title = "Minit Client"
         return ui
-
-    def super_make_gui(self):
-        # back compat, can remove later
-        from kvui import GameManager
-
-        class ProxyManager(GameManager):
-            logging_pairs = [
-                ("Client", "Archipelago")
-            ]
-            base_title = "Minit Client"
-
-            def build(self):
-                container = super().build()
-                if tracker_loaded:
-                    self.ctx.build_gui(self)
-                else:
-                    logger.info("to enable a tracker, install Universal Tracker")
-
-                return container
-
-        if tracker_loaded:
-            self.load_kv()
-        return ProxyManager(self)
 
     def patch_game(self):
         from . import MinitWorld
         try:
-            rom_file = MinitWorld.settings.rom_file
-            rom_file.validate(rom_file)
+            data_file = MinitWorld.settings.data_file
+            data_file.validate(data_file)
         except FileNotFoundError:
             logger.info("Patch cancelled")
+            # TODO: consider clearing the path since the one we were given is invalid
             return
         except ValueError:
             logger.info("Selected game is not vanilla, please reset the game and repatch")
+            # TODO: consider clearing the path since the one we were given is invalid
             return
 
-        basepath = os.path.dirname(rom_file)
+        basepath = os.path.dirname(data_file)
         patched_name = f"ap_v{PATCH_VERSION}_data.win"
 
         if not os.path.isfile(os.path.join(basepath, patched_name)):
-            with open(rom_file, "rb") as f:
+            with open(data_file, "rb") as f:
                 patchedFile = bsdiff4.patch(f.read(), data_path("patch.bsdiff"))
-            with open(os.path.join(os.path.dirname(rom_file), patched_name), "wb") as f:
+            with open(os.path.join(os.path.dirname(data_file), patched_name), "wb") as f:
                 f.write(patchedFile)
             logger.info("Patch complete")
         else:
@@ -182,9 +184,15 @@ class ProxyGameContext(SuperContext):
     async def locationHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle POST at /Locations that uses scouts to return useful info"""
         requestjson = await request.json()
-        response = handleLocations(self, requestjson)
+
+        try:
+            await self.check_locations(requestjson["Locations"])
+        except:  # TODO figure out what the exception actually is
+            # back compat, can just let check_locations run when 0.6.0 is old enough
+            response = handleLocations(self, requestjson)
+            await self.send_msgs(response)
+
         localResponse = handleLocalLocations(self, requestjson)
-        await self.send_msgs(response)
         return aiohttp.web.json_response(localResponse)
 
     async def goalHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
@@ -288,8 +296,8 @@ def handleErConnections(ctx: CommonContext):
     ]}
     """
     connections = ctx.slot_data["ER_connections"]
-    erMessage = {"Entrances": game_entrances}
     if connections:
+        erMessage = {"Entrances": game_entrances}
         for connection in connections:
             left = connection[0]
             right = connection[1]
@@ -299,12 +307,8 @@ def handleErConnections(ctx: CommonContext):
                 if e.entrance_name == right:
                     right_entrance = e
 
-            print(f"left_entrance: {left_entrance}")
-            print(f"right_entrance: {right_entrance}")
             left_tile = left_entrance.room_tile
-            print(f"left_tile: {left_tile}")
             left_name = left_entrance.entrance_name
-            print(f"left_name: {left_name}")
 
             index = 0
             for entrance in erMessage["Entrances"][left_tile]:
@@ -366,25 +370,30 @@ def handleLocalLocations(ctx: CommonContext, request: json) -> json:
     """
 
     locations = set(request["Locations"]).difference(ctx.locations_checked)
-    if len(locations) == 1:
-        location = request["Locations"][0]
-        if (len(ctx.locations_info) > 0):
-            if location in ctx.locations_info:
-                loc = ctx.locations_info[location]
-                slot = loc.player
-                player = ctx.slot_info[loc.player].name
-                item = ctx.item_names[loc.item]
-                code = loc.item
+    if len(locations) != 1:
+        return {"Location": "Not found in scout cache"}  # TODO update if client can handle
 
-                if ctx.slot_concerns_self(slot):
-                    locationmessage = {
-                        "Player": player,
-                        "Item": item,
-                        "Code": code}
-                else:
-                    locationmessage = {"Player": player, "Item": item}
-                return locationmessage
-    return {"Location": "Not found in scout cache"}
+    location = request["Locations"][0]
+    if not ctx.locations_info:
+        return {"Location": "Not found in scout cache"}  # TODO update if client can handle
+
+    if location not in ctx.locations_info:
+        return {"Location": "Not found in scout cache"}  # TODO update if client can handle
+
+    loc = ctx.locations_info[location]
+    slot = loc.player
+    player = ctx.slot_info[loc.player].name
+    item = ctx.item_names[loc.item]
+    code = loc.item
+
+    if ctx.slot_concerns_self(slot):
+        locationmessage = {
+            "Player": player,
+            "Item": item,
+            "Code": code}
+    else:
+        locationmessage = {"Player": player, "Item": item}
+    return locationmessage
 
 
 def handleItems(ctx: CommonContext):
@@ -431,25 +440,6 @@ def handleDatapackage(ctx: CommonContext):
     return datapackagemessage
 
 
-# in PR 4068 so will eventually be in main
-def handle_url_arg(args: "argparse.Namespace",
-                   parser: "typing.Optional[argparse.ArgumentParser]" = None) -> "argparse.Namespace":
-    """ handle if text client is launched using the "archipelago://name:pass@host:port" url from webhost """
-    if args.url:
-        url = urllib.parse.urlparse(args.url)
-        if url.scheme == "archipelago":
-            args.connect = url.netloc
-            if url.username:
-                args.name = urllib.parse.unquote(url.username)
-            if url.password:
-                args.password = urllib.parse.unquote(url.password)
-        else:
-            if not parser:
-                parser = get_base_parser()
-            parser.error(f"bad url, found {args.url}, expected url in form of archipelago://archipelago.gg:38281")
-    return args
-
-
 async def main(args):
     from .proxyServer import Webserver, http_server_loop
 
@@ -486,8 +476,7 @@ def launch(*args):
 
     args = handle_url_arg(args, parser=parser)
 
-    colorama.init()
-
+    colorama.just_fix_windows_console()
     asyncio.run(main(args))
     colorama.deinit()
 
