@@ -50,27 +50,27 @@ class ER_MinitRules:
                 (RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms) and RuleUtils.has_megasword(self.player, state)),
             "factory machine generator -> Boss Fight": lambda state:
                 (RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms) and RuleUtils.has_megasword(self.player, state)),
-            "2crab land <-> 2crab tree exit":  self.helpers["tree"],
+            "2crab tree exit <-> 2crab tile":  self.helpers["tree"],
             # "coffee shop outside <-> coffee shop inside": lambda state: True,
-            "quicksand left tree":  self.helpers["tree"],
+            "quicksand left tree <-> quicksand main":  self.helpers["tree"],
                 # technically an option to not have glove and water boatguy but
                 # that adds weird issues so i'll just leave it as out of logic
-            "quicksand right tree":  self.helpers["tree"],
-            "boattree box":  self.helpers["box"],
+            "quicksand right tree <-> quicksand main":  self.helpers["tree"],
+            "boattree box <-> boattree main":  self.helpers["box"],
             "camera river south -> camera river north": lambda state:
                 state.has("has_sword", self.player) and state.has("ItemThrow", self.player),
             "camera river north -> camera river south": lambda state:
                 state.has("has_sword", self.player),
-            "camera house tree":  self.helpers["tree"],
+            "camera house tree <-> camera house outside":  self.helpers["tree"],
             # "camera house outside <-> camera house inside": lambda state: True,
-            "3crab trees":  self.helpers["tree"],
+            "3crab trees <-> 3crab main":  self.helpers["tree"],
             "throwcheck tile -> throwcheck box": lambda state:
                 state.has("has_sword", self.player)
                 and state.has("ItemGrinder", self.player),
             "throwcheck box -> throwcheck tile":  self.helpers["box"],
                 # could be a oneway with coffee but i'll think about that later
-            "arena tree north":  self.helpers["tree"],
-            "arena tree west":  self.helpers["tree"],
+            "arena tree north <-> arena tile":  self.helpers["tree"],
+            "arena tree west <-> arena tile":  self.helpers["tree"],
             "bridge left <-> bridge right": lambda state:
                 state.has("bridge on", self.player),  # need to confirm this works
             "factory loading lower main -> factory loading lower shortcut": lambda state:
@@ -93,8 +93,8 @@ class ER_MinitRules:
                 state.has("has_sword", self.player)
                 and state.has("ItemGrinder", self.player),
             "mine main box -> mine main":  self.helpers["box"],
-            "sewer main right north":  self.helpers["darkroom2"],
-            "sewer main left": lambda state:
+            "sewer main right north <-> sewer main":  self.helpers["darkroom2"],
+            "sewer main left <-> sewer main": lambda state:
                 RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
                 and state.has("ItemSwim", self.player),
             "sewer bat arena -> sewer bat gate": lambda state:
@@ -109,7 +109,7 @@ class ER_MinitRules:
                 and state.has("ItemSwim", self.player),
             "factory machine generator <-> factory machine catwalk": lambda state:
                 state.has("generator smashed", self.player),
-            "miner chest pipe entrance": lambda state:
+            "miner chest pipe entrance <-> miner chest tile": lambda state:
                 RuleUtils.has_darkroom(self.player, state, 3, self.darkrooms)
                 and state.has("ItemSwim", self.player),
 
@@ -117,7 +117,7 @@ class ER_MinitRules:
             "lighthouse inside <-> lighthouse": lambda state: 
                 state.has("ItemKey", self.player),
             "lighthouse <-> lighthouse lookout": lambda state: False,
-                # obscure: you can swim and grab it from beneith
+                # obscure: you can swim and grab it from beneath
             # "lighthouse inside <-> lighthouse lookout": lambda state: True,
             "coffee shop pot stairs <-> sewer main right":  self.helpers["darkroom2"],  # maybe 3
             # "dog house inside <-> dog house west": lambda state: True,
@@ -138,7 +138,7 @@ class ER_MinitRules:
             # "factory mega entrance <-> factory central": lambda state: True,
             "factory mega entrance <-> megasword upper": lambda state:
                 state.has("generator smashed", self.player) and RuleUtils.has_darkroom(self.player, state, 1, self.darkrooms),
-            "factory central south": lambda state:
+            "factory central south <-> factory central": lambda state:
                 state.has("generator smashed", self.player),
             # "dog house basement <-> hotel room": lambda state: True,
             # "dog house basement <-> shoe shop downstairs": lambda state: True,
@@ -159,7 +159,6 @@ class ER_MinitRules:
             "boat water east":  self.helpers["swim"],
             "boat water north":  self.helpers["swim"],
             "boat water west":  self.helpers["swim"],
-            "sword west":  self.helpers["sword"],
             "sword water east:":  self.helpers["swim"],
             "sword water south:":  self.helpers["swim"],
             "sword water west:":  self.helpers["swim"],
@@ -167,8 +166,6 @@ class ER_MinitRules:
             "2crab water east":  self.helpers["swim"],
             "2crab water south":  self.helpers["swim"],
             "2crab water west":  self.helpers["swim"],
-            "2crab tree exit":  self.helpers["tree"],
-            "dolphin bushes":  self.helpers["sword"],
             "dolphin water east":  self.helpers["swim"],
             "dolphin water south":  self.helpers["swim"],
             "dolphin water west":  self.helpers["swim"],
@@ -188,7 +185,6 @@ class ER_MinitRules:
             "dog house west <-> dog house east":  self.helpers["swim"],
             "dog house river north":  self.helpers["swim"],
             "dog house river south":  self.helpers["swim"],
-            "dog house bushes":  self.helpers["sword"],
 
             "boattree river south":  self.helpers["swim"],
             "3crab north water north":  self.helpers["swim"],
@@ -211,19 +207,23 @@ class ER_MinitRules:
             # "poison river corner north":  lambda state: False,
             # "poison river corner south":  lambda state: False,
 
+            "temple octopus north": lambda state:
+                state.has("ItemSwim", self.player)
+                and RuleUtils.has_darkroom(self.player, state, 3, self.darkrooms),
+
             # # darkroom only
             "submarine east":  self.helpers["darkroom1"],
             "submarine west":  self.helpers["darkroom1"],
             "teleporter maze west":  self.helpers["darkroom1"],
             "mine main north":  self.helpers["darkroom1"],
+            "mine main west upper": self.helpers["darkroom1"], # so that regions don't have to be added to enforce darkroom rules on mine main north and mine main west lower
             "mine main west lower":  self.helpers["darkroom1"],
+            "mine main box": self.helpers["darkroom1"], # so that regions don't have to be added to enforce darkroom rules on mine main north and mine main west lower
             "factory switch test west":  self.helpers["darkroom1"],
             "factory switch test south":  self.helpers["darkroom1"],
             "temple outside <-> temple main":  self.helpers["darkroom1"],
             "dog house basement <-> island teleporter":  self.helpers["darkroom1"],
 
-            "temple firebat test east":  self.helpers["darkroom2"],
-            "temple firebat test west":  self.helpers["darkroom2"],
             "snake east <-> boattree east":  self.helpers["darkroom2"],
             "snake east <-> boattree main":  self.helpers["darkroom2"],
             "snake east path":  self.helpers["darkroom2"],
@@ -231,11 +231,10 @@ class ER_MinitRules:
             "mine entrance left <-> mine entrance path":  self.helpers["darkroom2"],
             "tent room pipe I right":  self.helpers["darkroom2"],
             "tent room pipe I left":  self.helpers["darkroom2"],
-            "tent room main right":  self.helpers["darkroom1"],
+            "tent room main right":  self.helpers["darkroom2"], # changed from 1 to 2 since you'd always travel across
             "tent room main left":  self.helpers["darkroom2"],
 
             "tent room pipe O":  self.helpers["darkroom3"],
-            "temple octopus north":  self.helpers["swim"],
             "miner chest pipe L south":  self.helpers["darkroom3"],
             "miner chest pipe L west":  self.helpers["darkroom3"],
             "trophy pipe hall right":  self.helpers["darkroom3"],
@@ -252,17 +251,26 @@ class ER_MinitRules:
             "trophy maze upper hall west":  self.helpers["darkroom3"],
 
             # # sword
+            "sword west <-> sword tile":  self.helpers["sword"],
+            "dolphin bushes":  self.helpers["sword"],
+            "dog house bushes <-> dog house west":  self.helpers["sword"],
             "coffee shop outside <-> coffee shop pot stairs":  self.helpers["sword"],
-            "plant bushes":  self.helpers["sword"],
-            "shoe shop shortcut":  self.helpers["sword"],
-            "factory cooler west":  self.helpers["sword"],
+            "plant bushes <-> plant tile":  self.helpers["sword"],
+            "shoe shop shortcut <-> shoe shop outside":  self.helpers["sword"],
+            "factory cooler west <-> factory cooler tile":  self.helpers["sword"],
 
-            "temple main east":  self.helpers["wateringcan"],
+            "temple main east <-> temple main":  self.helpers["wateringcan"],
+            "temple firebat test east": lambda state:
+                state.has("ItemWateringCan", self.player)
+                and RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms),
+            "temple firebat test west": lambda state:
+                state.has("ItemWateringCan", self.player)
+                and RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms),
 
             "dog house inside <-> dog house basement":  self.helpers["basement"],
             "shoe shop inside <-> shoe shop downstairs":  self.helpers["basement"],
 
-            "factory reception east":  self.helpers["presspass"],
+            "factory reception east <-> factory reception tile":  self.helpers["presspass"],
         }
 
         self.location_rules = {
@@ -339,7 +347,7 @@ class ER_MinitRules:
             "Desert RV - Quicksand Coin": lambda state:
                 state.has("has_sword", self.player) and RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms),
                 # vanilla does require sword because the wateringcan
-                # drops while drowing in quicksand
+                # drops while drowning in quicksand
             "Desert RV - Dumpster":  self.helpers["sword"],
             "Desert RV - Temple Heart": lambda state:
                 RuleUtils.has_darkroom(self.player, state, 3, self.darkrooms)
@@ -430,8 +438,10 @@ class ER_MinitRules:
             "boatguy watered":  self.helpers["wateringcan"],
             "left machine": lambda state:
                 RuleUtils.has_darkroom(self.player, state, 1, self.darkrooms)
-                and state.has("ItemCoffee", self.player),
-            "right machine":  self.helpers["sword"],
+                and state.has_all({"ItemSwim", "ItemCoffee"}, self.player),
+            "right machine": lambda state:
+                RuleUtils.has_darkroom(self.player, state, 1, self.darkrooms)
+                and state.has("has_sword", self.player),
         }
 
         obscure = {
