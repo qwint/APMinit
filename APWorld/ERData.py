@@ -729,6 +729,9 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
         {"CName": "desert left cliffs west", "direction": "west", "baseCoor": 96, "offset": 16},
     ],
 
+    "rom8_15": [
+        {"CName": "Overworld island door", "direction": "door", "x": 224, "y": 160},
+    ],
     "rom7_7": [
         {"CName": "Overworld wet01", "direction": "east", "baseCoor": 112, "offset": 128},
     ],
@@ -762,11 +765,6 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
     ],
     "rom12_12": [
         {"CName": "Overworld wet12", "direction": "north", "baseCoor": 0, "offset": 160},
-    ],
-    "rom8_15": [
-        {"CName": "Overworld island door", "direction": "door", "x": 224, "y": 160},
-    ],
-    "rom12_12": [
         {"CName": "Overworld dry01", "direction": "north", "baseCoor": 160, "offset": 160},
     ],
     "rom13_11": [
