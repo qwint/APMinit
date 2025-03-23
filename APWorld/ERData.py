@@ -27,7 +27,6 @@ er_static_connections: Dict[str, List[str]] = {
     "coffee shop outside": ["coffee shop pot stairs", "coffee shop inside"],
     "dog house west": ["dog house east", "dog house bushes"],
     "plant tile": ["plant bushes"],
-    "sword tile": ["sword west"],
     "2crab tile": ["2crab tree exit"],
     "camera river south": ["camera river north"],
     "camera house outside": ["camera house inside", "camera house tree"],

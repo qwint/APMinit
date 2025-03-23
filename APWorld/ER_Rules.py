@@ -159,7 +159,6 @@ class ER_MinitRules:
             "boat water east":  self.helpers["swim"],
             "boat water north":  self.helpers["swim"],
             "boat water west":  self.helpers["swim"],
-            "sword east <-> sword west": self.helpers["sword"],
             "sword east <-> sword water":  self.helpers["swim"],
             "2crab land north river":  self.helpers["swim"],
             "2crab water east":  self.helpers["swim"],
@@ -250,7 +249,7 @@ class ER_MinitRules:
             "trophy maze upper hall west":  self.helpers["darkroom3"],
 
             # # sword
-            "sword west <-> sword tile":  self.helpers["sword"],
+            "sword east <-> sword west": self.helpers["sword"],
             "dolphin bushes":  self.helpers["sword"],
             "dog house bushes <-> dog house west":  self.helpers["sword"],
             "coffee shop outside <-> coffee shop pot stairs":  self.helpers["sword"],
