@@ -140,8 +140,8 @@ class ER_MinitRules:
                 state.has("generator smashed", self.player) and RuleUtils.has_darkroom(self.player, state, 1, self.darkrooms),
             "factory central south <-> factory central": lambda state:
                 state.has("generator smashed", self.player),
-            # "dog house basement <-> hotel room": lambda state: True,
-            # "dog house basement <-> shoe shop downstairs": lambda state: True,
+            "dog house basement <-> hotel room": lambda state: False,
+            "dog house basement <-> shoe shop downstairs": lambda state: False,
             # "temple coin test south <-> temple coin test north": lambda state: False,
             # TODO add complex logic to check if all spawns are reachable
             "temple coin test north": lambda state: False,
@@ -222,7 +222,7 @@ class ER_MinitRules:
             "factory switch test west":  self.helpers["darkroom1"],
             "factory switch test south":  self.helpers["darkroom1"],
             "temple outside <-> temple main":  self.helpers["darkroom1"],
-            "dog house basement <-> island teleporter":  self.helpers["darkroom1"],
+            "dog house basement <-> island teleporter":  lambda state: False,
 
             "snake east <-> boattree east":  self.helpers["darkroom2"],
             "snake east <-> boattree main":  self.helpers["darkroom2"],
