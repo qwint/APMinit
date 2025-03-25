@@ -47,9 +47,9 @@ class ER_MinitRules:
         self.region_rules = {
             # "Menu -> sword main": lambda state: True,
             "factory machine catwalk -> Boss Fight": lambda state:
-                self.helpers["darkroom2"] and RuleUtils.has_megasword(self.player, state),
+                self.helpers["darkroom2"](state) and RuleUtils.has_megasword(self.player, state),
             "factory machine generator -> Boss Fight": lambda state:
-                self.helpers["darkroom2"] and RuleUtils.has_megasword(self.player, state),
+                self.helpers["darkroom2"](state) and RuleUtils.has_megasword(self.player, state),
             "2crab tree exit <-> 2crab tile":  self.helpers["tree"],
             # "coffee shop outside <-> coffee shop inside": lambda state: True,
             "quicksand left tree <-> quicksand main":  self.helpers["tree"],
@@ -58,14 +58,13 @@ class ER_MinitRules:
             "quicksand right tree <-> quicksand main":  self.helpers["tree"],
             "boattree box <-> boattree main":  self.helpers["box"],
             "camera river south -> camera river north": lambda state:
-                self.helpers["sword"] and state.has("ItemThrow", self.player),
-            "camera river north -> camera river south": lambda state:
-                self.helpers["sword"],
+                self.helpers["sword"](state) and state.has("ItemThrow", self.player),
+            "camera river north -> camera river south": self.helpers["sword"],
             "camera house tree <-> camera house outside":  self.helpers["tree"],
             # "camera house outside <-> camera house inside": lambda state: True,
             "3crab trees <-> 3crab main":  self.helpers["tree"],
             "throwcheck tile -> throwcheck box": lambda state:
-                self.helpers["sword"]
+                self.helpers["sword"](state)
                 and state.has("ItemGrinder", self.player),
             "throwcheck box -> throwcheck tile":  self.helpers["box"],
                 # could be a oneway with coffee but i'll think about that later
@@ -74,44 +73,44 @@ class ER_MinitRules:
             "bridge left <-> bridge right": lambda state:
                 state.has("bridge on", self.player),  # need to confirm this works
             "factory loading lower main -> factory loading lower shortcut": lambda state:
-                self.helpers["sword"]
+                self.helpers["sword"](state)
                 and state.has("ItemGrinder", self.player),
             "factory loading lower shortcut -> factory loading lower main": lambda state:
-                self.helpers["sword"]
+                self.helpers["sword"](state)
                 and state.has("ItemGrinder", self.player),
                 # or state.has_all({"ItemSwim", "ItemCoffee"}, self.player),
                 # another entrance that could have one-way logic
             "mine entrance bombs -> mine entrance pipe": lambda state:
-                self.helpers["sword"]
-                and self.helpers["darkroom3"]
+                self.helpers["sword"](state)
+                and self.helpers["darkroom3"](state)
                 and state.has("ItemThrow", self.player),
             "mine entrance pipe -> mine entrance bombs": lambda state:
-                self.helpers["darkroom3"]
+                self.helpers["darkroom3"](state)
                 and state.has("bombs exploded", self.player),
                 # this needs to be a one-way
             "mine main -> mine main box": lambda state:
-                self.helpers["sword"]
+                self.helpers["sword"](state)
                 and state.has("ItemGrinder", self.player),
             "mine main box -> mine main":  self.helpers["box"],
             "sewer main right north <-> sewer main":  self.helpers["darkroom2"],
             "sewer main left <-> sewer main": lambda state:
-                self.helpers["darkroom2"]
-                and self.helpers["swim"],
+                self.helpers["darkroom2"](state)
+                and self.helpers["swim"](state),
             "sewer bat arena -> sewer bat gate": lambda state:
-                self.helpers["sword"]
-                and self.helpers["darkroom3"],
+                self.helpers["sword"](state)
+                and self.helpers["darkroom3"](state),
                 # this needs to be a one-way as the bats respawn
             "grinder south": lambda state:
-                self.helpers["darkroom1"]
-                and self.helpers["swim"],
+                self.helpers["darkroom1"](state)
+                and self.helpers["swim"](state),
             "grinder east": lambda state:
-                self.helpers["darkroom1"]  # maybe 2
-                and self.helpers["swim"],
+                self.helpers["darkroom1"](state)  # maybe 2
+                and self.helpers["swim"](state),
             "factory machine generator <-> factory machine catwalk": lambda state:
                 state.has("generator smashed", self.player),
             "miner chest pipe entrance <-> miner chest tile": lambda state:
-                self.helpers["darkroom3"]
-                and self.helpers["swim"],
+                self.helpers["darkroom3"](state)
+                and self.helpers["swim"](state),
 
             # unrandomized doors
             "lighthouse inside <-> lighthouse": lambda state: 
@@ -132,12 +131,12 @@ class ER_MinitRules:
             # "desert RV main <-> RV house": lambda state: True,
             # "island house <-> Overworld": lambda state: True,
             "island house <-> island teleporter": lambda state:
-                self.helpers["basement"] and self.helpers["darkroom1"],
+                self.helpers["basement"](state) and self.helpers["darkroom1"](state),
             "island teleporter east":  self.helpers["darkroom1"],
             # "tent room main <-> underground house": lambda state: True,
             # "factory mega entrance <-> factory central": lambda state: True,
             "factory mega entrance <-> megasword upper": lambda state:
-                state.has("generator smashed", self.player) and self.helpers["darkroom1"],
+                state.has("generator smashed", self.player) and self.helpers["darkroom1"](state),
             "factory central south <-> factory central": lambda state:
                 state.has("generator smashed", self.player),
             "dog house basement <-> hotel room": lambda state: False,
@@ -206,8 +205,8 @@ class ER_MinitRules:
             # "poison river corner south":  lambda state: False,
 
             "temple octopus north": lambda state:
-                self.helpers["swim"]
-                and self.helpers["darkroom3"],
+                self.helpers["swim"](state)
+                and self.helpers["darkroom3"](state),
 
             # # darkroom only
             "submarine east":  self.helpers["darkroom1"],
@@ -259,11 +258,11 @@ class ER_MinitRules:
 
             "temple main east <-> temple main":  self.helpers["wateringcan"],
             "temple firebat test east": lambda state:
-                self.helpers["wateringcan"]
-                and self.helpers["darkroom2"],
+                self.helpers["wateringcan"](state)
+                and self.helpers["darkroom2"](state),
             "temple firebat test west": lambda state:
-                self.helpers["wateringcan"]
-                and self.helpers["darkroom2"],
+                self.helpers["wateringcan"](state)
+                and self.helpers["darkroom2"](state),
 
             "dog house inside <-> dog house basement":  self.helpers["basement"],
             "shoe shop inside <-> shoe shop downstairs":  self.helpers["basement"],
@@ -274,19 +273,19 @@ class ER_MinitRules:
         self.location_rules = {
             # Dog House
             "Dog House - ItemCoffee": lambda state:
-                self.helpers["sword"]
+                self.helpers["sword"](state)
                 and state.has_all({
                     "2 crab access",
                     "3 crab access",
                     }, self.player),
             # "Dog House - ItemFlashLight": lambda state: True,
             "Dog House - ItemKey": lambda state:
-                self.helpers["sword"] and self.helpers["box"],
+                self.helpers["sword"](state) and self.helpers["box"](state),
                 # need to clear the plants by the boxes even with coffee
             # "Dog House - ItemWateringCan": lambda state: True,
             "Dog house - ItemBoat":  self.helpers["tree"],
             "Dog House - ItemBasement": lambda state:
-                self.helpers["tree"]
+                self.helpers["tree"](state)
                 and state.has_all({
                     "ItemBoat",
                     "boatguy watered",
@@ -296,34 +295,34 @@ class ER_MinitRules:
             "Dog House - House Pot Coin":  self.helpers["sword"],
             "Dog House - Sewer Island Coin":  self.helpers["chest"],
             "Dog House - Sewer Coin": lambda state:
-                RuleUtils.can_openChest(self.player, state)
-                and self.helpers["darkroom2"]
-                and self.helpers["swim"],
+                self.helpers["chest"](state)
+                and self.helpers["darkroom2"](state)
+                and self.helpers["swim"](state),
             "Dog House - Land is Great Coin":  self.helpers["chest"],
             "Dog House - Hidden Snake Coin": lambda state:
-                RuleUtils.can_openChest(self.player, state) and self.helpers["darkroom3"],
+                self.helpers["chest"](state) and self.helpers["darkroom3"](state),
             "Dog House - Waterfall Coin": lambda state:
-                RuleUtils.can_openChest(self.player, state) and self.helpers["darkroom1"],
+                self.helpers["chest"](state) and self.helpers["darkroom1"](state),
             "Dog House - Treasure Island Coin": lambda state:
-                RuleUtils.can_openChest(self.player, state)
-                and self.helpers["swim"],
+                self.helpers["chest"](state)
+                and self.helpers["swim"](state),
             "Dog House - Plant Heart":  self.helpers["wateringcan"],
             "Dog House - Bull Heart":  self.helpers["sword"],
             "Dog House - Boat Tentacle": lambda state:
-                self.helpers["sword"]
+                self.helpers["sword"](state)
                 and state.has_all({
                     "ItemBoat",
                     "boatguy watered",
                     "ItemGlove",
                     }, self.player),
             "Dog House - Treasure Island Tentacle": lambda state:
-                self.helpers["sword"] and self.helpers["swim"],
+                self.helpers["sword"](state) and self.helpers["swim"](state),
             "Dog House - Sword Toss Tentacle": lambda state:
-                self.helpers["sword"]
+                self.helpers["sword"](state)
                 and state.has_all({"ItemCoffee", "ItemThrow"}, self.player),
             "Dog House - Sewer Tentacle": lambda state:
-                self.helpers["sword"] and self.helpers["darkroom3"]
-                and self.helpers["swim"],
+                self.helpers["sword"](state) and self.helpers["darkroom3"](state)
+                and self.helpers["swim"](state),
 
             # Desert RV
             "Desert RV - ItemThrow":  self.helpers["sword"],
@@ -331,30 +330,30 @@ class ER_MinitRules:
                 state.has("Coin", self.player, 7),
             "Desert RV - ItemGlove":  self.helpers["darkroom1"],
             "Desert RV - ItemTurboInk": lambda state:
-                self.helpers["darkroom2"] and state.has("Tentacle", self.player, 8),
+                self.helpers["darkroom2"](state) and state.has("Tentacle", self.player, 8),
             "Desert RV - Temple Coin": lambda state:
-                self.helpers["sword"] and self.helpers["darkroom2"],
+                self.helpers["sword"](state) and self.helpers["darkroom2"](state),
                 # this may change if i connect the other temple puzzles
             "Desert RV - Fire Bat Coin": lambda state:
-                RuleUtils.can_openChest(self.player, state) and self.helpers["darkroom2"],
+                self.helpers["chest"](state) and self.helpers["darkroom2"](state),
                 # this may change if i connect the other temple puzzles
             "Desert RV - Truck Supplies Coin": lambda state:
-                self.helpers["sword"] and RuleUtils.can_openChest(self.player, state),
+                self.helpers["sword"](state) and self.helpers["chest"](state),
             "Desert RV - Broken Truck":  self.helpers["chest"],
             "Desert RV - Quicksand Coin": lambda state:
-                self.helpers["sword"] and self.helpers["darkroom2"],
+                self.helpers["sword"](state) and self.helpers["darkroom2"](state),
                 # vanilla does require sword because the wateringcan
                 # drops while drowning in quicksand
             "Desert RV - Dumpster":  self.helpers["sword"],
             "Desert RV - Temple Heart": lambda state:
-                self.helpers["darkroom3"]
+                self.helpers["darkroom3"](state)
                 and state.has("ItemShoes", self.player),
             "Desert RV - Shop Heart": lambda state:
                 state.has("Coin", self.player, 19),
             "Desert RV - Octopus Tentacle": lambda state:
-                self.helpers["sword"]
-                and self.helpers["darkroom3"]
-                and self.helpers["swim"],
+                self.helpers["sword"](state)
+                and self.helpers["darkroom3"](state)
+                and self.helpers["swim"](state),
             "Desert RV - Beach Tentacle":  self.helpers["sword"],
 
             # Hotel Room
@@ -369,19 +368,19 @@ class ER_MinitRules:
                     }, self.player),
                 # praying i can make this work
             "Hotel Room - ItemGrinder": lambda state:
-                self.helpers["darkroom2"]
+                self.helpers["darkroom2"](state)
                 and state.has_all({"ItemSwim", "ItemCoffee"}, self.player),
             "Hotel Room - Shrub Arena Coin":  self.helpers["sword"],
             "Hotel Room - Miner's Chest Coin": lambda state:
-                RuleUtils.can_openChest(self.player, state) and self.helpers["darkroom3"],
+                self.helpers["chest"](state) and self.helpers["darkroom3"](state),
             # "Factory Main - Inside Truck": lambda state:  True,
             # "Hotel Room - Queue": lambda state: True,
             "Hotel Room - Hotel Backroom Coin": lambda state:
-                self.helpers["sword"] and self.helpers["box"],
+                self.helpers["sword"](state) and self.helpers["box"](state),
             "Factory Main - Drill Coin":  self.helpers["sword"],
             "Hotel Room - Crow Heart":  self.helpers["box"],
             "Hotel Room - Dog Heart": lambda state:
-                (self.helpers["tree"]
+                (self.helpers["tree"](state)
                     and (state.has_all({
                             "teleporter switch1",
                             "teleporter switch4",
@@ -396,10 +395,10 @@ class ER_MinitRules:
 
             # Island Shack
             "Island Shack - Teleporter Tentacle": lambda state:
-                self.helpers["sword"]
-                and self.helpers["darkroom1"]
+                self.helpers["sword"](state)
+                and self.helpers["darkroom1"](state)
                 and state.has("ItemCoffee", self.player)
-                and self.helpers["swim"],
+                and self.helpers["swim"](state),
 
             # Underground Tent
             "Underground Tent - ItemTrophy":  self.helpers["darkroom1"],
@@ -407,7 +406,7 @@ class ER_MinitRules:
 
             # Undefined
             "Factory Main - ItemMegaSword": lambda state:
-                self.helpers["sword"]
+                self.helpers["sword"](state)
                 and state.has_all({
                     "ItemWateringCan",
                     "left machine",
@@ -429,15 +428,15 @@ class ER_MinitRules:
                 state.has("bridge on", self.player),
             "hidden saved":  self.helpers["box"],
             "teleporter switch1": lambda state:
-                self.helpers["sword"] and self.helpers["darkroom3"],
+                self.helpers["sword"](state) and self.helpers["darkroom3"](state),
             "teleporter switch4":  self.helpers["sword"],
             "teleporter switch6":  self.helpers["sword"],
             "boatguy watered":  self.helpers["wateringcan"],
             "left machine": lambda state:
-                self.helpers["darkroom1"]
+                self.helpers["darkroom1"](state)
                 and state.has_all({"ItemSwim", "ItemCoffee"}, self.player),
             "right machine": lambda state:
-                self.helpers["darkroom1"]
+                self.helpers["darkroom1"](state)
                 and self.helpers["sword"],
         }
 
@@ -448,9 +447,9 @@ class ER_MinitRules:
 
             # Island Shack
             "Island Shack - Teleporter Tentacle": lambda state:
-                self.helpers["sword"]
-                and self.helpers["darkroom1"]
-                and self.helpers["swim"],
+                self.helpers["sword"](state)
+                and self.helpers["darkroom1"](state)
+                and self.helpers["swim"](state),
             
             # Flashlight from Below
             "lighthouse <-> lighthouse lookout": self.helpers["swim"],
