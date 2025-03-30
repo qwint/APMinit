@@ -232,7 +232,7 @@ location_table = {
         # heartPiece6
         offset=43,
         region="Hotel Room",
-        er_region="dog house inside",),
+        er_region="bone room",),
     "Factory Main - Cooler Tentacle": MinitLocationData(
         # tentacle7
         offset=44,

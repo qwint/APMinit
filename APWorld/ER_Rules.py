@@ -42,6 +42,7 @@ class ER_MinitRules:
             "tree": lambda state: state.has("has_sword", self.player) and state.has("ItemGlove", self.player),
             "chest": lambda state: RuleUtils.can_openChest(self.player, state),
             "box": lambda state: RuleUtils.can_passBoxes(self.player, state),
+            "teleport": lambda state: state.has_all({"teleporter switch1", "teleporter switch4", "teleporter switch6",}, self.player),
             }
 
         self.region_rules = {
@@ -139,8 +140,12 @@ class ER_MinitRules:
                 state.has("generator smashed", self.player) and self.helpers["darkroom1"](state),
             "factory central south <-> factory central": lambda state:
                 state.has("generator smashed", self.player),
-            "dog house basement <-> hotel room": lambda state: False,
-            "dog house basement <-> shoe shop downstairs": lambda state: False,
+            "dog house basement <-> hotel room": lambda state: 
+                self.helpers["teleport"]
+                and state.can_reach("hotel room", player=self.player),
+            "dog house basement <-> shoe shop downstairs": lambda state: 
+                self.helpers["teleport"]
+                and state.can_reach("shoe shop downstairs", player=self.player),
             # "temple coin test south <-> temple coin test north": lambda state: False,
             # TODO add complex logic to check if all spawns are reachable
             "temple coin test north": lambda state: False,
@@ -219,7 +224,9 @@ class ER_MinitRules:
             "factory switch test west":  self.helpers["darkroom1"],
             "factory switch test south":  self.helpers["darkroom1"],
             "temple outside <-> temple main":  self.helpers["darkroom1"],
-            "dog house basement <-> island teleporter":  lambda state: False,
+            "dog house basement <-> island teleporter":  lambda state: 
+                self.helpers["teleport"]
+                and state.can_reach("island teleporter", player=self.player),
 
             "snake east <-> boattree east":  self.helpers["darkroom2"],
             "snake east <-> boattree main":  self.helpers["darkroom2"],
@@ -381,11 +388,7 @@ class ER_MinitRules:
             "Hotel Room - Crow Heart":  self.helpers["box"],
             "Hotel Room - Dog Heart": lambda state:
                 (self.helpers["tree"](state)
-                    and (state.has_all({
-                            "teleporter switch1",
-                            "teleporter switch4",
-                            "teleporter switch6",
-                        }, self.player)
+                    and (self.helpers["teleport"](state)
                         or state.has_all({
                             "ItemSwim",
                             "ItemShoes"
@@ -441,8 +444,7 @@ class ER_MinitRules:
         }
 
         obscure = {
-            "Hotel Room - Dog Heart": self.helpers["tree"],
-                # TODO - untouched until i figure out a way to logic this
+            "Hotel Room - Dog Heart": lambda state: True,
             "Factory Main - Cooler Tentacle":  self.helpers["sword"],
 
             # Island Shack
