@@ -108,6 +108,10 @@ class ER_MinitRules:
             "miner chest pipe entrance <-> miner chest tile": lambda state:
                 self.helpers["darkroom3"](state)
                 and self.helpers["swim"](state),
+                # TODO: Better damage boosting logic
+                # This is the only instance of allowed damage boosting. The reason for this is because this path is only possible through damage boosting and is a path that is required to be taken, through damage boosting, in vanilla.
+                # Anyway, it's possible for this to cause logic problems if it needs to be passed through multiple times in one run.
+                # For example, if you needed to pass through here to get to the set of 3 crabs and then needed to travel back through here before you could claim the coffee location, it may be impossible due to the damage taken
 
             # unrandomized doors
             "lighthouse inside <-> lighthouse": lambda state: 
@@ -146,7 +150,6 @@ class ER_MinitRules:
             "dog house basement <-> shoe shop downstairs": lambda state: 
                 self.helpers["teleport"](state)
                 and state.can_reach("shoe shop downstairs", player=self.player),
-            # "temple coin test south <-> temple coin test north": lambda state: False,
             "temple coin test north": lambda state: 
                 state.can_reach("dog house inside", player=self.player)
                 and state.can_reach("RV house", player=self.player)
@@ -213,6 +216,7 @@ class ER_MinitRules:
             "sewer island water west":  self.helpers["swim"],
             "throwcheck water south":  self.helpers["swim"],
             "throwcheck water west":  self.helpers["swim"],
+            "Overworld wet06": self.helpers["swim"],
             "bridge switch left <-> bridge switch right":  lambda state: False, # damage boosting is out of logic
 
             # # damage boosting
