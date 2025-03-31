@@ -359,4 +359,9 @@ location_table = {
         er_region="factory switch tile",
         locked_item="right machine",
         ),
+    "bombs exploded": MinitLocationData(
+        region="Hotel Room",
+        er_region="mine entrance bombs",
+        locked_item="bombs exploded",
+        )
 }

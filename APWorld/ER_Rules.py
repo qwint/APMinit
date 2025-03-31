@@ -82,14 +82,9 @@ class ER_MinitRules:
                 self.helpers["sword"](state)
                 and state.has("ItemGrinder", self.player),
                 # damage boosting out of logic
-            "mine entrance bombs -> mine entrance pipe": lambda state:
-                self.helpers["sword"](state)
-                and self.helpers["darkroom3"](state)
-                and state.has("ItemThrow", self.player),
-            "mine entrance pipe -> mine entrance bombs": lambda state:
+            "mine entrance pipe <-> mine entrance bombs": lambda state:
                 self.helpers["darkroom3"](state)
                 and state.has("bombs exploded", self.player),
-                # this needs to be a one-way
             "mine main -> mine main box": lambda state:
                 self.helpers["sword"](state)
                 and state.has("ItemGrinder", self.player),
@@ -473,6 +468,9 @@ class ER_MinitRules:
             "right machine": lambda state:
                 self.helpers["darkroom1"](state)
                 and self.helpers["sword"](state),
+            "bombs exploded": lambda state:
+                self.helpers["sword"](state)
+                and state.has("ItemThrow", self.player),
         }
 
         obscure = {
