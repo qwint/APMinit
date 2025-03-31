@@ -245,7 +245,6 @@ class ER_MinitRules:
             "mine main box": self.helpers["darkroom1"], # so that regions don't have to be added to enforce darkroom rules on mine main north and mine main west lower
             "factory switch test west":  self.helpers["darkroom1"],
             "factory switch test south":  self.helpers["darkroom1"],
-            "temple outside <-> temple main":  self.helpers["darkroom1"],
             "dog house basement <-> island teleporter":  lambda state: 
                 self.helpers["teleport"](state)
                 and state.can_reach("island teleporter", player=self.player)
@@ -255,6 +254,7 @@ class ER_MinitRules:
             "snake east <-> boattree main":  self.helpers["darkroom2"],
             "snake east path":  self.helpers["darkroom2"],
             "sewer island <-> sewer upper":  self.helpers["darkroom2"],
+            "temple outside <-> temple main":  self.helpers["darkroom2"],
             "mine entrance left <-> mine entrance path":  self.helpers["darkroom2"],
             "tent room pipe I right":  self.helpers["darkroom2"],
             "tent room pipe I left":  self.helpers["darkroom2"],
@@ -289,6 +289,7 @@ class ER_MinitRules:
             "shoe shop shortcut <-> shoe shop outside":  self.helpers["sword"],
             "factory cooler west <-> factory cooler tile":  self.helpers["sword"],
                 # obscure: shoes
+            "temple main north <-> temple main": self.helpers["sword"],
             # TODO: fix logical issues with not being able to carry a sword and a watering can at the same time
             "temple main east <-> temple main":  self.helpers["wateringcan"],
             "temple firebat test east": lambda state:
