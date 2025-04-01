@@ -50,7 +50,7 @@ class MinitRules:
                 state.has("has_sword", self.player)
                 and (state.has("ItemGrinder", self.player)
                      or state.has_all({
-                        "ItemSwim",
+                        "ItemSwim", # damage boost
                         "ItemCoffee"
                         }, self.player)),
             "Hotel Room -> Underground Tent": lambda state:
@@ -59,15 +59,14 @@ class MinitRules:
                 and state.has("ItemGrinder", self.player),
             "Hotel Room -> Factory Main": lambda state:
                 (RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
-                    and state.has("ItemSwim", self.player))
+                    and state.has("ItemSwim", self.player)
+                )
                 or (
-                    state.has("has_sword", self.player)
+                    state.has("has_sword", self.player) # obscure: shoes instead of sword (Precise movement to squeeze through the destroyables)
                     and state.has("ItemPressPass", self.player)
-                    and ((
-                            RuleUtils.has_darkroom(self.player, state, 3, self.darkrooms)
-                            and state.has("ItemThrow", self.player))
-                         or state.has("ItemSwim", self.player)
-                         )
+                    and (state.has("bombs exploded", self.player)
+                         or state.has("ItemSwim", self.player) # damage boost
+                        )
                 ),
             "Factory Main -> Boss Fight": lambda state:
                 RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
@@ -257,7 +256,7 @@ class MinitRules:
                 True,
             "Hotel Room - Queue": lambda state:
                 self.factory_to_hotel_backtrack(state)
-                or state.has_any({"ItemSwim", "bridge on"}, self.player),
+                or state.has_any({"ItemSwim", "bridge on", "bombs exploded"}, self.player), # swim only uses damage boost
             "Hotel Room - Hotel Backroom Coin": lambda state:
                 RuleUtils.can_passBoxes(self.player, state) and state.has("has_sword", self.player),
             "Factory Main - Drill Coin": lambda state:
@@ -285,7 +284,7 @@ class MinitRules:
                 # - don't think i will though
 
             # Island Shack
-            "Island Shack - Teleporter Tentacle": lambda state, obscure=self.world.options.obscure:
+            "Island Shack - Teleporter Tentacle": lambda state:
                 state.has("has_sword", self.player)
                 and (state.has("ItemCoffee", self.player))
                 and state.has_all({
@@ -333,10 +332,8 @@ class MinitRules:
             "bridge on": lambda state:
                 state.has("has_sword", self.player)
                 and (
-                     state.has("ItemSwim", self.player)
-                     or (
-                        RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
-                        and state.has("ItemThrow", self.player))
+                     state.has("ItemSwim", self.player) # damage boost
+                     or state.has("bombs exploded", self.player)
                      or self.factory_to_hotel_backtrack(state)
                 ),
             "bridge saved": lambda state:
@@ -367,6 +364,10 @@ class MinitRules:
                     }, self.player),
             "right machine": lambda state:
                 state.has("has_sword", self.player),
+            "bombs exploded": lambda state:
+                self.helpers["sword"](state)
+                and state.has("ItemThrow", self.player)
+                and self.helpers["darkroom3"](state),
         }
 
         obscure = {
@@ -379,6 +380,17 @@ class MinitRules:
                     }, self.player)),
                 # obscure: you can swim from treasure island
                 # - by baiting the shark
+            "Hotel Room -> Factory Main": lambda state:
+                RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
+                and state.has("ItemSwim", self.player)
+                or (
+                    (state.has("has_sword", self.player) or state.has("ItemShoes", self.player))
+                    and state.has("ItemPressPass", self.player)
+                    and (state.has("bombs exploded", self.player)
+                         or state.has("ItemSwim", self.player) # damage boost
+                        )
+                ),
+                # obscure: you can squeeze through the destroyables with shoes and precise movement
             "Dog House - ItemFlashLight": lambda state:
                 state.has("ItemSwim", self.player)
                 or ((
