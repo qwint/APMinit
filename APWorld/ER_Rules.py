@@ -487,7 +487,7 @@ class ER_MinitRules:
             # Push archers into poison river
             "camera river north -> camera river south": lambda state: True,
 
-            # Bate the sharks
+            # Bait the sharks
             "Overworld treasure island <-> Overworld island shack": self.helpers["swim"],
 
             # Glitch through with precision
