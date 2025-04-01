@@ -365,9 +365,9 @@ class MinitRules:
             "right machine": lambda state:
                 state.has("has_sword", self.player),
             "bombs exploded": lambda state:
-                self.helpers["sword"](state)
+                state.has("has_sword", self.player)
                 and state.has("ItemThrow", self.player)
-                and self.helpers["darkroom3"](state),
+                and RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms),
         }
 
         obscure = {
