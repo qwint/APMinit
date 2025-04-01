@@ -472,7 +472,8 @@ class ER_MinitRules:
                 and self.helpers["sword"](state),
             "bombs exploded": lambda state:
                 self.helpers["sword"](state)
-                and state.has("ItemThrow", self.player),
+                and state.has("ItemThrow", self.player)
+                and self.helpers["darkroom3"](state),
         }
 
         obscure = {
