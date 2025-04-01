@@ -24,6 +24,7 @@ er_static_connections: Dict[str, List[str]] = {
     "Menu": ["dog house inside"],
     "factory machine catwalk": ["Boss Fight"],
     "factory machine generator": ["Boss Fight", "factory machine catwalk"],
+    "boat tile": ["Overworld island shack"],
     "coffee shop outside": ["coffee shop pot stairs", "coffee shop inside", "coffee shop upper beach"],
     "dog house west": ["dog house east", "dog house bushes"],
     "plant tile": ["plant bushes"],
@@ -108,7 +109,7 @@ er_entrances: List[MinitEntranceData] = [
     # MinitEntranceData(entrance_name="lighthouse upper door", region_name="lighthouse lookout", dead_end=True, group_type="land", room_tile="rom7_10", x_cord=93, y_cord=128, offset_direction="fixed", offset_value=0),
     # MinitEntranceData(entrance_name="lighthouse lower door", region_name="lighthouse", dead_end=False, group_type="land", room_tile="rom7_11", x_cord=128, y_cord=128, offset_direction="fixed", offset_value=0),
     MinitEntranceData(entrance_name="lighthouse bridge", region_name="lighthouse", dead_end=False, group_type="land", room_tile="rom7_11", x_cord=304, y_cord=112, offset_direction="fixed", offset_value=0),
-    MinitEntranceData(entrance_name="boat water south", region_name="boat tile", dead_end=False, group_type="water", room_tile="rom8_11", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
+    # MinitEntranceData(entrance_name="boat water south", region_name="boat tile", dead_end=False, group_type="water", room_tile="rom8_11", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
     MinitEntranceData(entrance_name="boat water east", region_name="boat tile", dead_end=False, group_type="water", room_tile="rom8_11", x_cord=304, y_cord=176, offset_direction="y", offset_value=48),
     MinitEntranceData(entrance_name="boat water north", region_name="boat tile", dead_end=False, group_type="water", room_tile="rom8_11", x_cord=0, y_cord=0, offset_direction="x", offset_value=48),
     MinitEntranceData(entrance_name="boat water west", region_name="boat tile", dead_end=False, group_type="water", room_tile="rom8_11", x_cord=0, y_cord=128, offset_direction="y", offset_value=96),
@@ -307,7 +308,7 @@ er_entrances: List[MinitEntranceData] = [
     MinitEntranceData(entrance_name="Overworld wet05", region_name="Overworld wet05", dead_end=False, group_type="water", room_tile="rom6_10", x_cord=304, y_cord=0, offset_direction="y", offset_value=224),
     MinitEntranceData(entrance_name="Overworld wet06", region_name="Overworld wet06", dead_end=False, group_type="water", room_tile="rom6_11", x_cord=304, y_cord=0, offset_direction="y", offset_value=224),
     MinitEntranceData(entrance_name="Overworld wet07", region_name="Overworld wet07", dead_end=False, group_type="water", room_tile="rom7_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
-    MinitEntranceData(entrance_name="Overworld wet08", region_name="Overworld wet08", dead_end=False, group_type="water", room_tile="rom8_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
+    # MinitEntranceData(entrance_name="Overworld wet08", region_name="Overworld wet08", dead_end=False, group_type="water", room_tile="rom8_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
     MinitEntranceData(entrance_name="Overworld wet09", region_name="Overworld wet09", dead_end=False, group_type="water", room_tile="rom9_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
     MinitEntranceData(entrance_name="Overworld wet10", region_name="Overworld wet10", dead_end=False, group_type="water", room_tile="rom10_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
     MinitEntranceData(entrance_name="Overworld wet11", region_name="Overworld wet11", dead_end=False, group_type="water", room_tile="rom11_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
@@ -454,7 +455,7 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
         {"CName": "lighthouse bridge", "direction": "east", "baseCoor": 112, "offset": 16},
     ],
     "rom8_11": [
-        {"CName": "boat water south", "direction": "south", "baseCoor": 0, "offset": 320},
+        # {"CName": "boat water south", "direction": "south", "baseCoor": 0, "offset": 320},
         {"CName": "boat water east", "direction": "east", "baseCoor": 176, "offset": 64},
         {"CName": "boat water north", "direction": "north", "baseCoor": 0, "offset": 64},
         {"CName": "boat water west", "direction": "west", "baseCoor": 0, "offset": 240},
@@ -759,9 +760,9 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
     "rom7_12": [
         {"CName": "Overworld wet07", "direction": "north", "baseCoor": 0, "offset": 320},
     ],
-    "rom8_12": [
-        {"CName": "Overworld wet08", "direction": "north", "baseCoor": 0, "offset": 320},
-    ],
+    # "rom8_12": [
+        # {"CName": "Overworld wet08", "direction": "north", "baseCoor": 0, "offset": 320},
+    # ],
     "rom9_12": [
         {"CName": "Overworld wet09", "direction": "north", "baseCoor": 0, "offset": 320},
     ],

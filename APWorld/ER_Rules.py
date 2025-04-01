@@ -54,6 +54,12 @@ class ER_MinitRules:
             "2crab tree exit <-> 2crab tile": lambda state: 
                 self.helpers["tree"](state)
                 or self.helpers["swim"](state),
+            "boat tile -> Overworld island shack": lambda state: 
+                state.has_all({
+                    "ItemBoat",
+                    "boatguy watered",
+                    "ItemGlove",
+                    }, self.player),
             # "coffee shop outside <-> coffee shop inside": lambda state: True,
             "quicksand left tree <-> quicksand main":  self.helpers["tree"],
                 # technically an option to not have glove and water boatguy but
@@ -290,6 +296,7 @@ class ER_MinitRules:
             "factory cooler west <-> factory cooler tile":  self.helpers["sword"],
                 # obscure: shoes
             "temple main north <-> temple main": self.helpers["sword"],
+
             # TODO: fix logical issues with not being able to carry a sword and a watering can at the same time
             "temple main east <-> temple main":  self.helpers["wateringcan"],
             "temple firebat test east": lambda state:
@@ -338,7 +345,6 @@ class ER_MinitRules:
                 and self.helpers["swim"](state),
             "Dog House - Plant Heart":  self.helpers["wateringcan"],
             "Dog House - Bull Heart":  self.helpers["sword"],
-            # TODO: actually make this able to be reached in game
             "Dog House - Boat Tentacle": lambda state:
                 self.helpers["sword"](state)
                 and state.has_all({
@@ -346,7 +352,6 @@ class ER_MinitRules:
                     "boatguy watered",
                     "ItemGlove",
                     }, self.player),
-            # TODO: actually make this able to be reached in game
             "Dog House - Treasure Island Tentacle": lambda state:
                 self.helpers["sword"](state) and self.helpers["swim"](state),
             "Dog House - Sword Toss Tentacle": lambda state:
