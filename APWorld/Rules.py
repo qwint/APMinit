@@ -374,6 +374,7 @@ class MinitRules:
             "Dog House -> Island Shack": lambda state:
                 state.has("ItemSwim", self.player)
                 or (state.has_all({
+                    "has_sword",
                     "ItemBoat",
                     "boatguy watered",
                     "ItemGlove",
@@ -393,10 +394,8 @@ class MinitRules:
                 # obscure: you can squeeze through the destroyables with shoes and precise movement
             "Dog House - ItemFlashLight": lambda state:
                 state.has("ItemSwim", self.player)
-                or ((
-                     state.has("has_sword", self.player)
-                     or state.has("ItemSwim", self.player))
-                    and state.has("ItemKey", self.player)),
+                or state.has("has_sword", self.player)
+                and state.has("ItemKey", self.player),
                 # obscure: you can swim behind the lighthouse
                 # - and pick up the item
             "Dog House - ItemBasement": lambda state:
