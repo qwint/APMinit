@@ -210,8 +210,6 @@ class ER_MinitRules:
             "3crab south water west":  self.helpers["swim"],
             "3crab south water south":  self.helpers["swim"],
             "sewer island water north":  self.helpers["swim"],
-            # "sewer island water east":  lambda state: False, (damage boosting is out of logic)
-            # TODO: check sword requirement (including one-way)
             "sewer island water south":  self.helpers["swim"],
             "sewer island water west":  self.helpers["swim"],
             "throwcheck water south":  self.helpers["swim"],
@@ -219,15 +217,18 @@ class ER_MinitRules:
             "Overworld wet06": self.helpers["swim"],
             "bridge switch left <-> bridge switch right":  lambda state: False, # damage boosting is out of logic
 
-            # # damage boosting
+            # # toxic waters
 
-            # "bridge switch water":  lambda state: False,
-            # "bridge water north":  lambda state: False,
-            # "bridge water south":  lambda state: False,
-            # "mine entrance river north":  lambda state: False,
-            # "mine entrance river south":  lambda state: False,
-            # "poison river corner north":  lambda state: False,
-            # "poison river corner south":  lambda state: False,
+            "sewer island tile -> toxic waters":  lambda state: 
+                self.helpers["swim"](state)
+                and self.helpers["sword"](state),
+            "camera river south -> camera river wet": self.helpers["swim"],
+            "mine entrance left -> toxic waters": self.helpers["swim"],
+            "bridge left -> toxic waters": self.helpers["swim"],
+            "bridge switch left -> toxic waters": self.helpers["swim"],
+
+            # This logic is here so that the generic entrance randomizer doesn't crash randomizing toxic water connections with eachother when they aren't logically useful.
+            # This logic says that you can enter the toxic waters, but you cannot exit, making it useless for logic.
 
 
             "temple octopus north": lambda state:
@@ -410,15 +411,7 @@ class ER_MinitRules:
                 # sword is not actually necessary due to non-vanilla behaviors with the stuff that gets put into the pot.
             "Factory Main - Drill Coin":  self.helpers["sword"],
             "Hotel Room - Crow Heart":  self.helpers["box"],
-            "Hotel Room - Dog Heart": lambda state:
-                (self.helpers["tree"](state)
-                    and (self.helpers["teleport"](state)
-                        or state.has_all({
-                            "ItemSwim",
-                            "ItemShoes"
-                            }, self.player))),
-                # TODO - untouched until i figure out a way to logic this
-                # obscure: no requirement except access to bone room
+            "Hotel Room - Dog Heart": lambda state: state.can_reach("dog house inside", player=self.player),
             "Factory Main - Cooler Tentacle":  self.helpers["sword"],
 
             # Island Shack
@@ -501,8 +494,6 @@ class ER_MinitRules:
             "factory cooler west <-> factory cooler tile": lambda state: 
                 self.helpers["sword"](state)
                 or state.has("ItemShoes", self.player),
-
-            "Hotel Room - Dog Heart": lambda state: True,
 
             # Island Shack
             "Island Shack - Teleporter Tentacle": lambda state:
