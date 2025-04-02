@@ -561,8 +561,8 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
     "rom9_8": [
         {"CName": "camera river north", "direction": "north", "baseCoor": 48, "offset": 192},
         {"CName": "camera river south", "direction": "south", "baseCoor": 224, "offset": 48},
-        # {"CName": "camera river wet east", "direction": "east", "baseCoor": 112, "offset": 48},
-        # {"CName": "camera river wet west", "direction": "west", "baseCoor": 128, "offset": 48},
+        {"CName": "camera river wet east", "direction": "east", "baseCoor": 112, "offset": 48},
+        {"CName": "camera river wet west", "direction": "west", "baseCoor": 128, "offset": 48},
         {"CName": "camera river lookout", "direction": "west", "baseCoor": 80, "offset": 32},
     ],
     "rom9_7": [
@@ -584,7 +584,7 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
     "rom8_8": [
         {"CName": "sewer island", "direction": "door", "x": 64, "y": 128},
         {"CName": "sewer island water north", "direction": "north", "baseCoor": 0, "offset": 208},
-        # {"CName": "sewer island water east", "direction": "east", "baseCoor": 128, "offset": 48},
+        {"CName": "sewer island water east", "direction": "east", "baseCoor": 128, "offset": 48},
         {"CName": "sewer island water south", "direction": "south", "baseCoor": 0, "offset": 128},
         {"CName": "sewer island water west", "direction": "west", "baseCoor": 0, "offset": 240},
         {"CName": "sewer island mainland north", "direction": "north", "baseCoor": 208, "offset": 80},
@@ -632,7 +632,7 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
         {"CName": "bridge switch lookout", "direction": "north", "baseCoor": 112, "offset": 96},
         {"CName": "bridge switch right", "direction": "south", "baseCoor": 192, "offset": 96},
         {"CName": "bridge switch left", "direction": "south", "baseCoor": 64, "offset": 64},
-        # {"CName": "bridge switch water", "direction": "south", "baseCoor": 128, "offset": 64},
+        {"CName": "bridge switch water", "direction": "south", "baseCoor": 128, "offset": 64},
     ],
     "rom10_6": [
         {"CName": "bridge right north", "direction": "north", "baseCoor": 192, "offset": 96},
@@ -641,8 +641,8 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
         {"CName": "bridge left north", "direction": "north", "baseCoor": 64, "offset": 64},
         {"CName": "bridge left south", "direction": "south", "baseCoor": 64, "offset": 48},
         {"CName": "bridge left west", "direction": "west", "baseCoor": 16, "offset": 208},
-        # {"CName": "bridge water north", "direction": "north", "baseCoor": 128, "offset": 64},
-        # {"CName": "bridge water south", "direction": "south", "baseCoor": 144, "offset": 48},
+        {"CName": "bridge water north", "direction": "north", "baseCoor": 128, "offset": 64},
+        {"CName": "bridge water south", "direction": "south", "baseCoor": 144, "offset": 48},
     ],
     "rom9_6": [
         {"CName": "hotel outside north", "direction": "north", "baseCoor": 32, "offset": 256},
@@ -656,12 +656,12 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
         {"CName": "mine entrance right door", "direction": "door", "x": 288, "y": 32},
         {"CName": "mine entrance left north", "direction": "north", "baseCoor": 64, "offset": 48},
         {"CName": "mine entrance left door", "direction": "door", "x": 80, "y": 96},
-        # {"CName": "mine entrance river north", "direction": "north", "baseCoor": 144, "offset": 48},
-        # {"CName": "mine entrance river south", "direction": "south", "baseCoor": 128, "offset": 64},
+        {"CName": "mine entrance river north", "direction": "north", "baseCoor": 144, "offset": 48},
+        {"CName": "mine entrance river south", "direction": "south", "baseCoor": 128, "offset": 64},
     ],
     "rom10_8": [
-        # {"CName": "poison river corner north", "direction": "north", "baseCoor": 128, "offset": 64},
-        # {"CName": "poison river corner south", "direction": "west", "baseCoor": 112, "offset": 48},
+        {"CName": "poison river corner north", "direction": "north", "baseCoor": 128, "offset": 64},
+        {"CName": "poison river corner south", "direction": "west", "baseCoor": 112, "offset": 48},
     ],
     "rom11_6": [
         {"CName": "factory reception main south", "direction": "south", "baseCoor": 96, "offset": 48},
