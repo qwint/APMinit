@@ -263,7 +263,7 @@ class MinitRules:
                 # can be done without sword due to a bug
             "Factory Main - Drill Coin": lambda state:
                 state.has("has_sword", self.player)
-                and state.has("drill smacked"),
+                and state.has("drill smacked", self.player),
             "Hotel Room - Crow Heart": lambda state:
                 state.has("has_sword", self.player)
                 and RuleUtils.can_passBoxes(self.player, state)
