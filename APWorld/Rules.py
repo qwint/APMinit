@@ -472,12 +472,12 @@ class MinitRules:
                     and state.has("ItemThrow", self.player)
                     or state.has("ItemSwim", self.player)
                 )
-                or state.has_all({"has_sword", "ItemGrinder", "ItemGlove"}, self.player)
+                or state.has_all({"has_sword", "ItemGrinder", "ItemGlove"}, self.player) # Tile movement from dog house: L U U U R (Glove used at 3 crab and before press house. Grinder used at box going toward press house.)
                 or RuleUtils.total_hearts(self.player, state, 4)
                 and state.has("ItemSwim", self.player)
-                and state.has("has_sword", self.player)
+                and state.has("has_sword", self.player) # dog house: L U U R U (sword to cut grass to enter toxic river on way to press house)
                 or RuleUtils.total_hearts(self.player, state, 7)
-                and state.has("ItemSwim", self.player),
+                and state.has("ItemSwim", self.player), # Hotel Access is required but implied by having Swim
                 # obscure: you can, with clean movement and damage tanks,
                 # - swim from the factory bridge to press pass house
                 # - without any other items
