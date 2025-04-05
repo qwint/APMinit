@@ -62,7 +62,7 @@ class ER_MinitRules:
                     "boatguy watered",
                     "ItemGlove",
                     }, self.player),
-            "Overworld island shack": lambda state: False,
+            "Overworld island shack -> boat tile": lambda state: False,
             # "coffee shop outside <-> coffee shop inside": lambda state: True,
             "quicksand left tree <-> quicksand main":  self.helpers["tree"],
                 # technically an option to not have glove and water boatguy but
