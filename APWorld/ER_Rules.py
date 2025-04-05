@@ -126,9 +126,11 @@ class ER_MinitRules:
             # unrandomized doors
             "lighthouse inside <-> lighthouse": lambda state: 
                 state.has("ItemKey", self.player),
-            "lighthouse <-> lighthouse lookout": lambda state: False,
+            "lighthouse lookout -> lighthouse": lambda state: False,
+            "lighthouse -> lighthouse lookout": lambda state: False,
                 # obscure: you can swim and grab it from beneath
-            # "lighthouse inside <-> lighthouse lookout": lambda state: True,
+            # "lighthouse inside -> lighthouse lookout": lambda state: True,
+            "lighthouse lookout -> lighthouse inside": lambda state: False,
             "coffee shop pot stairs <-> sewer main":  self.helpers["darkroom2"],  # maybe 3
             # "dog house inside <-> dog house west": lambda state: True,
             # "glove outside <-> glove inside": lambda state: True,
@@ -487,7 +489,7 @@ class ER_MinitRules:
 
         obscure = {
             # Flashlight from Below
-            "lighthouse <-> lighthouse lookout": self.helpers["swim"],
+            "lighthouse -> lighthouse lookout": self.helpers["swim"],
 
             # Shoes to skip breaking the pot
             "coffee shop outside -> coffee shop pot stairs": lambda state: 
