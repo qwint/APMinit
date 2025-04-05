@@ -49,8 +49,10 @@ class ER_MinitRules:
             # "Menu -> sword main": lambda state: True,
             "factory machine catwalk -> Boss Fight": lambda state:
                 self.helpers["darkroom2"](state) and RuleUtils.has_megasword(self.player, state),
+            "Boss Fight -> factory machine catwalk": lambda state: False,
             "factory machine generator -> Boss Fight": lambda state:
                 self.helpers["darkroom2"](state) and RuleUtils.has_megasword(self.player, state),
+            "Boss Fight -> factory machine generator": lambda state: False,
             "2crab tree exit <-> 2crab tile": lambda state: 
                 self.helpers["tree"](state)
                 or self.helpers["swim"](state),
@@ -60,6 +62,7 @@ class ER_MinitRules:
                     "boatguy watered",
                     "ItemGlove",
                     }, self.player),
+            "Overworld island shack": lambda state: False,
             # "coffee shop outside <-> coffee shop inside": lambda state: True,
             "quicksand left tree <-> quicksand main":  self.helpers["tree"],
                 # technically an option to not have glove and water boatguy but
@@ -103,6 +106,7 @@ class ER_MinitRules:
                 self.helpers["sword"](state)
                 and self.helpers["darkroom3"](state),
                 # this needs to be a one-way as the bats respawn
+            "sewer bat gate -> sewer bat arena": lambda state: False,
             "grinder south": lambda state:
                 self.helpers["darkroom1"](state)
                 and self.helpers["swim"](state),
@@ -225,13 +229,18 @@ class ER_MinitRules:
 
             # # toxic waters
 
-            "sewer island tile -> toxic waters":  lambda state: 
+            "sewer island tile -> toxic waters": lambda state: 
                 self.helpers["swim"](state)
                 and self.helpers["sword"](state),
+            "toxic waters -> sewer island tile": lambda state: False,
             "camera river south -> camera river wet": self.helpers["swim"],
+            "camera river wet -> camera river south": lambda state: False,
             "mine entrance left -> toxic waters": self.helpers["swim"],
+            "toxic waters -> mine entrance left": lambda state: False,
             "bridge left -> toxic waters": self.helpers["swim"],
+            "toxic waters -> bridge left": lambda state: False,
             "bridge switch left -> toxic waters": self.helpers["swim"],
+            "toxic waters -> bridge switch left": lambda state: False,
 
             # This logic is here so that the generic entrance randomizer doesn't crash randomizing toxic water connections with eachother when they aren't logically useful.
             # This logic says that you can enter the toxic waters, but you cannot exit, making it useless for logic.
