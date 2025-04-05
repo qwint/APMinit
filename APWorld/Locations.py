@@ -232,7 +232,7 @@ location_table = {
         # heartPiece6
         offset=43,
         region="Hotel Room",
-        er_region="dog house inside",),
+        er_region="bone room",),
     "Factory Main - Cooler Tentacle": MinitLocationData(
         # tentacle7
         offset=44,
@@ -359,14 +359,9 @@ location_table = {
         er_region="factory switch tile",
         locked_item="right machine",
         ),
-    "2 crab access": MinitLocationData(
-        region="Dog House",
-        er_region="2crab tile",
-        locked_item="2 crab access",
-        ),
-    "3 crab access": MinitLocationData(
-        region="Dog House",
-        er_region="3crab main",
-        locked_item="3 crab access",
-        ),
+    "bombs exploded": MinitLocationData(
+        region="Hotel Room",
+        er_region="mine entrance bombs",
+        locked_item="bombs exploded",
+        )
 }

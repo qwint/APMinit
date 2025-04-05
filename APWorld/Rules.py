@@ -28,6 +28,7 @@ class MinitRules:
                 True,
             "Dog House -> Island Shack": lambda state:
                 (state.has_all({
+                    "has_sword",
                     "ItemBoat",
                     "boatguy watered",
                     "ItemGlove",
@@ -50,7 +51,7 @@ class MinitRules:
                 state.has("has_sword", self.player)
                 and (state.has("ItemGrinder", self.player)
                      or state.has_all({
-                        "ItemSwim",
+                        "ItemSwim", # damage boost
                         "ItemCoffee"
                         }, self.player)),
             "Hotel Room -> Underground Tent": lambda state:
@@ -59,15 +60,14 @@ class MinitRules:
                 and state.has("ItemGrinder", self.player),
             "Hotel Room -> Factory Main": lambda state:
                 (RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
-                    and state.has("ItemSwim", self.player))
+                    and state.has("ItemSwim", self.player)
+                )
                 or (
-                    state.has("has_sword", self.player)
+                    state.has("has_sword", self.player) # obscure: shoes instead of sword (Precise movement to squeeze through the destroyables)
                     and state.has("ItemPressPass", self.player)
-                    and ((
-                            RuleUtils.has_darkroom(self.player, state, 3, self.darkrooms)
-                            and state.has("ItemThrow", self.player))
-                         or state.has("ItemSwim", self.player)
-                         )
+                    and (state.has("bombs exploded", self.player)
+                         or state.has("ItemSwim", self.player) # damage boost
+                        )
                 ),
             "Factory Main -> Boss Fight": lambda state:
                 RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
@@ -110,7 +110,7 @@ class MinitRules:
                     (RuleUtils.can_passBoxes(self.player, state)
                         and ((state.has("has_sword", self.player)
                               and state.has("ItemThrow", self.player))
-                             or state.has("ItemSwim", self.player)))
+                             or state.has("ItemSwim", self.player))) # damage boost
                     or (state.has("has_sword", self.player)
                         and state.can_reach("Hotel Room", player=self.player)
                         and (state.has_all({
@@ -257,11 +257,13 @@ class MinitRules:
                 True,
             "Hotel Room - Queue": lambda state:
                 self.factory_to_hotel_backtrack(state)
-                or state.has_any({"ItemSwim", "bridge on"}, self.player),
+                or state.has_any({"ItemSwim", "bridge on", "bombs exploded"}, self.player), # swim only uses damage boost
             "Hotel Room - Hotel Backroom Coin": lambda state:
                 RuleUtils.can_passBoxes(self.player, state) and state.has("has_sword", self.player),
+                # can be done without sword due to a bug
             "Factory Main - Drill Coin": lambda state:
-                state.has("has_sword", self.player),
+                state.has("has_sword", self.player)
+                and state.has("drill smacked", self.player),
             "Hotel Room - Crow Heart": lambda state:
                 state.has("has_sword", self.player)
                 and RuleUtils.can_passBoxes(self.player, state)
@@ -285,7 +287,7 @@ class MinitRules:
                 # - don't think i will though
 
             # Island Shack
-            "Island Shack - Teleporter Tentacle": lambda state, obscure=self.world.options.obscure:
+            "Island Shack - Teleporter Tentacle": lambda state:
                 state.has("has_sword", self.player)
                 and (state.has("ItemCoffee", self.player))
                 and state.has_all({
@@ -307,9 +309,8 @@ class MinitRules:
                     "ItemWateringCan",
                     "left machine",
                     "right machine",
-                    "drill smacked",
+                    "generator smashed",
                     }, self.player),
-                # drill shortcut is a vanilla req
             "Factory Main - Cooler Tentacle": lambda state:
                 state.has("has_sword", self.player),
 
@@ -317,7 +318,8 @@ class MinitRules:
             "generator smashed": lambda state:
                 state.has("has_sword", self.player),
             "drill smacked": lambda state:
-                state.has("has_sword", self.player),
+                state.has("generator smashed", self.player)
+                and state.has("has_sword", self.player),
             "swimmer saved": lambda state:
                 True,
             "hostage saved": lambda state:
@@ -333,10 +335,8 @@ class MinitRules:
             "bridge on": lambda state:
                 state.has("has_sword", self.player)
                 and (
-                     state.has("ItemSwim", self.player)
-                     or (
-                        RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
-                        and state.has("ItemThrow", self.player))
+                     state.has("ItemSwim", self.player) # damage boost
+                     or state.has("bombs exploded", self.player)
                      or self.factory_to_hotel_backtrack(state)
                 ),
             "bridge saved": lambda state:
@@ -367,24 +367,38 @@ class MinitRules:
                     }, self.player),
             "right machine": lambda state:
                 state.has("has_sword", self.player),
+            "bombs exploded": lambda state:
+                state.has("has_sword", self.player)
+                and state.has("ItemThrow", self.player)
+                and RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms),
         }
 
         obscure = {
             "Dog House -> Island Shack": lambda state:
                 state.has("ItemSwim", self.player)
                 or (state.has_all({
+                    "has_sword",
                     "ItemBoat",
                     "boatguy watered",
                     "ItemGlove",
                     }, self.player)),
                 # obscure: you can swim from treasure island
                 # - by baiting the shark
+            "Hotel Room -> Factory Main": lambda state:
+                RuleUtils.has_darkroom(self.player, state, 2, self.darkrooms)
+                and state.has("ItemSwim", self.player)
+                or (
+                    (state.has("has_sword", self.player) or state.has("ItemShoes", self.player))
+                    and state.has("ItemPressPass", self.player)
+                    and (state.has("bombs exploded", self.player)
+                         or state.has("ItemSwim", self.player) # damage boost
+                        )
+                ),
+                # obscure: you can squeeze through the destroyables with shoes and precise movement
             "Dog House - ItemFlashLight": lambda state:
                 state.has("ItemSwim", self.player)
-                or ((
-                     state.has("has_sword", self.player)
-                     or state.has("ItemSwim", self.player))
-                    and state.has("ItemKey", self.player)),
+                or state.has("has_sword", self.player)
+                and state.has("ItemKey", self.player),
                 # obscure: you can swim behind the lighthouse
                 # - and pick up the item
             "Dog House - ItemBasement": lambda state:
@@ -438,7 +452,7 @@ class MinitRules:
                     (RuleUtils.can_passBoxes(self.player, state)
                         and ((state.has("has_sword", self.player)
                               and state.has("ItemThrow", self.player))
-                             or state.has("ItemSwim", self.player)))
+                             or state.has("ItemSwim", self.player))) # damage boost
                     or (state.has("has_sword", self.player)
                         and state.can_reach("Hotel Room", player=self.player)
                         and (state.has_all({
@@ -452,22 +466,18 @@ class MinitRules:
 
         damage_boost_obscure = {
             "Dog House - ItemPressPass": lambda state:
-                (
-                    (RuleUtils.can_passBoxes(self.player, state)
-                        and ((state.has("has_sword", self.player)
-                              and state.has("ItemThrow", self.player))
-                             or state.has("ItemSwim", self.player)))
-                    or (state.has("has_sword", self.player)
-                        and state.can_reach("Hotel Room", player=self.player)
-                        and (state.has_all({
-                                "ItemGrinder",
-                                "ItemGlove"
-                                }, self.player))
-                        or (RuleUtils.total_hearts(self.player, state, 4)
-                            and state.has("ItemSwim", self.player))))
-                or (RuleUtils.total_hearts(self.player, state, 7)
-                    and state.can_reach("Hotel Room", player=self.player)
-                    and state.has("ItemSwim", self.player)),
+                RuleUtils.can_passBoxes(self.player, state)
+                and (
+                    state.has("has_sword", self.player)
+                    and state.has("ItemThrow", self.player)
+                    or state.has("ItemSwim", self.player)
+                )
+                or state.has_all({"has_sword", "ItemGrinder", "ItemGlove"}, self.player) # Tile movement from dog house: L U U U R (Glove used at 3 crab and before press house. Grinder used at box going toward press house.)
+                or RuleUtils.total_hearts(self.player, state, 4)
+                and state.has("ItemSwim", self.player)
+                and state.has("has_sword", self.player) # dog house: L L U R U R U (sword to cut grass to enter toxic river on way to press house)
+                or RuleUtils.total_hearts(self.player, state, 7)
+                and state.has("ItemSwim", self.player), # Hotel Access is required but implied by having Swim
                 # obscure: you can, with clean movement and damage tanks,
                 # - swim from the factory bridge to press pass house
                 # - without any other items
