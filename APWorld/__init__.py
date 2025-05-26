@@ -197,7 +197,7 @@ class MinitWorld(World):
                 itempool += [self.create_item(item_name) for _ in range(item_frequencies.get(item_name, 1))]
 
         total_locations = len(self.multiworld.get_unfilled_locations(self.player))
-        itempool += [self.get_filler_item_name() for _ in range(total_locations - len(itempool))]
+        itempool += [self.create_filler() for _ in range(total_locations - len(itempool))]
         assert len(itempool) == total_locations, f"{len(itempool)} == {total_locations}"
         self.multiworld.itempool += itempool
 
@@ -289,7 +289,8 @@ class MinitWorld(World):
         }
 
         starting_entrance = self.random.choices(free_checks)[0]
-        starting_region = room_lookup.get(starting_entrance, default=starting_entrance)
+        starting_region = room_lookup.get(starting_entrance, starting_entrance)
+        # default to entrance name if it's not in lookup
         # print(f"adding {starting_entrance} to starting region to make single player ER playable")
 
         for location in [
