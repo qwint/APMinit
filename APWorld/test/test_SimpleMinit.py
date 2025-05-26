@@ -1,4 +1,4 @@
-from . import MinitTestBase, selectSeedMinit
+from .bases import MinitTestBase, selectSeedMinit
 
 can_open_chest = [
     "Dog House - Land is Great Coin",

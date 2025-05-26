@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import ClassVar
 from Options import (
     Toggle,
     Choice,
@@ -57,6 +57,14 @@ class ProgressiveSword(Choice):
     option_reverse_progressive = 1
     option_off = 2
     default = 2
+    sword_item_name_lookup: ClassVar[dict[int, str]] = {
+        0: "Progressive Sword",
+        1: "Reverse Progressive Sword",
+        2: "ItemSword"
+    }
+
+    def get_sword_item_name(self) -> str:
+        return self.sword_item_name_lookup[self.value]
 
 
 class Goal(Choice):
@@ -72,7 +80,7 @@ class Goal(Choice):
     option_any_goal = 2
     default = 0
 
-    def parse_goals(self) -> List[str]:
+    def parse_goals(self) -> list[str]:
         if self == "boss_fight":
             return ["boss"]
         elif self == "toilet_goal":

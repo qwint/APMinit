@@ -1,9 +1,5 @@
 from BaseClasses import Entrance, Region
-from typing import (
-    NamedTuple,
-    Dict,
-    List,
-    )
+from typing import NamedTuple
 
 
 class MinitEntranceData(NamedTuple):
@@ -20,7 +16,7 @@ class MinitEntranceData(NamedTuple):
     offset_value: int
 
 
-er_static_connections: Dict[str, List[str]] = {
+er_static_connections: dict[str, list[str]] = {
     "Menu": ["dog house inside"],
     "factory machine catwalk": ["Boss Fight"],
     "factory machine generator": ["Boss Fight", "factory machine catwalk"],
@@ -90,16 +86,16 @@ er_static_connections: Dict[str, List[str]] = {
 }
 
 # will populate this later :')
-# vanilla_connections: Dict[str, List[str]] = {
+# vanilla_connections: dict[str, list[str]] = {
 #
 # }
 
 # i don't like this list so i'm making it as few lines as possible so i don't have to look at it
-er_regions: List[str] = [
+er_regions: list[str] = [
     "Menu", "lighthouse", "lighthouse lookout", "boat tile", "sword east", "sword west", "sword water", "2crab tile", "2crab tree exit", "dolphin tile", "desert beach tile", "coffee shop outside", "coffee shop upper beach", "coffee shop pot stairs", "above lighthouse land", "above lighthouse water", "plant tile", "plant bushes", "dog house west", "dog house east", "dog house bushes", "glove outside", "watering can", "quicksand main", "quicksand left tree", "quicksand right tree", "bull room", "boattree main", "boattree east", "boattree box", "key room", "camera path", "camera river north", "camera river south", "camera river wet", "camera river lookout", "camera house outside", "camera house tree", "3crab main", "3crab trees", "3crab north water", "3crab south water", "3crab land path", "sewer island", "sewer island tile", "throwcheck tile", "throwcheck box", "diver room", "wallet room", "bone room", "marys house", "arena tile", "arena tree north", "arena tree west", "crowroom", "tree resident", "bridge switch lookout", "bridge switch right", "bridge switch left", "bridge right", "bridge left", "hotel outside", "mine entrance right", "mine entrance left", "poison river corner", "toxic waters", "factory reception tile", "factory reception east", "factory queue", "factory cooler tile", "factory cooler west", "factory toilet", "factory central", "factory central south", "factory drill", "factory loading upper", "factory loading lower main", "factory loading lower shortcut", "factory loading deadend", "factory loading desert", "shoe shop outside", "shoe shop shortcut", "temple outside", "desert RV main", "desert RV corner", "desert right cliffs", "desert left cliffs", "RV house", "shoe shop inside", "hotel reception", "hotel backroom", "camera house inside", "waterfall cave", "dog house inside", "coffee shop inside", "lighthouse inside", "island house", "megasword upper", "megasword lower", "underground house", "glove inside", "shoe shop downstairs", "temple main", "temple main north", "temple main east", "temple octopus", "temple tentacle", "temple heart", "temple firebat chest", "temple coin chest", "hotel room", "mine entrance path", "mine entrance bombs", "mine entrance pipe", "mine main", "mine main box", "dog house basement", "snake east", "snake west", "sewer main", "sewer main right north", "sewer main left", "sewer bat arena", "sewer bat gate", "sewer upper", "sewer tentacle", "island teleporter", "teleporter switch1", "teleporter maze", "teleporter tentacle", "grinder tile", "factory machine generator", "factory machine catwalk", "factory mega entrance", "factory snakehall", "miner chest tile", "miner chest pipe entrance", "tent room main", "tent room pipe O", "Overworld wet01", "Overworld wet02", "Overworld wet03", "Overworld wet04", "Overworld wet05", "Overworld wet06", "Overworld wet07", "Overworld wet08", "Overworld wet09", "Overworld wet10", "Overworld wet11", "Overworld wet12", "Overworld dry01", "Overworld dry02", "Overworld dry03", "Overworld dry04", "Overworld dry05", "Overworld dry06", "Overworld dry07", "Overworld dry08", "Overworld island shack", "Overworld treasure island", "Overworld desert", "temple firebat test", "temple coin test", "submarine tile", "factory switch tile", "miner chest pipe L", "tent room pipe I", "trophy maze lower main", "trophy maze lower hall", "trophy maze deadend", "trophy maze upper main", "trophy maze upper hall", "trophy pipe hall", "trophy room", "Boss Fight",
 ]
 
-er_entrances: List[MinitEntranceData] = [
+er_entrances: list[MinitEntranceData] = [
     MinitEntranceData(entrance_name="lighthouse water upper west", region_name="lighthouse", dead_end=False, group_type="water", room_tile="rom7_10", x_cord=0, y_cord=0, offset_direction="y", offset_value=224),
     MinitEntranceData(entrance_name="lighthouse water upper north", region_name="lighthouse", dead_end=False, group_type="water", room_tile="rom7_10", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
     MinitEntranceData(entrance_name="lighthouse water upper east", region_name="lighthouse", dead_end=False, group_type="water", room_tile="rom7_10", x_cord=304, y_cord=0, offset_direction="y", offset_value=224),
@@ -440,7 +436,7 @@ er_entrances: List[MinitEntranceData] = [
 ]
 
 # only used for client
-game_entrances: Dict[str, List[Dict[str, any]]] = {
+game_entrances: dict[str, list[dict[str, any]]] = {
     "rom7_10": [
         {"CName": "lighthouse water upper west", "direction": "west", "baseCoor": 0, "offset": 240},
         {"CName": "lighthouse water upper north", "direction": "north", "baseCoor": 0, "offset": 320},
@@ -1009,7 +1005,7 @@ game_entrances: Dict[str, List[Dict[str, any]]] = {
 }
 
 # only currently used in make_bad_maps
-door_names: List[str] = [
+door_names: list[str] = [
     "lighthouse upper door",
     "lighthouse inside upper",
     "lighthouse lower door",
@@ -1074,7 +1070,7 @@ door_names: List[str] = [
     "dog house basement hotel",
 ]
 
-minit_target_group_lookup: Dict[str, List[str]] = {
+minit_target_group_lookup: dict[str, list[str]] = {
     "land": ["land"],
     "water": ["water"],
     "toxic": ["toxic"],

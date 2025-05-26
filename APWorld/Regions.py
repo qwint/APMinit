@@ -1,8 +1,7 @@
-from typing import NamedTuple, Callable, Dict, List  # Optional
 from BaseClasses import CollectionState
 
 
-region_table: Dict[str, List[str]] = {
+region_table: dict[str, list[str]] = {
     "Menu": ["Dog House"],
     "Dog House": ["Island Shack", "Desert RV", "Hotel Room"],
     "Island Shack": ["Basement"],

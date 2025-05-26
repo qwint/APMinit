@@ -1,12 +1,12 @@
 from worlds.AutoWorld import World
-from typing import NamedTuple, Optional, Callable  # Dict
+from typing import NamedTuple, Callable  # Dict
 
 
 class MinitLocationData(NamedTuple):
     region: str
     er_region: str
-    offset: Optional[int] = None
-    locked_item: Optional[str] = None
+    offset: int | None = None
+    locked_item: str | None = None
 
     show_in_spoiler: bool = True
     can_create: Callable[[World], bool] = lambda world: True
