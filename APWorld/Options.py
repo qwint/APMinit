@@ -56,6 +56,14 @@ class ProgressiveSword(Choice):
     option_reverse_progressive = 1
     option_off = 2
     default = 2
+    sword_item_name_lookup: ClassVar[dict[int, str]] = {
+        0: "Progressive Sword",
+        1: "Reverse Progressive Sword",
+        2: "ItemSword"
+    }
+
+    def get_sword_item_name(self) -> str:
+        return self.sword_item_name_lookup[self.value]
 
 
 class Goal(Choice):

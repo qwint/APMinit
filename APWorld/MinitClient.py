@@ -123,26 +123,23 @@ class ProxyGameContext(SuperContext):
 
         basepath = os.path.dirname(data_file)
         patched_name = f"ap_v{PATCH_VERSION}_data.win"
+        patched_path = os.path.join(basepath, patched_name)
 
-        if not os.path.isfile(os.path.join(basepath, patched_name)):
+        if not os.path.isfile(patched_path):
             with open(data_file, "rb") as f:
                 patchedFile = bsdiff4.patch(f.read(), data_path("patch.bsdiff"))
-            with open(os.path.join(os.path.dirname(data_file), patched_name), "wb") as f:
+            with open(patched_path, "wb") as f:
                 f.write(patchedFile)
             logger.info("Patch complete")
         else:
             logger.info("Found patched file, skipping patching process")
-        executible = "minit.exe"
-        if not os.path.isfile(os.path.join(basepath, executible)):
-            executible = "minitGMS2.exe"
-            if not os.path.isfile(os.path.join(basepath, executible)):
+        exe_path = os.path.join(basepath, "minit.exe")
+        if not os.path.isfile(exe_path):
+            exe_path = os.path.join(basepath, "minitGMS2.exe")
+            if not os.path.isfile(exe_path):
                 logger.info("No known Minit executible in the install folder")
                 return
-        subprocess.Popen([
-            os.path.join(basepath, executible),
-            "-game",
-            os.path.join(basepath, patched_name)
-        ])
+        subprocess.Popen([exe_path, "-game", patched_path])
 
     def on_package(self, cmd: str, args: dict):
         super().on_package(cmd, args)
@@ -296,34 +293,27 @@ def handleErConnections(ctx: CommonContext):
     ]}
     """
     connections = ctx.slot_data["ER_connections"]
-    if connections:
-        erMessage = {"Entrances": game_entrances}
-        for connection in connections:
-            left = connection[0]
-            right = connection[1]
-            for e in er_entrances:
-                if e.entrance_name == left:
-                    left_entrance = e
-                if e.entrance_name == right:
-                    right_entrance = e
+    if not connections:
+        return "ER Disabled"
+    er_data_lookup = {data.entrance_name for data in er_entrances}
+    erMessage = {"Entrances": game_entrances}
+    for connection in connections:
+        left, right = connection
+        left_entrance = er_data_lookup[left]
+        right_entrance = er_data_lookup[right]
+        left_tile = left_entrance.room_tile
+        left_name = left_entrance.entrance_name
 
-            left_tile = left_entrance.room_tile
-            left_name = left_entrance.entrance_name
+        for index, entrance in enumerate(erMessage["Entrances"][left_tile]):
+            if left_name == entrance["CName"]:
+                erMessage["Entrances"][left_tile][index]["out"] = {
+                    "tile": right_entrance.room_tile,
+                    "x": right_entrance.x_cord,
+                    "y": right_entrance.y_cord,
+                    "offDir": right_entrance.offset_direction,
+                    "offNum": right_entrance.offset_value,
+                    }
 
-            index = 0
-            for entrance in erMessage["Entrances"][left_tile]:
-                if left_name == entrance["CName"]:
-                    erMessage["Entrances"][left_tile][index]["out"] = {
-                        "tile": right_entrance.room_tile,
-                        "x": right_entrance.x_cord,
-                        "y": right_entrance.y_cord,
-                        "offDir": right_entrance.offset_direction,
-                        "offNum": right_entrance.offset_value,
-                        }
-                index += 1
-
-    else:
-        erMessage = "ER Disabled"
     return erMessage
 
 
@@ -445,15 +435,9 @@ async def main(args):
 
     ctx = ProxyGameContext(args.connect, args.password)
     webserver = Webserver(ctx)
-    ctx.httpServer_task = asyncio.create_task(
-        http_server_loop(webserver),
-        name="http server loop"
-        )
+    ctx.httpServer_task = asyncio.create_task(http_server_loop(webserver), name="http server loop")
 
-    ctx.server_task = asyncio.create_task(
-        server_loop(ctx),
-        name="server loop"
-        )
+    ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
 
     if tracker_loaded:
         ctx.run_generator()
@@ -468,9 +452,7 @@ async def main(args):
 def launch(*args):
     import colorama
 
-    parser = get_base_parser(
-        description="Minit Archipelago Client."
-        )
+    parser = get_base_parser(description="Minit Archipelago Client.")
     parser.add_argument("url", nargs="?", help="Archipelago Webhost uri to auto connect to.")
     args = parser.parse_args(args)
 

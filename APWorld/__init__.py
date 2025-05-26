@@ -136,6 +136,7 @@ def launch_client(*args):
 # TODO remove eventually once 0.6.0 is old enough
 def launch_if_needed(*args):
     import sys
+    from worlds.LauncherComponents import launch_subprocess
     from .MinitClient import launch
     if not sys.stdout or "--nogui" not in sys.argv:
         launch_subprocess(launch, name="MinitClient", args=args)
@@ -158,7 +159,6 @@ class MinitWorld(World):
     """
 
     game = "Minit"
-    required_client_version = (0, 4, 4)
     options_dataclass = MinitGameOptions
     options: MinitGameOptions
     settings: MinitSettings
@@ -166,26 +166,15 @@ class MinitWorld(World):
     output_connections: list[tuple[str, str]]
     spoiler_hints: dict[str, str]
 
-    item_name_to_id = {
-        name: data.code
-        for name, data
-        in item_table.items()
-        if data.code is not None}
-    location_name_to_id = {
-        name: data.code
-        for name, data
-        in location_table.items()
-        if data.code is not None}
-    locked_locations = {
-        name: data
-        for name, data
-        in location_table.items()
-        if data.locked_item}
+    item_name_to_id = {name: data.code for name, data in item_table.items() if data.code is not None}
+    location_name_to_id = {name: data.code for name, data in location_table.items() if data.code is not None}
+    locked_locations = {name: data for name, data in location_table.items() if data.locked_item}
     item_name_groups = item_groups
 
     def generate_early(self):
         self.spoiler_hints = {}
         if self.options.er_option and not er_loaded:
+            # TODO remove once GER is old enough
             from Options import OptionError
             raise OptionError("Please use the Generic Entrance Rando branch for ER")
 
@@ -200,26 +189,17 @@ class MinitWorld(World):
             item_clas = data.classification
         return MinitItem(name, item_clas, data.code, self.player)
 
-    def add_to_pool(self, name: str, count: int):
-        self.multiworld.itempool.append(
-            self.create_item(name))
-        return count + 1
-
     def create_items(self):
         item_count = 0
+        itempool = []
         for item_name, item_data in item_table.items():
             if item_data.code and item_data.can_create(self):
-                if item_name in item_frequencies:
-                    frequency = item_frequencies[item_name]
-                else:
-                    frequency = 1
-                for count in range(frequency):
-                    item_count = self.add_to_pool(item_name, item_count)
+                itempool += [self.create_item(item_name) for _ in range(item_frequencies.get(item_name, 1))]
 
         total_locations = len(self.multiworld.get_unfilled_locations(self.player))
-        for _ in range(total_locations - item_count):
-            item_count = self.add_to_pool(self.get_filler_item_name(), item_count)
-        assert item_count == total_locations, f"{item_count} == {total_locations}"
+        itempool += [self.get_filler_item_name() for _ in range(total_locations - len(itempool))]
+        assert len(itempool) == total_locations, f"{len(itempool)} == {total_locations}"
+        self.multiworld.itempool += itempool
 
     def add_regions_and_locations(self, er_on: bool):
         if er_on:
@@ -228,11 +208,11 @@ class MinitWorld(World):
         else:
             region_list = region_table.keys()
             entrance_list = region_table
-        for region_name in region_list:
-            self.multiworld.regions.append(Region(
-                region_name,
-                self.player,
-                self.multiworld))
+
+        self.multiworld.regions += [
+            Region(region_name, self.player, self.multiworld)
+            for region_name in region_list
+        ]
 
         for loc_name, loc_data in location_table.items():
             if not loc_data.can_create(self):
@@ -241,42 +221,27 @@ class MinitWorld(World):
                 loc_region = loc_data.er_region
             else:
                 loc_region = loc_data.region
-            region = self.multiworld.get_region(
-                loc_region,
-                self.player)
-            new_loc = Location(
-                self.player,
-                loc_name,
-                loc_data.code,
-                region)
+            region = self.get_region(loc_region)
+            new_loc = Location(self.player, loc_name, loc_data.code, region)
             if (not loc_data.show_in_spoiler):
                 new_loc.show_in_spoiler = False
             region.locations.append(new_loc)
             if loc_data.locked_item:
-                self.multiworld.get_location(
-                    loc_name,
-                    self.player
-                ).place_locked_item(MinitItem(
+                new_loc.place_locked_item(MinitItem(
                     name=loc_data.locked_item,
                     classification=ItemClassification.progression,
                     code=None,
                     player=self.player))
 
         for region_name, exit_list in entrance_list.items():
-            region = self.multiworld.get_region(region_name, self.player)
+            region = self.get_region(region_name)
             if er_on:
                 for other_region_name in exit_list:
-                    other_region = self.multiworld.get_region(
-                        other_region_name,
-                        self.player,
-                        )
+                    other_region = self.get_region(other_region_name)
                     region.connect(other_region)
                     other_region.connect(region)
             else:
                 region.add_exits(exit_list)
-        # elif self.options.er_option == "on":
-        #     # current map gen is pure random, so make regions/connections vanilla
-        #     self.output_connections = self.make_bad_map()
 
     def create_regions(self):
         from worlds.generic.Rules import forbid_item
@@ -285,86 +250,7 @@ class MinitWorld(World):
         starting_entrance = ""
         early_location_list: list[Location] = []
         self.add_regions_and_locations(er_on)
-        if er_on and er_loaded:
-            # current code for using the Generic ER randomizer
-            if True: #self.multiworld.players == 1:
-                # if there is a one-player world, make at least one
-                # of the early entrances into a check
-                # that you can pick up for free
-                free_checks = [
-                    "watering can",  # deadend
-                    "camera house outside south",  # deadend
-                    "glove outside east",
-                    "glove outside west",
-                    "factory loading upper north",
-                    "factory loading upper east",
-                    "factory loading upper south",
-                    "factory snakehall north",
-                    "factory queue",  # deadend
-                    "trophy room",  # deadend
-                    ]  # consider removing the deadends because they could have a higher chance of killing the seed
-                room_lookup = {
-                    "camera house outside south": "camera house inside",
-                    "glove outside east": "glove inside",
-                    "glove outside west": "glove inside",
-                    "factory loading upper north": "factory loading upper",
-                    "factory loading upper east": "factory loading upper",
-                    "factory loading upper south": "factory loading upper",
-                    "factory snakehall north": "factory loading upper",
-                }
-
-                starting_entrance = self.random.choices(free_checks)[0]
-
-                if starting_entrance in room_lookup:
-                    starting_region = room_lookup[starting_entrance]
-                else:
-                    starting_region = starting_entrance
-
-                early_location_list = [
-                    self.multiworld.get_location(location_name, self.player)
-                    for location_name, location_data in location_table.items()
-                    if location_data.er_region == starting_region
-                ]
-                # print(f"adding {starting_entrance} to starting region to make single player ER playable")
-                manual_connect_start = None
-                manual_connect_end = None
-                # add_manual_connect = True
-
-            for er_entrance in er_entrances:
-                region = self.multiworld.get_region(
-                    er_entrance.region_name,
-                    self.player)
-                # entrance.is_dead_end = er_entrance[2]
-
-                en1 = region.create_exit(er_entrance.entrance_name)
-                en1.randomization_type = EntranceType.TWO_WAY
-                en1.randomization_group = er_entrance.group_type
-                if starting_entrance and er_entrance.entrance_name in ["dog house south", starting_entrance]:
-                    if er_entrance.entrance_name == "dog house south":
-                        manual_connect_start = en1
-                    if er_entrance.entrance_name == starting_entrance:
-                        manual_connect_end = en1
-                    if manual_connect_start and manual_connect_end:
-                        manual_connect_start.connect(manual_connect_end.parent_region)
-                        manual_connect_end.connect(manual_connect_start.parent_region)
-                        self.output_connections = [
-                                                      (
-                                                          manual_connect_start.name,
-                                                          manual_connect_end.name
-                                                      ),
-                                                      (
-                                                          manual_connect_end.name,
-                                                          manual_connect_start.name
-                                                      )
-                                                  ]
-                        # print(f"connecting {manual_connect_start.name} and {manual_connect_end.name}")
-                        # add_manual_connect = False
-                else:
-                    en2 = region.create_er_target(er_entrance.entrance_name)
-                    en2.randomization_type = EntranceType.TWO_WAY
-                    en2.randomization_group = er_entrance.group_type
-
-        else:
+        if not er_on:
             self.output_connections = None
             for name in [
                 "Dog House - Dolphin Heart",
@@ -373,32 +259,76 @@ class MinitWorld(World):
                 "Hotel Room - Queue",
                 "Dog House - ItemSword",
             ]:
-                early_location_list.append(self.multiworld.get_location(name, self.player))
-            # self.output_connections = [
-            #     ("dog house inside door", "dog house door",),
-            #     ("dog house door", "dog house inside door",),
+                # forbid prog items with duplicates on early locations so swap doesn't choke on them
+                forbid_item(self.get_location(name), "Coin", self.player)
+                # forbid_item(early_location, "HeartPiece", self.player)
+                # forbid_item(early_location, "Tentacle", self.player)
+            return
 
-            #     ("dog house west", "dog house east",),
-            #     ("dog house east", "dog house west",),
+        # make at least one of the early entrances into a check that you can pick up for free
+        free_checks = [
+            "watering can",  # deadend
+            "camera house outside south",  # deadend
+            "glove outside east",
+            "glove outside west",
+            "factory loading upper north",
+            "factory loading upper east",
+            "factory loading upper south",
+            "factory snakehall north",
+            "factory queue",  # deadend
+            "trophy room",  # deadend
+            ]  # consider removing the deadends because they could have a higher chance of killing the seed
+        room_lookup = {
+            "camera house outside south": "camera house inside",
+            "glove outside east": "glove inside",
+            "glove outside west": "glove inside",
+            "factory loading upper north": "factory loading upper",
+            "factory loading upper east": "factory loading upper",
+            "factory loading upper south": "factory loading upper",
+            "factory snakehall north": "factory loading upper",
+        }
 
-            #     ("dog house east lower", "dog house bushes",),
-            #     ("dog house bushes", "dog house east lower",),
+        starting_entrance = self.random.choices(free_checks)[0]
+        starting_region = room_lookup.get(starting_entrance, default=starting_entrance)
+        # print(f"adding {starting_entrance} to starting region to make single player ER playable")
 
-            #     ("dog house river north", "dog house river south",),
-            #     ("dog house river south", "dog house river north",),
-
-            #     ("dog house south", "coffee shop inside",),
-            #     ("coffee shop inside", "dog house south",),
-            # ]
-            # self.output_connections = self.make_bad_map()
-
-        for location in early_location_list:
+        for location in [
+            self.get_location(location_name)
+            for location_name, location_data in location_table.items()
+            if location_data.er_region == starting_region
+        ]:
+            # forbid prog items with duplicates on early locations so swap doesn't choke on them
             forbid_item(location, "Coin", self.player)
-        # forbid_item(early_location, "HeartPiece", self.player)
-        # forbid_item(early_location, "Tentacle", self.player)
+            # forbid_item(early_location, "HeartPiece", self.player)
+            # forbid_item(early_location, "Tentacle", self.player)
+
+        manual_connect_start = None
+        manual_connect_end = None
+        # add_manual_connect = True
+
+        for er_entrance in er_entrances:
+            region = self.get_region(er_entrance.region_name)
+            # entrance.is_dead_end = er_entrance[2]
+
+            en1 = region.create_exit(er_entrance.entrance_name)
+            en1.randomization_type = EntranceType.TWO_WAY
+            en1.randomization_group = er_entrance.group_type
+            if starting_entrance and er_entrance.entrance_name in ("dog house south", starting_entrance):
+                continue
+
+            en2 = region.create_er_target(er_entrance.entrance_name)
+            en2.randomization_type = EntranceType.TWO_WAY
+            en2.randomization_group = er_entrance.group_type
+
+        dog_house = self.get_entrance("dog house south")
+        free_entrance = self.get_entrance(starting_entrance)
+        dog_house.connect(free_entrance.parent_region)
+        free_entrance.connect(dog_house.parent_region)
+        self.output_connections = [("dog house south", starting_entrance,), (starting_entrance, "dog house south",)]
+        # manually connect our free check entrance and hardcode it into our output connections for the client
 
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
-        if self.options.er_option == "off" or not er_loaded:
+        if self.options.er_option == "off":
             return
 
         spoiler_handle.write(f"Entrance Rando Location Paths:\n")
@@ -414,7 +344,7 @@ class MinitWorld(World):
     #     reachable_regions = self.reachable_regions[player]
     #     blocked_connections = self.blocked_connections[player]
     #     queue = deque(self.blocked_connections[player])
-    #     start = self.multiworld.get_region("Menu", player)
+    #     start = self.get_region("Menu")
 
     #     # init on first call - this can't be done on construction since the regions don't exist yet
     #     if start not in reachable_regions:
@@ -442,7 +372,7 @@ class MinitWorld(World):
     #                     queue.append(new_entrance)
 
     def extend_hint_information(self, hint_data: dict[int, dict[int, str]]) -> None:
-        if self.options.er_option == "off" or not er_loaded:
+        if self.options.er_option == "off":
             return
 
         hint_data.update({self.player: {}})
@@ -451,10 +381,10 @@ class MinitWorld(World):
         # sometimes some of my regions aren't in path for some reason? and other comments stolen from Treble
         all_state.update_reachable_regions(self.player)
         paths = all_state.path
-        # start = self.multiworld.get_region("dog house west", self.player)
+        # start = self.get_region("dog house west")
         # start_connections = [entrance.name for entrance in start.exits]  # if entrance not in {"Home", "Shrink Down"}]
         transition_names = [er_entrance.entrance_name for er_entrance in er_entrances]  # + start_connections
-        for loc in self.multiworld.get_locations(self.player):
+        for loc in self.get_locations():
             path_to_loc = []
             name, connection = paths[loc.parent_region]
             while connection != ("Menu", None) and name is not None:
@@ -479,15 +409,16 @@ class MinitWorld(World):
         return slot_data
 
     def interpret_slot_data(self, slot_data: dict[str, Any]):
+        if not slot_data["ER_connections"]:
+            return
         try:
-            if slot_data["ER_connections"]:
-                e_dict = {entrance.name: entrance for region in self.multiworld.get_regions(self.player) for entrance in region.entrances}
+            e_dict = {entrance.name: entrance for region in self.get_regions() for entrance in region.entrances}
 
-                for connection in slot_data["ER_connections"]:
-                    assert connection[0] in e_dict, f"entrance {connection[0]} in slot data not in world"
-                    assert connection[1] in e_dict, f"entrance {connection[1]} in slot data not in world"
+            for connection in slot_data["ER_connections"]:
+                assert connection[0] in e_dict, f"entrance {connection[0]} in slot data not in world"
+                assert connection[1] in e_dict, f"entrance {connection[1]} in slot data not in world"
 
-                    e_dict[connection[0]].connected_region = e_dict[connection[1]].parent_region
+                e_dict[connection[0]].connected_region = e_dict[connection[1]].parent_region
         except AssertionError:
             import logging
             logging.getLogger("Client").info(f"Tracker: ER Handling failed because of unknown entrances, confirm your AP install can support ER")
@@ -495,19 +426,17 @@ class MinitWorld(World):
     def set_rules(self):
         if self.options.er_option == "off":
             MinitRules(self).set_Minit_rules()
-        elif self.options.er_option == "on" and not er_loaded:
-            MinitRules(self).set_Minit_rules()
-        elif self.options.er_option == "on" and er_loaded:
+        else:
             ER_MinitRules(self).set_Minit_rules()
 
             self.output_connections += randomize_entrances(
-                    world=self,
-                    coupled=True,
-                    target_group_lookup=minit_target_group_lookup,
-                    preserve_group_order=False
-                    ).pairings
+                world=self,
+                coupled=True,
+                target_group_lookup=minit_target_group_lookup,
+                preserve_group_order=False
+                ).pairings
             # visualize_regions(
-            #     self.multiworld.get_region("Menu", self.player),
+            #     self.get_region("Menu"),
             #     "output/regionmap.puml")
 
         if self.options.chosen_goal == "boss_fight":  # boss fight
@@ -526,12 +455,7 @@ class MinitWorld(World):
             self.multiworld.local_early_items[self.player][self.get_sword_item_name()] = 1
 
     def get_sword_item_name(self) -> str:
-        if self.options.progressive_sword == "off":
-            return "ItemSword"
-        elif self.options.progressive_sword == "reverse_progressive":
-            return "Reverse Progressive Sword"
-        elif self.options.progressive_sword == "forward_progressive":
-            return "Progressive Sword"
+        return self.options.progressive_sword.get_sword_item_name()
 
     def get_filler_item_name(self) -> str:
         if bool(self.options.min_hp):
@@ -539,31 +463,21 @@ class MinitWorld(World):
         else:
             return "HeartPiece"
 
-    # def pre_fill(self) -> None:
-    #     from worlds.generic.Rules import forbid_item
-    #     forbid_item(self.multiworld.get_location("Dog House - ItemSword", self.player), "Coin", self.player)
-        # if self.multiworld.players == 1 and not bool(self.options.starting_sword):
-        #     starting_items = ["ItemSwim", "ItemWateringCan"]
-        #     if self.options.progressive_sword == "off":
-        #         starting_items.append("ItemBrokenSword")
-        #         starting_items.append("ItemSword")
-        #         starting_items.append("ItemMegaSword")
-        #     elif self.options.progressive_sword == "reverse_progressive":
-        #         starting_items.append("Reverse Progressive Sword")
-        #     elif self.options.progressive_sword == "forward_progressive":
-        #         starting_items.append("Progressive Sword")
-        #     self.random.shuffle(starting_items)
-        #     self.multiworld.local_early_items[self.player][starting_items.pop()] = 1
-
     def collect(self, state: "CollectionState", item: "Item") -> bool:
         change = super().collect(state, item)
         if change and item.name in item_groups["swords"]:
-            state.prog_items[item.player]["has_sword"] += 1
+            if hasattr(state, "add_item"):
+                state.add_item("has_sword", self.player)
+            else:  # TODO remove when 0.6.2 is old enough
+                state.prog_items[item.player]["has_sword"] += 1
         return change
 
     def remove(self, state: "CollectionState", item: "Item") -> bool:
         change = super().remove(state, item)
         if change and item.name in item_groups["swords"]:
-            state.prog_items[item.player]["has_sword"] -= 1
+            if hasattr(state, "add_item"):
+                state.remove_item("has_sword", self.player)
+            else:  # TODO remove when 0.6.2 is old enough
+                state.prog_items[item.player]["has_sword"] -= 1
             assert state.prog_items[item.player]["has_sword"] > -1
         return change
