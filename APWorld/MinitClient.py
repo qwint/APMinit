@@ -59,7 +59,7 @@ except ImportError:
 
 def check_locations(ctx: CommonContext, request: list[int]) -> json:
     # Back compat, remove when 0.6.2 is old enough
-    needed_updates = set(locations).difference(
+    needed_updates = set(request).difference(
         ctx.locations_checked)
     locationmessage = [{
         "cmd": "LocationChecks",
@@ -363,7 +363,7 @@ class ProxyGameContext(SuperContext):
         loc = self.locations_info[location]
         slot = loc.player
         player = self.slot_info[loc.player].name
-        item = self.item_names[loc.item]
+        item = self.item_names.lookup_in_slot(loc.item, slot)
         code = loc.item
 
         if self.slot_concerns_self(slot):
