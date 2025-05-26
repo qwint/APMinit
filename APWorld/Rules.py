@@ -1,7 +1,5 @@
-from BaseClasses import CollectionState
-from typing import Dict, Callable, TYPE_CHECKING  # Set
-from worlds.generic.Rules import set_rule  # add_rule
-# from .Options import MinitGameOptions
+from typing import TYPE_CHECKING
+from worlds.generic.Rules import set_rule, CollectionRule
 from . import RuleUtils
 
 if TYPE_CHECKING:
@@ -14,9 +12,9 @@ class MinitRules:
     world: MinitWorld
     player: int
     darkrooms: int
-    region_rules: Dict[str, Callable[[CollectionState], bool]]
+    region_rules: dict[str, CollectionRule]
 
-    location_rules: Dict[str, Callable[[CollectionState], bool]]
+    location_rules: dict[str, CollectionRule]
 
     def __init__(self, world: MinitWorld) -> None:
         self.world = world

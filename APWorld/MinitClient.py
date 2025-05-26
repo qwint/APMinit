@@ -1,5 +1,4 @@
 import asyncio
-import typing
 import subprocess
 import json
 import time
@@ -7,6 +6,7 @@ import os
 import bsdiff4
 import urllib.parse
 import aiohttp.web
+from argparse import ArgumentParser, Namespace
 
 import Utils
 from NetUtils import ClientStatus, RawJSONtoTextParser
@@ -32,7 +32,7 @@ try:
     from CommonClient import handle_url_arg
 except ImportError:
     # back compat, can delete once 0.6.0 is old enough
-    def handle_url_arg(args: "argparse.Namespace", parser: "typing.Optional[argparse.ArgumentParser]" = None) -> "argparse.Namespace":
+    def handle_url_arg(args: Namespace, parser: ArgumentParser | None = None) -> Namespace:
         """
         Parse the url arg "archipelago://name:pass@host:port" from launcher into correct launch args for CommonClient
         If alternate data is required the urlparse response is saved back to args.url if valid
@@ -84,14 +84,14 @@ class MinitCommandProcessor(ClientCommandProcessor):
 
 class ProxyGameContext(SuperContext):
     game = GAMENAME
-    httpServer_task: typing.Optional["asyncio.Task[None]"] = None
+    httpServer_task: asyncio.Task[None] | None = None
     command_processor = MinitCommandProcessor
     tags = set()
     last_sent_death: float = time.time()
     slot_data: dict[str, any]
     death_amnisty_total: int
     death_amnisty_count: int
-    goals: typing.List[str]
+    goals: list[str]
 
     def __init__(self, server_address, password):
         super().__init__(server_address, password)

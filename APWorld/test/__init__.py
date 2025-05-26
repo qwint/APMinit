@@ -1,15 +1,7 @@
 from test.bases import WorldTestBase
-# from argparse import Namespace
-# from test.general import gen_steps
-# from worlds.AutoWorld import call_all
-# from worlds import AutoWorld
 import typing
-from BaseClasses import CollectionState  # , Item, MultiWorld
+from BaseClasses import CollectionState
 from .. import MinitWorld
-# if TYPE_CHECKING:
-#     from .. import MinitWorld
-# else:
-#     MinitWorld = object
 
 
 class MinitTestBase(WorldTestBase):
@@ -18,7 +10,7 @@ class MinitTestBase(WorldTestBase):
 
     def assertAccessIndependency(
             self,
-            locations: typing.List[str],
+            locations: list[str],
             possible_items: typing.Iterable[typing.Iterable[str]],
             only_check_listed: bool = False) -> None:
         """Asserts that the provided locations can't be reached without
@@ -46,7 +38,7 @@ class MinitTestBase(WorldTestBase):
 
     def assertAccessWithout(
             self,
-            locations: typing.List[str],
+            locations: list[str],
             possible_items: typing.Iterable[typing.Iterable[str]]) -> None:
         """Asserts that the provided locations can't be reached without the
         listed items but can be reached with any

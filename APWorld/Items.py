@@ -1,6 +1,6 @@
 from BaseClasses import Item, ItemClassification
 from worlds.AutoWorld import World
-from typing import NamedTuple, Dict, Set, Callable
+from typing import NamedTuple, Callable
 
 
 class MinitItem(Item):
@@ -25,7 +25,7 @@ useful = ItemClassification.useful
 filler = ItemClassification.filler
 
 
-item_table: Dict[str, MinitItemData] = {
+item_table: dict[str, MinitItemData] = {
     "Coin": MinitItemData(offset=0, classification=prog_skip),
     "HeartPiece": MinitItemData(
         offset=1, classification=useful,
@@ -84,7 +84,7 @@ item_frequencies = {
 }
 
 
-item_groups: Dict[str, Set[str]] = {
+item_groups: dict[str, set[str]] = {
     "swords": {
         "ItemBrokenSword",
         "ItemSword",

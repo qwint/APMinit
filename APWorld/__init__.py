@@ -32,12 +32,11 @@ from .Options import MinitGameOptions
 from .Rules import MinitRules
 from .ER_Rules import ER_MinitRules
 from . import RuleUtils
-from typing import Dict, Any, List, TextIO, Tuple, Optional
+from typing import Any, TextIO
 from worlds.LauncherComponents import (
     Component,
     components,
     Type,
-    launch_subprocess,
 )
 from Utils import visualize_regions
 
@@ -164,8 +163,8 @@ class MinitWorld(World):
     options: MinitGameOptions
     settings: MinitSettings
     web = MinitWebWorld()
-    output_connections: List[Tuple[str, str]]
-    spoiler_hints: Dict[str, str]
+    output_connections: list[tuple[str, str]]
+    spoiler_hints: dict[str, str]
 
     item_name_to_id = {
         name: data.code
@@ -284,7 +283,7 @@ class MinitWorld(World):
 
         er_on = bool(self.options.er_option)
         starting_entrance = ""
-        early_location_list: List[Location] = []
+        early_location_list: list[Location] = []
         self.add_regions_and_locations(er_on)
         if er_on and er_loaded:
             # current code for using the Generic ER randomizer
@@ -442,7 +441,7 @@ class MinitWorld(World):
     #                 if new_entrance in blocked_connections and new_entrance not in queue:
     #                     queue.append(new_entrance)
 
-    def extend_hint_information(self, hint_data: Dict[int, Dict[int, str]]) -> None:
+    def extend_hint_information(self, hint_data: dict[int, dict[int, str]]) -> None:
         if self.options.er_option == "off" or not er_loaded:
             return
 
@@ -469,7 +468,7 @@ class MinitWorld(World):
                 # we want spoiler paths to events but not hint text
                 hint_data[self.player][loc.address] = text
 
-    def fill_slot_data(self) -> Dict[str, Any]:
+    def fill_slot_data(self) -> dict[str, Any]:
         slot_data = self.options.as_dict(
                 "death_link",
                 "death_amnisty_total",
@@ -479,7 +478,7 @@ class MinitWorld(World):
 
         return slot_data
 
-    def interpret_slot_data(self, slot_data: Dict[str, Any]):
+    def interpret_slot_data(self, slot_data: dict[str, Any]):
         try:
             if slot_data["ER_connections"]:
                 e_dict = {entrance.name: entrance for region in self.multiworld.get_regions(self.player) for entrance in region.entrances}
