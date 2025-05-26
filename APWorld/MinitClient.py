@@ -56,6 +56,18 @@ except ImportError:
 
         return args
 
+
+def check_locations(ctx: CommonContext, request: list[int]) -> json:
+    # Back compat, remove when 0.6.2 is old enough
+    needed_updates = set(locations).difference(
+        ctx.locations_checked)
+    locationmessage = [{
+        "cmd": "LocationChecks",
+        "locations": list(needed_updates)
+        }]
+    return locationmessage
+
+
 DEBUG = False
 GAMENAME = "Minit"
 ITEMS_HANDLING = 0b111
@@ -186,16 +198,15 @@ class ProxyGameContext(SuperContext):
             await self.check_locations(requestjson["Locations"])
         except:  # TODO figure out what the exception actually is
             # back compat, can just let check_locations run when 0.6.0 is old enough
-            response = handleLocations(self, requestjson)
-            await self.send_msgs(response)
+            await self.send_msgs(check_locations(self, requestjson["Locations"]))
 
-        localResponse = handleLocalLocations(self, requestjson)
+        localResponse = self.build_local_locations_response(requestjson)
         return aiohttp.web.json_response(localResponse)
 
     async def goalHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle POST at /Goal"""
         requestjson = await request.text()
-        response = handleGoal(self, requestjson)
+        response = self.build_goal_response(requestjson)
         if response:
             await self.send_msgs(response)
         return aiohttp.web.json_response(response)
@@ -203,7 +214,7 @@ class ProxyGameContext(SuperContext):
     async def deathHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle POST at /Death"""
         if self.slot_data["death_link"]:
-            response = handleDeathlink(self)
+            response = self.build_deathlink_response()
             await self.send_death(f"{self.player_names[self.slot]} ran out of time")  # consider more silly messages
             return aiohttp.web.json_response(response)
         else:
@@ -226,208 +237,185 @@ class ProxyGameContext(SuperContext):
 
     async def itemsHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle GET at /Items"""
-        response = handleItems(self)
+        response = self.build_item_response()
         return aiohttp.web.json_response(response)
 
     async def datapackageHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle GET at /Datapackage"""
-        response = handleDatapackage(self)
+        response = self.build_datapackage_response()
         # response = {'datapackage':'FROM MINIT - need to figure out data'}
         # await self.send_msgs(response)
         return aiohttp.web.json_response(response)
 
     async def erConnHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
         """handle GET at /ErConnections"""
-        response = handleErConnections(self)
+        response = self.build_er_response()
         return aiohttp.web.json_response(response)
 
-
-def handleErConnections(ctx: CommonContext):
-    """
-    erMessage format:
-    {"Entrances": [
-        "hom10_10": [
-            {
-                "direction": "south",
-                "baseCoor": 0,
-                "offset": 224,
-                "out": {
-                    "room": "hom10_10",
-                    "x": 0,
-                    "y": 0,
-                }
-            },
-            {
-                "direction": "north",
-                "baseCoor": 0,
-                "offset": 224,
-                "out": {
-                    "room": "hom10_10",
-                    "x": 0,
-                    "y": 0,
-                }
-            }
-        ],
-        "rom10_10": [
-            {
-                "direction": "south",
-                "baseCoor": 0,
-                "offset": 224,
-                "out": {
-                    "room": "hom10_10",
-                    "x": 0,
-                    "y": 0,
-                }
-            },
-            {
-                "direction": "door",
-                "x": 0,
-                "y": 224,
-                "out": {
-                    "room": "hom10_10",
-                    "x": 0,
-                    "y": 0,
-                }
-            }
-        ]
-    ]}
-    """
-    connections = ctx.slot_data["ER_connections"]
-    if not connections:
-        return "ER Disabled"
-    er_data_lookup = {data.entrance_name for data in er_entrances}
-    erMessage = {"Entrances": game_entrances}
-    for connection in connections:
-        left, right = connection
-        left_entrance = er_data_lookup[left]
-        right_entrance = er_data_lookup[right]
-        left_tile = left_entrance.room_tile
-        left_name = left_entrance.entrance_name
-
-        for index, entrance in enumerate(erMessage["Entrances"][left_tile]):
-            if left_name == entrance["CName"]:
-                erMessage["Entrances"][left_tile][index]["out"] = {
-                    "tile": right_entrance.room_tile,
-                    "x": right_entrance.x_cord,
-                    "y": right_entrance.y_cord,
-                    "offDir": right_entrance.offset_direction,
-                    "offNum": right_entrance.offset_value,
+    def build_er_response(self):
+        """
+        erMessage format:
+        {"Entrances": [
+            "hom10_10": [
+                {
+                    "direction": "south",
+                    "baseCoor": 0,
+                    "offset": 224,
+                    "out": {
+                        "room": "hom10_10",
+                        "x": 0,
+                        "y": 0,
                     }
+                },
+                {
+                    "direction": "north",
+                    "baseCoor": 0,
+                    "offset": 224,
+                    "out": {
+                        "room": "hom10_10",
+                        "x": 0,
+                        "y": 0,
+                    }
+                }
+            ],
+            "rom10_10": [
+                {
+                    "direction": "south",
+                    "baseCoor": 0,
+                    "offset": 224,
+                    "out": {
+                        "room": "hom10_10",
+                        "x": 0,
+                        "y": 0,
+                    }
+                },
+                {
+                    "direction": "door",
+                    "x": 0,
+                    "y": 224,
+                    "out": {
+                        "room": "hom10_10",
+                        "x": 0,
+                        "y": 0,
+                    }
+                }
+            ]
+        ]}
+        """
+        connections = self.slot_data["ER_connections"]
+        if not connections:
+            return "ER Disabled"
+        er_data_lookup = {data.entrance_name for data in er_entrances}
+        erMessage = {"Entrances": game_entrances}
+        for connection in connections:
+            left, right = connection
+            left_entrance = er_data_lookup[left]
+            right_entrance = er_data_lookup[right]
+            left_tile = left_entrance.room_tile
+            left_name = left_entrance.entrance_name
 
-    return erMessage
+            for index, entrance in enumerate(erMessage["Entrances"][left_tile]):
+                if left_name == entrance["CName"]:
+                    erMessage["Entrances"][left_tile][index]["out"] = {
+                        "tile": right_entrance.room_tile,
+                        "x": right_entrance.x_cord,
+                        "y": right_entrance.y_cord,
+                        "offDir": right_entrance.offset_direction,
+                        "offNum": right_entrance.offset_value,
+                        }
 
+        return erMessage
 
-def handleDeathlink(ctx: CommonContext):
-    deathlinkmessage = "death sent"
-    return deathlinkmessage
+    def build_deathlink_response(self):
+        return "death sent"
 
-
-def handleGoal(ctx: CommonContext, request: str):
-    if request in ctx.goals:
-        goalmessage = [{
-            "cmd": "StatusUpdate",
-            "status": ClientStatus.CLIENT_GOAL
-            }]
-    else:
-        goalmessage = None
-    return goalmessage
-
-
-def handleLocations(ctx: CommonContext, request: json) -> json:
-    """
-    expecting request to be json body in the form of
-    {"Locations": [123,456]}
-    """
-
-    # TODO - make this actually send the difference
-    needed_updates = set(request["Locations"]).difference(
-        ctx.locations_checked)
-    locationmessage = [{
-        "cmd": "LocationChecks",
-        "locations": list(needed_updates)
-        }]
-    return locationmessage
-
-
-def handleLocalLocations(ctx: CommonContext, request: json) -> json:
-    """
-    expecting request to be json body in the form of
-    {"LocationResponse":
-        {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
-    - for a local item
-    {"LocationResponse": {"Player": "OtherPlayer", "Item": "ItemGrinder"}
-    - for a remote item
-    """
-
-    locations = set(request["Locations"]).difference(ctx.locations_checked)
-    if len(locations) != 1:
-        return {"Location": "Not found in scout cache"}  # TODO update if client can handle
-
-    location = request["Locations"][0]
-    if not ctx.locations_info:
-        return {"Location": "Not found in scout cache"}  # TODO update if client can handle
-
-    if location not in ctx.locations_info:
-        return {"Location": "Not found in scout cache"}  # TODO update if client can handle
-
-    loc = ctx.locations_info[location]
-    slot = loc.player
-    player = ctx.slot_info[loc.player].name
-    item = ctx.item_names[loc.item]
-    code = loc.item
-
-    if ctx.slot_concerns_self(slot):
-        locationmessage = {
-            "Player": player,
-            "Item": item,
-            "Code": code}
-    else:
-        locationmessage = {"Player": player, "Item": item}
-    return locationmessage
-
-
-def handleItems(ctx: CommonContext):
-    """
-    expecting request to be json body in the form of
-    {"Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
-    """
-    itemIds = []
-    coins = 0
-    hearts = 0
-    tentacles = 0
-    swordsF = 0
-    swordsR = 0
-    for item in ctx.items_received:
-        # TODO - change to lookup ids for actual item names
-        if item[0] == 60000:
-            coins += 1
-        elif item[0] == 60001:
-            hearts += 1
-        elif item[0] == 60002:
-            tentacles += 1
-        elif item[0] == 60021:
-            swordsF += 1
-        elif item[0] == 60022:
-            swordsR += 1
+    def build_goal_response(self, request: str):
+        if request in self.goals:
+            goalmessage = [{
+                "cmd": "StatusUpdate",
+                "status": ClientStatus.CLIENT_GOAL
+                }]
         else:
-            itemIds.append(item[0])
-    itemmessage = {
-        "Items": itemIds,
-        "Coins": coins,
-        "Hearts": hearts,
-        "Tentacles": tentacles,
-        "swordsF": swordsF,
-        "swordsR": swordsR,
-    }
-    return itemmessage
+            goalmessage = None
+        return goalmessage
 
+    def build_local_locations_response(self, request: json) -> json:
+        """
+        expecting request to be json body in the form of
+        {"LocationResponse":
+            {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
+        - for a local item
+        {"LocationResponse": {"Player": "OtherPlayer", "Item": "ItemGrinder"}
+        - for a remote item
+        """
 
-# TODO update to transform the data
-# - will eventually handle the datapackage from
-# - CommonContext.consume_network_data_package() to make them minit pretty
-def handleDatapackage(ctx: CommonContext):
-    datapackagemessage = [{"cmd": "blah", "data": "blah"}]
-    return datapackagemessage
+        locations = set(request["Locations"]).difference(self.locations_checked)
+        if len(locations) != 1:
+            return {"Location": "Not found in scout cache"}  # TODO update if client can handle
+
+        location = request["Locations"][0]
+        if not self.locations_info:
+            return {"Location": "Not found in scout cache"}  # TODO update if client can handle
+
+        if location not in self.locations_info:
+            return {"Location": "Not found in scout cache"}  # TODO update if client can handle
+
+        loc = self.locations_info[location]
+        slot = loc.player
+        player = self.slot_info[loc.player].name
+        item = self.item_names[loc.item]
+        code = loc.item
+
+        if self.slot_concerns_self(slot):
+            locationmessage = {
+                "Player": player,
+                "Item": item,
+                "Code": code}
+        else:
+            locationmessage = {"Player": player, "Item": item}
+        return locationmessage
+
+    def build_item_response(self):
+        """
+        expecting request to be json body in the form of
+        {"Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
+        """
+        itemIds = []
+        coins = 0
+        hearts = 0
+        tentacles = 0
+        swordsF = 0
+        swordsR = 0
+        for item in self.items_received:
+            # TODO - change to lookup ids for actual item names
+            if item[0] == 60000:
+                coins += 1
+            elif item[0] == 60001:
+                hearts += 1
+            elif item[0] == 60002:
+                tentacles += 1
+            elif item[0] == 60021:
+                swordsF += 1
+            elif item[0] == 60022:
+                swordsR += 1
+            else:
+                itemIds.append(item[0])
+        itemmessage = {
+            "Items": itemIds,
+            "Coins": coins,
+            "Hearts": hearts,
+            "Tentacles": tentacles,
+            "swordsF": swordsF,
+            "swordsR": swordsR,
+        }
+        return itemmessage
+
+    # TODO update to transform the data
+    # - will eventually handle the datapackage from
+    # - CommonContext.consume_network_data_package() to make them minit pretty
+    def build_datapackage_response(self):
+        datapackagemessage = [{"cmd": "blah", "data": "blah"}]
+        return datapackagemessage
 
 
 async def main(args):
