@@ -116,7 +116,7 @@ class MinitWebWorld(WebWorld):
         "Multiworld Setup Guide",
         "A guide to setting up the Minit randomizer for AP",
         "English",
-        "docs/setup_en.md",
+        "setup_en.md",
         "setup/en",
         ["qwint"]
     )
