@@ -305,7 +305,7 @@ class ProxyGameContext(SuperContext):
         connections = self.slot_data["ER_connections"]
         if not connections:
             return "ER Disabled"
-        er_data_lookup = {data.entrance_name for data in er_entrances}
+        er_data_lookup = {data.entrance_name: data for data in er_entrances}
         erMessage = {"Entrances": game_entrances}
         for connection in connections:
             left, right = connection
