@@ -1,9 +1,5 @@
 {
-	"version": 6,
-	"compatible_version": 6,
-	
-	"game": "Minit",
-	"minimum_ap_version": "0.5.0",
-	"maximum_ap_version": "0.5.0",
-	"world_version": "0.6.6"
+  "game": "Minit",
+  "minimum_ap_version": "0.5.0",
+  "world_version": "0.6.9"
 }
