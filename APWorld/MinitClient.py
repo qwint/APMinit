@@ -12,7 +12,6 @@ import Utils
 from NetUtils import ClientStatus, RawJSONtoTextParser
 from CommonClient import (
     CommonContext,
-    gui_enabled,
     logger,
     get_base_parser,
     server_loop,
@@ -429,7 +428,7 @@ async def main(args):
 
     if tracker_loaded:
         ctx.run_generator()
-    if gui_enabled:
+    if Utils.gui_enabled:
         ctx.run_gui()
     ctx.run_cli()
 
