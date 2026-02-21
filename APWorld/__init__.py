@@ -440,18 +440,13 @@ class MinitWorld(World):
             #     self.get_region("Menu"),
             #     "output/regionmap.puml")
 
-        if self.options.chosen_goal == "boss_fight":  # boss fight
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                state.has("Boss dead", self.player)
-        elif self.options.chosen_goal == "toilet_goal":  # toilet
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                RuleUtils.has_brokensword(self.player, state) and \
-                state.has("Sword Flushed", self.player)
-        elif self.options.chosen_goal == "any_goal":  # any
-            self.multiworld.completion_condition[self.player] = lambda state: \
-                state.has("Boss dead", self.player) or \
-                (RuleUtils.has_brokensword(self.player, state) and
-                    state.has("Sword Flushed", self.player))
+        if self.options.chosen_goal == "any_goal":
+            self.set_completion_rule(
+                RuleUtils.completion_rules["boss_fight"] | RuleUtils.completion_rules["toilet_goal"]
+                )
+        else:
+            self.set_completion_rule(RuleUtils.completion_rules[self.options.chosen_goal.current_key])
+
         if bool(self.options.starting_sword):
             self.multiworld.local_early_items[self.player][self.get_sword_item_name()] = 1
 
