@@ -1,5 +1,4 @@
 from typing import TYPE_CHECKING
-from rule_builder.options import OptionFilter
 from rule_builder.rules import And, CanReachRegion, Has, HasAll, HasAny, Or, True_
 from . import RuleUtils
 
