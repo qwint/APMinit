@@ -16,7 +16,7 @@ region_rules = {
         "ItemBoat",
         "boatguy watered",
         "ItemGlove",
-        ) | Or(
+        ) | (Or(
             Has("ItemSwim"),
             HasAll(
                 "has_sword",
@@ -24,9 +24,8 @@ region_rules = {
                 "boatguy watered",
                 "ItemGlove",
             ),  # TODO: did i not simplify this??
-            **RuleUtils.obscure_only_clause
             # you can swim from treasure island by baiting the shark
-        ),
+        ) & RuleUtils.obscure_enabled),
     "Dog House -> Desert RV": Or(
             Has("has_sword") & (
                 RuleUtils.has_darkroom2 | Has("ItemGlove")
@@ -43,7 +42,7 @@ region_rules = {
     "Hotel Room -> Factory Main": Or(
             RuleUtils.has_darkroom2 & Has("ItemSwim"),
             And(
-                Has("has_sword") | Has("ItemShoes", **RuleUtils.obscure_only_clause),
+                Has("has_sword") | (Has("ItemShoes") & RuleUtils.obscure_enabled),
                 # obscure: you can squeeze through the destroyables with shoes and precise movement
                 Has("ItemPressPass"),
                 HasAny("bombs exploded", "ItemSwim"),
@@ -59,7 +58,7 @@ location_rules = {
     # Dog House
     "Dog House - ItemCoffee": Has("has_sword"),
     "Dog House - ItemFlashLight": Or(
-            Has("ItemSwim", **RuleUtils.obscure_only_clause),
+            (Has("ItemSwim") & RuleUtils.obscure_enabled),
             # obscure: you can swim behind the lighthouse and pick up the item
             Has("ItemKey") & HasAny("has_sword", "ItemSwim"),
         ),
@@ -70,7 +69,7 @@ location_rules = {
     "Dog House - ItemBasement": And(
             HasAll("has_sword", "ItemGlove"),
             Or(
-                Has("ItemSwim", **RuleUtils.obscure_only_clause),
+                (Has("ItemSwim") & RuleUtils.obscure_enabled),
                 # obscure: you can swim from treasure island by baiting the shark
                 HasAll("ItemBoat", "boatguy watered", "ItemGlove"),
             )
@@ -81,7 +80,7 @@ location_rules = {
             Has("ItemSwim"),
             ),
         Has("has_sword") & CanReachRegion("Hotel Room") & HasAll("ItemGrinder", "ItemGlove"),
-        Or(
+        (Or(
             HasAll("has_sword", "ItemGrinder", "ItemGlove"),
             # Tile movement from dog house: L U U U R (Glove used at 3 crab and before press house.
             # Grinder used at box going toward press house.)
@@ -89,8 +88,7 @@ location_rules = {
             # dog house: L L U R U R U (sword to cut grass to enter toxic river on way to press house)
             RuleUtils.total_hearts(7) & Has("ItemSwim"),
             # Hotel Access is required but implied by having Swim
-            **RuleUtils.obscure_only_clause
-            )
+            ) & RuleUtils.obscure_enabled)
         # obscure: you can, with clean movement and damage tanks,
         # - swim from the factory bridge to press pass house
         # - without any other items
@@ -123,7 +121,7 @@ location_rules = {
                                               "teleporter switch4",
                                               "teleporter switch6",
                                               "ItemBasement"),
-        Has("ItemSwim", **RuleUtils.obscure_only_clause),
+        (Has("ItemSwim") & RuleUtils.obscure_enabled),
         # sword+darkroom+swim should cover the hotel -> temple route
         ),
     # item region implies desert rv access, can teleport implies
@@ -165,15 +163,14 @@ location_rules = {
     # can be done without sword due to a bug
     "Factory Main - Drill Coin": HasAll("has_sword", "drill smacked"),
     "Hotel Room - Crow Heart": Has("has_sword") & RuleUtils.can_pass_boxes & Has("ItemGlove"),
-    "Hotel Room - Dog Heart": HasAll("has_sword", "ItemGlove") & Or(
+    "Hotel Room - Dog Heart": HasAll("has_sword", "ItemGlove") & (Or(
         HasAny("ItemSwim", "ItemShoes"),
         HasAll(
             "teleporter switch1",
             "teleporter switch4",
             "teleporter switch6",
             "ItemBasement"),
-        **RuleUtils.ignorable_by_obscure
-        ),
+        ) | RuleUtils.obscure_enabled),
     # obscure: with good movemnt can do this in 50s
     # -  with just sword glove, adding teleport/swim/shoes
     # - to give more wiggle room outside obscure logic
@@ -182,7 +179,7 @@ location_rules = {
 
     # Island Shack
     "Island Shack - Teleporter Tentacle":
-        Has("has_sword") & Has("ItemCoffee", **RuleUtils.ignorable_by_obscure) & HasAll("ItemBasement", "ItemSwim"),
+        Has("has_sword") & (Has("ItemCoffee") | RuleUtils.obscure_enabled) & HasAll("ItemBasement", "ItemSwim"),
         # obscure: attacking in coyote frames from the right teleporter
         # - lets you do this with just sword/swim
 

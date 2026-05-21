@@ -39,7 +39,7 @@ region_rules = {
     "factory drill <-> quicksand main": Has("drill smacked"),
     "boattree box <-> boattree main":  box_helper,
     "camera river south -> camera river north": sword_helper & Has("ItemThrow"),
-    "camera river north -> camera river south": Has("has_sword", **RuleUtils.ignorable_by_obscure),
+    "camera river north -> camera river south": Has("has_sword") | RuleUtils.obscure_enabled,
     # obscure: requires nothing, Push archers into poison river
     "camera house tree <-> camera house outside":  tree_helper,
     # "camera house outside <-> camera house inside": True_(),
@@ -76,7 +76,7 @@ region_rules = {
     # unrandomized doors
     "lighthouse inside <-> lighthouse":  Has("ItemKey"),
     "lighthouse lookout -> lighthouse": False_(),
-    "lighthouse -> lighthouse lookout": Or(False_(), Has("ItemSwim", **RuleUtils.obscure_only_clause)),
+    "lighthouse -> lighthouse lookout": Or(False_(), Has("ItemSwim") & RuleUtils.obscure_enabled),
     # obscure: you can swim and grab it from beneath
     # "lighthouse inside -> lighthouse lookout": True_(),
     "lighthouse lookout -> lighthouse inside": False_(),
@@ -91,7 +91,7 @@ region_rules = {
     # "factory loading upper <-> factory snakehall": True_(),
     # "shoe shop inside <-> shoe shop outside": True_(),
     # "desert RV main <-> RV house": True_(),
-    "Overworld treasure island <-> Overworld island shack": Has("ItemSwim", **RuleUtils.obscure_only_clause),
+    "Overworld treasure island <-> Overworld island shack": Has("ItemSwim") & RuleUtils.obscure_enabled,
     # obscure: you can swim accross, Bait the sharks
     "island house -> Overworld island shack": True_(),
     "Overworld island shack -> island house": sword_helper,
@@ -146,7 +146,7 @@ region_rules = {
     "coffee shop upper beach -> coffee shop outside": swim_helper,
     "coffee shop outside -> coffee shop upper beach":  swim_helper | And(
         Has("ItemCoffee"),
-        Has("has_sword", **RuleUtils.ignorable_by_obscure)
+        Has("has_sword") | RuleUtils.obscure_enabled
         # obscure: coffee without sword, Coffee shop to upper beach without breaking pot
         ),
 
@@ -244,13 +244,13 @@ region_rules = {
     "dog house bushes <-> dog house west":  sword_helper,
     "coffee shop outside -> coffee shop pot stairs": Or(
         sword_helper,
-        Has("ItemShoes", **RuleUtils.obscure_only_clause)
+        Has("ItemShoes") & RuleUtils.obscure_enabled
         # Shoes to skip breaking the pot
         ),
     "coffee shop pot stairs -> coffee shop outside": True_(),
     "plant bushes <-> plant tile":  sword_helper,
     "shoe shop shortcut <-> shoe shop outside":  sword_helper,
-    "factory cooler west <-> factory cooler tile":  sword_helper | Has("ItemShoes", **RuleUtils.obscure_only_clause),
+    "factory cooler west <-> factory cooler tile":  sword_helper | (Has("ItemShoes") & RuleUtils.obscure_enabled),
     # obscure: shoes, Glitch through with precision
     "temple main north <-> temple main": sword_helper,
 
@@ -332,7 +332,7 @@ location_rules = {
     "Island Shack - Teleporter Tentacle": (
         sword_helper
         & darkroom1_helper
-        & Has("ItemCoffee", **RuleUtils.ignorable_by_obscure)
+        & (Has("ItemCoffee") | RuleUtils.obscure_enabled)
         & swim_helper
         ),
     # obscure: Coffee not required
