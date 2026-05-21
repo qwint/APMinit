@@ -23,9 +23,11 @@ from .ERData import er_entrances, game_entrances
 tracker_loaded = False
 try:
     from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
+    from worlds.tracker.TrackerClient import TrackerCommandProcessor as SuperCommandProcessor
     tracker_loaded = True
 except ModuleNotFoundError:
     from CommonClient import CommonContext as SuperContext
+    from CommonClient import ClientCommandProcessor as SuperCommandProcessor
 
 try:
     from CommonClient import handle_url_arg
@@ -78,7 +80,7 @@ def data_path(file_name: str):
     return pkgutil.get_data(__name__, "data/" + file_name)
 
 
-class MinitCommandProcessor(ClientCommandProcessor):
+class MinitCommandProcessor(SuperCommandProcessor):
 
     def _cmd_patch(self):
         """Patch and launch the game."""
