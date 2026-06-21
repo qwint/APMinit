@@ -104,20 +104,7 @@ region_rules = {
     "factory central south <-> factory central": Has("generator smashed"),
     "dog house basement <-> hotel room":  teleport_helper & CanReachRegion("hotel room"),
     "dog house basement <-> shoe shop downstairs":  teleport_helper & CanReachRegion("shoe shop downstairs"),
-    "temple coin test north": (
-        CanReachRegion("dog house inside")
-        & CanReachRegion("RV house")
-        & CanReachRegion("hotel room")
-        & CanReachRegion("island house")
-        & darkroom3_helper
-        ),
-    "temple coin test south": (
-        CanReachRegion("dog house inside")
-        & CanReachRegion("RV house")
-        & CanReachRegion("hotel room")
-        & CanReachRegion("island house")
-        & darkroom3_helper
-        ),
+    # "temple coin test north <-> temple coin test south": TODO: Advanced temple coin test logic
 
     # # only swims
     "lighthouse water upper west":  swim_helper,
@@ -170,26 +157,8 @@ region_rules = {
     "sewer island water west":  swim_helper,
     "throwcheck water south":  swim_helper,
     "throwcheck water west":  swim_helper,
-    "Overworld wet06": swim_helper,
+    "Overworld desert wet": swim_helper,
     "bridge switch left <-> bridge switch right":  False_(), # damage boosting is out of logic
-
-    # # toxic waters
-
-    "sewer island tile -> toxic waters":  swim_helper & sword_helper,
-    "toxic waters -> sewer island tile": False_(),
-    "camera river south -> camera river wet": swim_helper,
-    "camera river wet -> camera river south": False_(),
-    "mine entrance left -> toxic waters": swim_helper,
-    "toxic waters -> mine entrance left": False_(),
-    "bridge left -> toxic waters": swim_helper,
-    "toxic waters -> bridge left": False_(),
-    "bridge switch left -> toxic waters": swim_helper,
-    "toxic waters -> bridge switch left": False_(),
-
-    # This logic is here so that the generic entrance randomizer doesn't crash randomizing toxic water connections
-    # with eachother when they aren't logically useful.
-    # This logic says that you can enter the toxic waters, but you cannot exit, making it useless for logic.
-
 
     "temple octopus north": swim_helper & darkroom3_helper,
 

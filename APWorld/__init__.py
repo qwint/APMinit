@@ -220,9 +220,6 @@ class MinitWorld(World):
                     other_region.connect(region)
             else:
                 region.add_exits(exit_list)
-        if er_on:
-            from BaseClasses import LocationProgressType
-            self.get_location("Desert RV - Temple Coin").progress_type = LocationProgressType.EXCLUDED
 
     def create_regions(self):
         from worlds.generic.Rules import forbid_item
