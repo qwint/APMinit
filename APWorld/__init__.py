@@ -96,7 +96,7 @@ class MinitSettings(Group):
         """Path to Minit Vanilla data.win file"""
         description = "Minit Vanilla data.win file"
         md5s = [
-            "cd676b395dc2a25df10a569c17226dde",  # steam
+            "200f8e0e86e93e8a9a01f107918eec49",  # steam
             "1432716643381ced3ad0195078e8e314",  # epic
             # "6263766b38038911efff98423822890e",  # itch.io, does not work
             ]
