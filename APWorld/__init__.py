@@ -91,21 +91,6 @@ from BaseClasses import EntranceType
 # set item_sent flags on connect / full sync
 
 
-class MinitSettings(Group):
-    class GMDataFile(FilePath):
-        """Path to Minit Vanilla data.win file"""
-        description = "Minit Vanilla data.win file"
-        md5s = [
-            "cd676b395dc2a25df10a569c17226dde",  # steam
-            "1432716643381ced3ad0195078e8e314",  # epic
-            # "6263766b38038911efff98423822890e",  # itch.io, does not work
-            ]
-        # the hashes for vanilla to be verified by the /patch command
-        required = True
-
-    data_file: GMDataFile = GMDataFile("")
-
-
 class MinitWebWorld(WebWorld):
     theme = "ice"
     setup = Tutorial(
@@ -143,7 +128,6 @@ class MinitWorld(World):
     game = "Minit"
     options_dataclass = MinitGameOptions
     options: MinitGameOptions
-    settings: MinitSettings
     web = MinitWebWorld()
     output_connections: list[tuple[str, str]]
     spoiler_hints: dict[str, str]

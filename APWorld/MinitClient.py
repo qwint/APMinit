@@ -1,9 +1,7 @@
 import asyncio
-import subprocess
 import json
 import time
 import os
-import bsdiff4
 import urllib.parse
 import aiohttp.web
 from argparse import ArgumentParser, Namespace
@@ -34,21 +32,12 @@ except ModuleNotFoundError:
 DEBUG = False
 GAMENAME = "Minit"
 ITEMS_HANDLING = 0b111
-PATCH_VERSION = 1.0
-patched_name = f"ap_v{PATCH_VERSION}_data.win"
-
-
-def data_path(file_name: str):
-    import pkgutil
-    return pkgutil.get_data(__name__, "data/" + file_name)
 
 
 class MinitCommandProcessor(SuperCommandProcessor):
-
     def _cmd_patch(self):
-        f"""Patch the data.win to {patched_name} and launches the game."""
-        if isinstance(self.ctx, ProxyGameContext):
-            self.ctx.patch_game()
+        """Deprecated, use Mod Manager."""
+        logger.info("Use Mod Manager")
 
     def _cmd_amnisty(self, total: int = 1):
         """Set the Death Amnisty value. Default 1."""
@@ -82,39 +71,6 @@ class ProxyGameContext(SuperContext):
         ui = super().make_gui()
         ui.base_title = "Minit Client"
         return ui
-
-    def patch_game(self):
-        from . import MinitWorld
-        try:
-            data_file = MinitWorld.settings.data_file
-            data_file.validate(data_file)
-        except FileNotFoundError:
-            logger.info("Patch cancelled")
-            # TODO: consider clearing the path since the one we were given is invalid
-            return
-        except ValueError:
-            logger.info("Selected game is not vanilla, please reset the game and repatch")
-            # TODO: consider clearing the path since the one we were given is invalid
-            return
-
-        basepath = os.path.dirname(data_file)
-        patched_path = os.path.join(basepath, patched_name)
-
-        if not os.path.isfile(patched_path):
-            with open(data_file, "rb") as f:
-                patchedFile = bsdiff4.patch(f.read(), data_path("patch.bsdiff"))
-            with open(patched_path, "wb") as f:
-                f.write(patchedFile)
-            logger.info("Patch complete")
-        else:
-            logger.info("Found patched file, skipping patching process")
-        exe_path = os.path.join(basepath, "minit.exe")
-        if not os.path.isfile(exe_path):
-            exe_path = os.path.join(basepath, "minitGMS2.exe")
-            if not os.path.isfile(exe_path):
-                logger.info("No known Minit executible in the install folder")
-                return
-        subprocess.Popen([exe_path, "-game", patched_path])
 
     def on_package(self, cmd: str, args: dict):
         super().on_package(cmd, args)
