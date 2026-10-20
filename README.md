@@ -11,6 +11,8 @@ archipelago implementation of a Minit Randomizer
   Local items will automatically be added to your inventory but anything recieved off-world will only sync
   after any respawn.
 * An extra keybind has been added (currently only on keyboard Q) to respawn at the Start Location.
+* The Box to the left of the Press Pass room will respawn.
+* In Entrance Rando the Temple Coin puzzle will not require the deaths to happen in the temple room.
 
 ## Setup for new Archipelago users
 
@@ -18,21 +20,22 @@ archipelago implementation of a Minit Randomizer
 * Install Archipelago, you will need the generator and likely the server
   (though the seed can be hosted on Archipelago.gg).
 * Add the minit.apworld file to Archipelago/custom_worlds.
+* Archipelago Minit Mod and Minit Mod Loader (further details in `For Patching` section)
 * (Optionally) the tracker.apworld file for Universal Tracker can also be installed in the same way,
   which adds a new tab to the client that functions as a simple location tracker
 
 ### For Generation
 * Put a .yaml file into the /Players folder
-    * To locally generate a template you can use `Generate Template Options` from the Archipelago Launcher
-    * Alternatively Stripes has offered to host a copy of the Archipelago Webhost that includes Minit
-      which can be found at https://ap.stripesoo7.org/games/Minit/player-options
+  * To locally generate a template you can use `Generate Template Options` from the Archipelago Launcher
+  * Alternatively Stripes has offered to host a copy of the Archipelago Webhost that includes Minit
+    which can be found at https://ap.stripesoo7.org/games/Minit/player-options
 * Run `Generate` from the Archipelago Launcher (or ArchipelagoGenerate.exe directly).
-    * On a successul generation it will make a "AP_[numbers].zip" file in /output folder of your AP install
+  * On a successul generation it will make a "AP_[numbers].zip" file in /output folder of your AP install
 
 ### For Hosting
 Use one of the following hosting options
 * Run `Host` from the Archipelago Launcher (or ArchipelagoServer.exe directly).
-    * It will prompt for a seed, choose the previously generated file in /output
+  * It will prompt for a seed, choose the previously generated file in /output
 * Go to https://archipelago.gg/uploads and upload the previously generated file in /output
 
 
@@ -45,20 +48,27 @@ Use one of the following hosting options
   if left default it will likely be "Player1".
 * You now have the proxy client connected to the AP server
 
+
 ### For Patching
-In the client there is a `/Patch` command you can use which will automatically create a patched data file
-if needed and launch the game when the patching is complete.
-
-**On first run you will be prompted for the `data.win` file**, this path will be saved and reused in your
-host.yaml.
-
-The entire process should be automated but in case you need the information for debugging or alternate setups:
-* The location of your install will be saved in the `host.yaml` configuration file in your Archipelago Install
-* The patched data file will be saved in your minit install folder as `ap_v1.0_data.win`. If you need to manually
-  launch then the launch args `-game ap_v1.0_data.win` will work both in a terminal and in steam launch args
-  (swap the `v1.0` version for whatever patch version it is).
-* If the client does not have access to that folder unexpected things may happen, so having a copy of your Minit folder
-  for AP and pointing it there may be safer.
+* Install the Mod Loader
+  * download from https://github.com/qwint/UFO-50-MOD-LOADER/releases
+  * unzip the appropriate version to a reasonable location, run `minit Mod Loader` to open the Mod Loader
+* Install the Minit Mod into the Mod Loader
+  * download `Source code (zip)` from https://github.com/qwint/archipelago_minit_mod/releases
+  * Launch the Mod Loader
+  * under `Mod Loader` select `Open Mod Loader Folder`
+  * Open the `Minit mods` subfolder and place the downloaded zip
+* Patch the game
+  * Launch the Mod Loader
+  * Optional: Under `Settings` you can check `Overwrite Installed Files` to patch the source copy of the game
+  * Check the installed Minit mod to include it
+  * Press the `Load Mods and Launch Game` button
+* Run the game
+  * The previous step will automatically launch the game, but to not need to patch every time you can either
+    * Use the `Overwrite Installed Files` setting and launch through your previous launcher of choice
+    * Run the modded copy directly, it will be in `./workspace/Minit Modded Copy/minit.exe` from the same Mod Loader Folder as before
+      * On linux the Mod Loader runs the game through `wine` so it is safe to do so manually as well
+    * Open the Mod Loader and press the `Launch Game` button
 
 ## Setup for Archipelago users
 
@@ -66,5 +76,5 @@ The entire process should be automated but in case you need the information for 
 * tracker.apworld (for Universal Tracker, installed seperately) can add a new tab to the client that functions as
   a simple location tracker.
 * The proxy "Minit Client" can be accessed through ArchipelagoLauncher.
-* The `/Patch` command in the Minit Client will auto patch and launch the patched game.
+* Download the Archipelago Minit Mod and patch through the Mod Loader.
   For more detail see the `For Patching` section above.
