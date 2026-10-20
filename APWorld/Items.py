@@ -23,15 +23,16 @@ prog_skip = ItemClassification.progression_skip_balancing
 prog = ItemClassification.progression
 useful = ItemClassification.useful
 filler = ItemClassification.filler
+deprio = ItemClassification.progression_deprioritized_skip_balancing
 
 
 item_table: dict[str, MinitItemData] = {
-    "Coin": MinitItemData(offset=0, classification=prog_skip),
+    "Coin": MinitItemData(offset=0, classification=deprio),
     "HeartPiece": MinitItemData(
         offset=1, classification=useful,
         can_create=lambda world:
         not bool(world.options.min_hp)),
-    "Tentacle": MinitItemData(offset=2, classification=prog),
+    "Tentacle": MinitItemData(offset=2, classification=deprio),
     "ItemCoffee": MinitItemData(offset=3, classification=prog),
     "ItemFlashLight": MinitItemData(offset=4, classification=prog),
     "ItemSwim": MinitItemData(offset=5, classification=prog),

@@ -144,7 +144,7 @@ class MinitWorld(World):
         data = item_table[name]
 
         if self.options.damage_boosts and name == "HeartPiece":
-            item_clas = ItemClassification.progression_skip_balancing
+            item_clas = ItemClassification.progression_deprioritized_skip_balancing
         elif self.options.darkrooms == "insane" and name == "ItemFlashLight":
             item_clas = ItemClassification.useful
         else:
