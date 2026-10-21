@@ -104,7 +104,21 @@ region_rules = {
     "factory central south <-> factory central": Has("generator smashed"),
     "dog house basement <-> hotel room":  teleport_helper & CanReachRegion("hotel room"),
     "dog house basement <-> shoe shop downstairs":  teleport_helper & CanReachRegion("shoe shop downstairs"),
-    # "temple coin test north <-> temple coin test south": TODO: Advanced temple coin test logic
+    # temple patched to progress quest on any death from the respective houses
+    "temple coin test north": (
+        CanReachRegion("dog house inside")
+        & CanReachRegion("RV house")
+        & CanReachRegion("hotel room")
+        & CanReachRegion("island house")
+        & darkroom3_helper
+        ),
+    "temple coin test south": (
+        CanReachRegion("dog house inside")
+        & CanReachRegion("RV house")
+        & CanReachRegion("hotel room")
+        & CanReachRegion("island house")
+        & darkroom3_helper
+        ),
 
     # # only swims
     "lighthouse water upper west":  swim_helper,
