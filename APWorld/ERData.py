@@ -17,7 +17,7 @@ class MinitEntranceData(NamedTuple):
 
 
 er_static_connections: dict[str, list[str]] = {
-    "Menu": ["dog house inside"],
+    "Menu": ["dog house inside", "toxic waters"], # toxic waters is out of logic, but this is here to prevent Entrance Randomization Errors.
     "factory machine catwalk": ["Boss Fight"],
     "factory machine generator": ["Boss Fight", "factory machine catwalk"],
     "boat tile": ["Overworld island shack"],
@@ -25,7 +25,7 @@ er_static_connections: dict[str, list[str]] = {
     "dog house west": ["dog house east", "dog house bushes"],
     "plant tile": ["plant bushes"],
     "2crab tile": ["2crab tree exit"],
-    "camera river south": ["camera river north", "camera river wet"],
+    "camera river south": ["camera river north"],
     "camera house outside": ["camera house inside", "camera house tree"],
     "3crab main": ["3crab trees"],
     "throwcheck tile": ["throwcheck box"],
@@ -63,26 +63,8 @@ er_static_connections: dict[str, list[str]] = {
     "factory central": ["factory central south"],
     # connects both megasword upper left and right
     "dog house basement": ["hotel room", "shoe shop downstairs", "island teleporter"],
-    "Overworld treasure island": ["Overworld wet06", "Overworld island shack"],
-    "Overworld desert": [
-        "Overworld dry01",
-        "Overworld dry02",
-        "Overworld dry03",
-        "Overworld dry04",
-        "Overworld dry05",
-        "Overworld dry06",
-        "Overworld dry07",
-        "Overworld dry08",
-    ],
+    "Overworld treasure island": ["Overworld island shack"],
     "sword east": ["sword west", "sword water"],
-    "toxic waters": [
-        "sewer island tile",
-        "camera river wet",
-        "poison river corner",
-        "mine entrance left",
-        "bridge left",
-        "bridge switch left",
-    ],
 }
 
 # will populate this later :')
@@ -92,15 +74,15 @@ er_static_connections: dict[str, list[str]] = {
 
 # i don't like this list so i'm making it as few lines as possible so i don't have to look at it
 er_regions: list[str] = [
-    "Menu", "lighthouse", "lighthouse lookout", "boat tile", "sword east", "sword west", "sword water", "2crab tile", "2crab tree exit", "dolphin tile", "desert beach tile", "coffee shop outside", "coffee shop upper beach", "coffee shop pot stairs", "above lighthouse land", "above lighthouse water", "plant tile", "plant bushes", "dog house west", "dog house east", "dog house bushes", "glove outside", "watering can", "quicksand main", "quicksand left tree", "quicksand right tree", "bull room", "boattree main", "boattree east", "boattree box", "key room", "camera path", "camera river north", "camera river south", "camera river wet", "camera river lookout", "camera house outside", "camera house tree", "3crab main", "3crab trees", "3crab north water", "3crab south water", "3crab land path", "sewer island", "sewer island tile", "throwcheck tile", "throwcheck box", "diver room", "wallet room", "bone room", "marys house", "arena tile", "arena tree north", "arena tree west", "crowroom", "tree resident", "bridge switch lookout", "bridge switch right", "bridge switch left", "bridge right", "bridge left", "hotel outside", "mine entrance right", "mine entrance left", "poison river corner", "toxic waters", "factory reception tile", "factory reception east", "factory queue", "factory cooler tile", "factory cooler west", "factory toilet", "factory central", "factory central south", "factory drill", "factory loading upper", "factory loading lower main", "factory loading lower shortcut", "factory loading deadend", "factory loading desert", "shoe shop outside", "shoe shop shortcut", "temple outside", "desert RV main", "desert RV corner", "desert right cliffs", "desert left cliffs", "RV house", "shoe shop inside", "hotel reception", "hotel backroom", "camera house inside", "waterfall cave", "dog house inside", "coffee shop inside", "lighthouse inside", "island house", "megasword upper", "megasword lower", "underground house", "glove inside", "shoe shop downstairs", "temple main", "temple main north", "temple main east", "temple octopus", "temple tentacle", "temple heart", "temple firebat chest", "temple coin chest", "hotel room", "mine entrance path", "mine entrance bombs", "mine entrance pipe", "mine main", "mine main box", "dog house basement", "snake east", "snake west", "sewer main", "sewer main right north", "sewer main left", "sewer bat arena", "sewer bat gate", "sewer upper", "sewer tentacle", "island teleporter", "teleporter switch1", "teleporter maze", "teleporter tentacle", "grinder tile", "factory machine generator", "factory machine catwalk", "factory mega entrance", "factory snakehall", "miner chest tile", "miner chest pipe entrance", "tent room main", "tent room pipe O", "Overworld wet01", "Overworld wet02", "Overworld wet03", "Overworld wet04", "Overworld wet05", "Overworld wet06", "Overworld wet07", "Overworld wet08", "Overworld wet09", "Overworld wet10", "Overworld wet11", "Overworld wet12", "Overworld dry01", "Overworld dry02", "Overworld dry03", "Overworld dry04", "Overworld dry05", "Overworld dry06", "Overworld dry07", "Overworld dry08", "Overworld island shack", "Overworld treasure island", "Overworld desert", "temple firebat test", "temple coin test", "submarine tile", "factory switch tile", "miner chest pipe L", "tent room pipe I", "trophy maze lower main", "trophy maze lower hall", "trophy maze deadend", "trophy maze upper main", "trophy maze upper hall", "trophy pipe hall", "trophy room", "Boss Fight",
+    "Menu", "lighthouse", "lighthouse lookout", "boat tile", "sword east", "sword west", "sword water", "2crab tile", "2crab tree exit", "dolphin tile", "desert beach tile", "coffee shop outside", "coffee shop upper beach", "coffee shop pot stairs", "above lighthouse land", "above lighthouse water", "plant tile", "plant bushes", "dog house west", "dog house east", "dog house bushes", "glove outside", "watering can", "quicksand main", "quicksand left tree", "quicksand right tree", "bull room", "boattree main", "boattree east", "boattree box", "key room", "camera path", "camera river north", "camera river south", "camera river lookout", "camera house outside", "camera house tree", "3crab main", "3crab trees", "3crab north water", "3crab south water", "3crab land path", "sewer island", "sewer island tile", "throwcheck tile", "throwcheck box", "diver room", "wallet room", "bone room", "marys house", "arena tile", "arena tree north", "arena tree west", "crowroom", "tree resident", "bridge switch lookout", "bridge switch right", "bridge switch left", "bridge right", "bridge left", "hotel outside", "mine entrance right", "mine entrance left", "toxic waters", "factory reception tile", "factory reception east", "factory queue", "factory cooler tile", "factory cooler west", "factory toilet", "factory central", "factory central south", "factory drill", "factory loading upper", "factory loading lower main", "factory loading lower shortcut", "factory loading deadend", "factory loading desert", "shoe shop outside", "shoe shop shortcut", "temple outside", "desert RV main", "desert RV corner", "desert right cliffs", "desert left cliffs", "RV house", "shoe shop inside", "hotel reception", "hotel backroom", "camera house inside", "waterfall cave", "dog house inside", "coffee shop inside", "lighthouse inside", "island house", "megasword upper", "megasword lower", "underground house", "glove inside", "shoe shop downstairs", "temple main", "temple main north", "temple main east", "temple octopus", "temple tentacle", "temple heart", "temple firebat chest", "temple coin chest", "hotel room", "mine entrance path", "mine entrance bombs", "mine entrance pipe", "mine main", "mine main box", "dog house basement", "snake east", "snake west", "sewer main", "sewer main right north", "sewer main left", "sewer bat arena", "sewer bat gate", "sewer upper", "sewer tentacle", "island teleporter", "teleporter switch1", "teleporter maze", "teleporter tentacle", "grinder tile", "factory machine generator", "factory machine catwalk", "factory mega entrance", "factory snakehall", "miner chest tile", "miner chest pipe entrance", "tent room main", "tent room pipe O", "Overworld wet rock", "Overworld wet passthrough", "Overworld island shack", "Overworld treasure island", "Overworld desert", "temple firebat test", "temple coin test north", "temple coin test south", "submarine tile", "factory switch tile", "miner chest pipe L", "tent room pipe I", "trophy maze lower main", "trophy maze lower hall", "trophy maze deadend", "trophy maze upper main", "trophy maze upper hall", "trophy pipe hall", "trophy room", "Boss Fight",
 ]
 
 er_entrances: list[MinitEntranceData] = [
-    MinitEntranceData(entrance_name="lighthouse water upper west", region_name="lighthouse", dead_end=False, group_type="water", room_tile="rom7_10", x_cord=0, y_cord=0, offset_direction="y", offset_value=224),
+    # MinitEntranceData(entrance_name="lighthouse water upper west", region_name="lighthouse", dead_end=False, group_type="water", room_tile="rom7_10", x_cord=0, y_cord=0, offset_direction="y", offset_value=224),
     MinitEntranceData(entrance_name="lighthouse water upper north", region_name="lighthouse", dead_end=False, group_type="water", room_tile="rom7_10", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
     MinitEntranceData(entrance_name="lighthouse water upper east", region_name="lighthouse", dead_end=False, group_type="water", room_tile="rom7_10", x_cord=304, y_cord=0, offset_direction="y", offset_value=224),
     MinitEntranceData(entrance_name="lighthouse water lower west", region_name="lighthouse", dead_end=False, group_type="water", room_tile="rom7_11", x_cord=0, y_cord=0, offset_direction="y", offset_value=224),
-    MinitEntranceData(entrance_name="lighthouse water lower south", region_name="lighthouse", dead_end=False, group_type="water", room_tile="rom7_11", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
+    # MinitEntranceData(entrance_name="lighthouse water lower south", region_name="lighthouse", dead_end=False, group_type="water", room_tile="rom7_11", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
     MinitEntranceData(entrance_name="lighthouse water lower east", region_name="lighthouse", dead_end=False, group_type="water", room_tile="rom7_11", x_cord=304, y_cord=128, offset_direction="y", offset_value=96),
     # MinitEntranceData(entrance_name="lighthouse upper door", region_name="lighthouse lookout", dead_end=True, group_type="land", room_tile="rom7_10", x_cord=93, y_cord=128, offset_direction="fixed", offset_value=0),
     # MinitEntranceData(entrance_name="lighthouse lower door", region_name="lighthouse", dead_end=False, group_type="land", room_tile="rom7_11", x_cord=128, y_cord=128, offset_direction="fixed", offset_value=0),
@@ -115,20 +97,20 @@ er_entrances: list[MinitEntranceData] = [
     MinitEntranceData(entrance_name="sword west", region_name="sword west", dead_end=False, group_type="land", room_tile="rom9_11", x_cord=0, y_cord=48, offset_direction="y", offset_value=96),
     MinitEntranceData(entrance_name="sword east", region_name="sword east", dead_end=False, group_type="land", room_tile="rom9_11", x_cord=304, y_cord=32, offset_direction="y", offset_value=80),
     MinitEntranceData(entrance_name="sword water east", region_name="sword water", dead_end=False, group_type="water", room_tile="rom9_11", x_cord=304, y_cord=144, offset_direction="y", offset_value=80),
-    MinitEntranceData(entrance_name="sword water south", region_name="sword water", dead_end=False, group_type="water", room_tile="rom9_11", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
+    # MinitEntranceData(entrance_name="sword water south", region_name="sword water", dead_end=False, group_type="water", room_tile="rom9_11", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
     MinitEntranceData(entrance_name="sword water west", region_name="sword water", dead_end=False, group_type="water", room_tile="rom9_11", x_cord=0, y_cord=176, offset_direction="y", offset_value=48),
     MinitEntranceData(entrance_name="2crab land east", region_name="2crab tile", dead_end=False, group_type="land", room_tile="rom10_11", x_cord=304, y_cord=16, offset_direction="y", offset_value=96),
     MinitEntranceData(entrance_name="2crab land west", region_name="2crab tile", dead_end=False, group_type="land", room_tile="rom10_11", x_cord=0, y_cord=32, offset_direction="y", offset_value=80),
     MinitEntranceData(entrance_name="2crab land north main", region_name="2crab tile", dead_end=False, group_type="land", room_tile="rom10_11", x_cord=32, y_cord=0, offset_direction="x", offset_value=192),
     MinitEntranceData(entrance_name="2crab land north river", region_name="2crab tile", dead_end=False, group_type="water", room_tile="rom10_11", x_cord=240, y_cord=0, offset_direction="fixed", offset_value=0),
     MinitEntranceData(entrance_name="2crab water east", region_name="2crab tile", dead_end=False, group_type="water", room_tile="rom10_11", x_cord=304, y_cord=144, offset_direction="y", offset_value=80),
-    MinitEntranceData(entrance_name="2crab water south", region_name="2crab tile", dead_end=False, group_type="water", room_tile="rom10_11", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
+    # MinitEntranceData(entrance_name="2crab water south", region_name="2crab tile", dead_end=False, group_type="water", room_tile="rom10_11", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
     MinitEntranceData(entrance_name="2crab water west", region_name="2crab tile", dead_end=False, group_type="water", room_tile="rom10_11", x_cord=0, y_cord=144, offset_direction="y", offset_value=80),
     MinitEntranceData(entrance_name="2crab tree exit", region_name="2crab tree exit", dead_end=False, group_type="land", room_tile="rom10_11", x_cord=256, y_cord=0, offset_direction="x", offset_value=16),
     MinitEntranceData(entrance_name="dolphin land west", region_name="dolphin tile", dead_end=False, group_type="land", room_tile="rom11_11", x_cord=0, y_cord=16, offset_direction="y", offset_value=96),
     MinitEntranceData(entrance_name="dolphin bushes", region_name="dolphin tile", dead_end=False, group_type="land", room_tile="rom11_11", x_cord=272, y_cord=0, offset_direction="fixed", offset_value=0),
     MinitEntranceData(entrance_name="dolphin water east", region_name="dolphin tile", dead_end=False, group_type="water", room_tile="rom11_11", x_cord=304, y_cord=16, offset_direction="y", offset_value=208),
-    MinitEntranceData(entrance_name="dolphin water south", region_name="dolphin tile", dead_end=False, group_type="water", room_tile="rom11_11", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
+    # MinitEntranceData(entrance_name="dolphin water south", region_name="dolphin tile", dead_end=False, group_type="water", room_tile="rom11_11", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
     MinitEntranceData(entrance_name="dolphin water west", region_name="dolphin tile", dead_end=False, group_type="water", room_tile="rom11_11", x_cord=0, y_cord=144, offset_direction="y", offset_value=80),
     MinitEntranceData(entrance_name="desert beach water south", region_name="desert beach tile", dead_end=False, group_type="water", room_tile="rom12_11", x_cord=0, y_cord=224, offset_direction="x", offset_value=144),
     MinitEntranceData(entrance_name="desert beach water west", region_name="desert beach tile", dead_end=False, group_type="water", room_tile="rom12_11", x_cord=0, y_cord=16, offset_direction="y", offset_value=208),
@@ -144,11 +126,11 @@ er_entrances: list[MinitEntranceData] = [
     MinitEntranceData(entrance_name="coffee shop water south", region_name="coffee shop outside", dead_end=False, group_type="water", room_tile="rom8_10", x_cord=0, y_cord=224, offset_direction="x", offset_value=48),
     MinitEntranceData(entrance_name="coffee shop upper beach", region_name="coffee shop upper beach", dead_end=False, group_type="land", room_tile="rom8_10", x_cord=48, y_cord=0, offset_direction="x", offset_value=32),
     MinitEntranceData(entrance_name="above lighthouse land", region_name="above lighthouse land", dead_end=True, group_type="land", room_tile="rom7_9", x_cord=304, y_cord=144, offset_direction="y", offset_value=16),
-    MinitEntranceData(entrance_name="above lighthouse water north", region_name="above lighthouse water", dead_end=False, group_type="water", room_tile="rom7_9", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
+    # MinitEntranceData(entrance_name="above lighthouse water north", region_name="above lighthouse water", dead_end=False, group_type="water", room_tile="rom7_9", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
     MinitEntranceData(entrance_name="above lighthouse water east upper", region_name="above lighthouse water", dead_end=False, group_type="water", room_tile="rom7_9", x_cord=304, y_cord=0, offset_direction="y", offset_value=128),
     MinitEntranceData(entrance_name="above lighthouse water east lower", region_name="above lighthouse water", dead_end=False, group_type="water", room_tile="rom7_9", x_cord=304, y_cord=224, offset_direction="fixed", offset_value=0),
     MinitEntranceData(entrance_name="above lighthouse water south", region_name="above lighthouse water", dead_end=False, group_type="water", room_tile="rom7_9", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
-    MinitEntranceData(entrance_name="above lighthouse water west", region_name="above lighthouse water", dead_end=False, group_type="water", room_tile="rom7_9", x_cord=0, y_cord=0, offset_direction="y", offset_value=224),
+    # MinitEntranceData(entrance_name="above lighthouse water west", region_name="above lighthouse water", dead_end=False, group_type="water", room_tile="rom7_9", x_cord=0, y_cord=0, offset_direction="y", offset_value=224),
     MinitEntranceData(entrance_name="plant bushes", region_name="plant bushes", dead_end=False, group_type="land", room_tile="rom9_10", x_cord=0, y_cord=128, offset_direction="y", offset_value=48),
     MinitEntranceData(entrance_name="plant main", region_name="plant tile", dead_end=False, group_type="land", room_tile="rom9_10", x_cord=304, y_cord=16, offset_direction="y", offset_value=192),
     # MinitEntranceData(entrance_name="dog house door", region_name="dog house west", dead_end=False, group_type="land", room_tile="rom10_10", x_cord=144, y_cord=172, offset_direction="fixed", offset_value=0),  # doorup
@@ -176,14 +158,14 @@ er_entrances: list[MinitEntranceData] = [
     MinitEntranceData(entrance_name="boattree river south", region_name="boattree main", dead_end=False, group_type="water", room_tile="rom10_9", x_cord=240, y_cord=224, offset_direction="fixed", offset_value=0),
     MinitEntranceData(entrance_name="boattree east", region_name="boattree east", dead_end=False, group_type="land", room_tile="rom10_9", x_cord=304, y_cord=16, offset_direction="y", offset_value=80),
     # MinitEntranceData(entrance_name="boattree east door", region_name="boattree east", dead_end=False, group_type="land", room_tile="rom10_9", x_cord=256, y_cord=32, offset_direction="fixed", offset_value=0),
-    MinitEntranceData(entrance_name="key room", region_name="key room", dead_end=False, group_type="land", room_tile="rom9_9", x_cord=0, y_cord=32, offset_direction="y", offset_value=112),
+    MinitEntranceData(entrance_name="key room", region_name="key room", dead_end=True, group_type="land", room_tile="rom9_9", x_cord=0, y_cord=32, offset_direction="y", offset_value=112),
     MinitEntranceData(entrance_name="camera path north", region_name="camera path", dead_end=False, group_type="land", room_tile="rom9_9", x_cord=224, y_cord=0, offset_direction="x", offset_value=32),
     MinitEntranceData(entrance_name="camera path east", region_name="camera path", dead_end=False, group_type="land", room_tile="rom9_9", x_cord=304, y_cord=48, offset_direction="fixed", offset_value=0),
     MinitEntranceData(entrance_name="camera river north", region_name="camera river north", dead_end=False, group_type="land", room_tile="rom9_8", x_cord=48, y_cord=0, offset_direction="x", offset_value=176),
     MinitEntranceData(entrance_name="camera river south", region_name="camera river south", dead_end=False, group_type="land", room_tile="rom9_8", x_cord=224, y_cord=224, offset_direction="x", offset_value=32),
-    MinitEntranceData(entrance_name="camera river wet east", region_name="camera river wet", dead_end=False, group_type="toxic", room_tile="rom9_8", x_cord=304, y_cord=112, offset_direction="y", offset_value=32),
-    MinitEntranceData(entrance_name="camera river wet west", region_name="camera river wet", dead_end=False, group_type="toxic", room_tile="rom9_8", x_cord=0, y_cord=128, offset_direction="y", offset_value=32),
-    MinitEntranceData(entrance_name="camera river lookout", region_name="camera river lookout", dead_end=False, group_type="land", room_tile="rom9_8", x_cord=0, y_cord=80, offset_direction="y", offset_value=16),
+    MinitEntranceData(entrance_name="camera river wet east", region_name="toxic waters", dead_end=False, group_type="toxic", room_tile="rom9_8", x_cord=304, y_cord=112, offset_direction="y", offset_value=32),
+    MinitEntranceData(entrance_name="camera river wet west", region_name="toxic waters", dead_end=False, group_type="toxic", room_tile="rom9_8", x_cord=0, y_cord=128, offset_direction="y", offset_value=32),
+    MinitEntranceData(entrance_name="camera river lookout", region_name="camera river lookout", dead_end=True, group_type="land", room_tile="rom9_8", x_cord=0, y_cord=80, offset_direction="y", offset_value=16),
     # MinitEntranceData(entrance_name="camera house outside door", region_name="camera house outside", dead_end=False, group_type="land", room_tile="rom9_7", x_cord=160, y_cord=144, offset_direction="fixed", offset_value=0),  # doorup
     MinitEntranceData(entrance_name="camera house outside south", region_name="camera house outside", dead_end=False, group_type="land", room_tile="rom9_7", x_cord=48, y_cord=224, offset_direction="x", offset_value=176),
     MinitEntranceData(entrance_name="camera house tree", region_name="camera house tree", dead_end=False, group_type="land", room_tile="rom9_7", x_cord=0, y_cord=80, offset_direction="fixed", offset_value=0),
@@ -198,16 +180,16 @@ er_entrances: list[MinitEntranceData] = [
     MinitEntranceData(entrance_name="3crab land path south", region_name="3crab land path", dead_end=False, group_type="land", room_tile="rom8_9", x_cord=48, y_cord=224, offset_direction="x", offset_value=32),
     # MinitEntranceData(entrance_name="sewer island", region_name="sewer island", dead_end=True, group_type="land", room_tile="rom8_8", x_cord=64, y_cord=128, offset_direction="fixed", offset_value=0),
     MinitEntranceData(entrance_name="sewer island water north", region_name="sewer island tile", dead_end=False, group_type="water", room_tile="rom8_8", x_cord=0, y_cord=0, offset_direction="x", offset_value=192),
-    MinitEntranceData(entrance_name="sewer island water east", region_name="toxic waters", dead_end=False, group_type="toxic", room_tile="rom8_8", x_cord=304, y_cord=128, offset_direction="y", offset_value=32),
+    MinitEntranceData(entrance_name="sewer island water east", region_name="toxic waters", dead_end=True, group_type="toxic", room_tile="rom8_8", x_cord=304, y_cord=128, offset_direction="y", offset_value=32),
     MinitEntranceData(entrance_name="sewer island water south", region_name="sewer island tile", dead_end=False, group_type="water", room_tile="rom8_8", x_cord=0, y_cord=224, offset_direction="x", offset_value=112),
-    MinitEntranceData(entrance_name="sewer island water west", region_name="sewer island tile", dead_end=False, group_type="water", room_tile="rom8_8", x_cord=0, y_cord=0, offset_direction="y", offset_value=224),
+    # MinitEntranceData(entrance_name="sewer island water west", region_name="sewer island tile", dead_end=False, group_type="water", room_tile="rom8_8", x_cord=0, y_cord=0, offset_direction="y", offset_value=224),
     MinitEntranceData(entrance_name="sewer island mainland north", region_name="sewer island tile", dead_end=False, group_type="land", room_tile="rom8_8", x_cord=208, y_cord=0, offset_direction="x", offset_value=64),
     MinitEntranceData(entrance_name="sewer island mainland south", region_name="sewer island tile", dead_end=False, group_type="land", room_tile="rom8_8", x_cord=160, y_cord=224, offset_direction="x", offset_value=80),
     MinitEntranceData(entrance_name="sewer island mainland east", region_name="sewer island tile", dead_end=False, group_type="land", room_tile="rom8_8", x_cord=304, y_cord=80, offset_direction="x", offset_value=16),
     MinitEntranceData(entrance_name="throwcheck land north", region_name="throwcheck tile", dead_end=False, group_type="land", room_tile="rom8_7", x_cord=48, y_cord=0, offset_direction="x", offset_value=192),
     MinitEntranceData(entrance_name="throwcheck land south", region_name="throwcheck tile", dead_end=False, group_type="land", room_tile="rom8_7", x_cord=208, y_cord=224, offset_direction="x", offset_value=64),
     MinitEntranceData(entrance_name="throwcheck water south", region_name="throwcheck tile", dead_end=False, group_type="water", room_tile="rom8_7", x_cord=0, y_cord=224, offset_direction="x", offset_value=192),
-    MinitEntranceData(entrance_name="throwcheck water west", region_name="throwcheck tile", dead_end=False, group_type="water", room_tile="rom8_7", x_cord=0, y_cord=112, offset_direction="y", offset_value=112),
+    # MinitEntranceData(entrance_name="throwcheck water west", region_name="throwcheck tile", dead_end=False, group_type="water", room_tile="rom8_7", x_cord=0, y_cord=112, offset_direction="y", offset_value=112),
     MinitEntranceData(entrance_name="throwcheck box", region_name="throwcheck box", dead_end=False, group_type="land", room_tile="rom8_7", x_cord=304, y_cord=80, offset_direction="fixed", offset_value=0),
     MinitEntranceData(entrance_name="diver room east", region_name="diver room", dead_end=False, group_type="land", room_tile="rom8_6", x_cord=304, y_cord=32, offset_direction="y", offset_value=176),
     MinitEntranceData(entrance_name="diver room south", region_name="diver room", dead_end=False, group_type="land", room_tile="rom8_6", x_cord=48, y_cord=224, offset_direction="x", offset_value=192),
@@ -228,7 +210,7 @@ er_entrances: list[MinitEntranceData] = [
     MinitEntranceData(entrance_name="bridge switch lookout", region_name="bridge switch lookout", dead_end=True, group_type="land", room_tile="rom10_5", x_cord=112, y_cord=0, offset_direction="x", offset_value=80),
     MinitEntranceData(entrance_name="bridge switch right", region_name="bridge switch right", dead_end=False, group_type="land", room_tile="rom10_5", x_cord=192, y_cord=224, offset_direction="x", offset_value=80),
     MinitEntranceData(entrance_name="bridge switch left", region_name="bridge switch left", dead_end=False, group_type="land", room_tile="rom10_5", x_cord=64, y_cord=224, offset_direction="x", offset_value=48),
-    MinitEntranceData(entrance_name="bridge switch water", region_name="toxic waters", dead_end=False, group_type="toxic", room_tile="rom10_5", x_cord=128, y_cord=224, offset_direction="x", offset_value=48),
+    MinitEntranceData(entrance_name="bridge switch water", region_name="toxic waters", dead_end=True, group_type="toxic", room_tile="rom10_5", x_cord=128, y_cord=224, offset_direction="x", offset_value=48),
     MinitEntranceData(entrance_name="bridge right north", region_name="bridge right", dead_end=False, group_type="land", room_tile="rom10_6", x_cord=192, y_cord=0, offset_direction="x", offset_value=80),
     MinitEntranceData(entrance_name="bridge right east", region_name="bridge right", dead_end=False, group_type="land", room_tile="rom10_6", x_cord=304, y_cord=96, offset_direction="y", offset_value=32),
     MinitEntranceData(entrance_name="bridge right south", region_name="bridge right", dead_end=False, group_type="land", room_tile="rom10_6", x_cord=272, y_cord=224, offset_direction="fixed", offset_value=0),
@@ -248,8 +230,8 @@ er_entrances: list[MinitEntranceData] = [
     # MinitEntranceData(entrance_name="mine entrance left door", region_name="mine entrance left", dead_end=False, group_type="land", room_tile="rom10_7", x_cord=80, y_cord=96, offset_direction="fixed", offset_value=0),
     MinitEntranceData(entrance_name="mine entrance river north", region_name="toxic waters", dead_end=False, group_type="toxic", room_tile="rom10_7", x_cord=144, y_cord=0, offset_direction="x", offset_value=32),
     MinitEntranceData(entrance_name="mine entrance river south", region_name="toxic waters", dead_end=False, group_type="toxic", room_tile="rom10_7", x_cord=128, y_cord=224, offset_direction="x", offset_value=48),
-    MinitEntranceData(entrance_name="poison river corner north", region_name="poison river corner", dead_end=False, group_type="toxic", room_tile="rom10_8", x_cord=128, y_cord=0, offset_direction="x", offset_value=48),
-    MinitEntranceData(entrance_name="poison river corner south", region_name="poison river corner", dead_end=False, group_type="toxic", room_tile="rom10_8", x_cord=0, y_cord=112, offset_direction="y", offset_value=32),
+    MinitEntranceData(entrance_name="poison river corner north", region_name="toxic waters", dead_end=False, group_type="toxic", room_tile="rom10_8", x_cord=128, y_cord=0, offset_direction="x", offset_value=48),
+    MinitEntranceData(entrance_name="poison river corner south", region_name="toxic waters", dead_end=False, group_type="toxic", room_tile="rom10_8", x_cord=0, y_cord=112, offset_direction="y", offset_value=32),
     MinitEntranceData(entrance_name="factory reception main south", region_name="factory reception tile", dead_end=False, group_type="land", room_tile="rom11_6", x_cord=96, y_cord=224, offset_direction="x", offset_value=32),
     MinitEntranceData(entrance_name="factory reception main west", region_name="factory reception tile", dead_end=False, group_type="land", room_tile="rom11_6", x_cord=0, y_cord=96, offset_direction="y", offset_value=32),
     MinitEntranceData(entrance_name="factory reception east", region_name="factory reception east", dead_end=False, group_type="land", room_tile="rom11_6", x_cord=304, y_cord=96, offset_direction="y", offset_value=16),
@@ -270,8 +252,8 @@ er_entrances: list[MinitEntranceData] = [
     MinitEntranceData(entrance_name="factory loading lower main", region_name="factory loading lower main", dead_end=False, group_type="land", room_tile="rom13_8", x_cord=16, y_cord=0, offset_direction="x", offset_value=272),
     MinitEntranceData(entrance_name="factory loading lower shortcut", region_name="factory loading lower shortcut", dead_end=False, group_type="land", room_tile="rom13_8", x_cord=304, y_cord=128, offset_direction="fixed", offset_value=0),
     MinitEntranceData(entrance_name="factory loading deadend", region_name="factory loading deadend", dead_end=True, group_type="land", room_tile="rom14_7", x_cord=0, y_cord=96, offset_direction="y", offset_value=32),
-    MinitEntranceData(entrance_name="factory loading desert north", region_name="factory loading desert", dead_end=True, group_type="land", room_tile="rom14_7", x_cord=16, y_cord=0, offset_direction="x", offset_value=288),
-    MinitEntranceData(entrance_name="factory loading desert east", region_name="factory loading desert", dead_end=True, group_type="land", room_tile="rom14_7", x_cord=304, y_cord=0, offset_direction="y", offset_value=208),
+    MinitEntranceData(entrance_name="factory loading desert north", region_name="factory loading desert", dead_end=False, group_type="land", room_tile="rom14_7", x_cord=16, y_cord=0, offset_direction="x", offset_value=288),
+    MinitEntranceData(entrance_name="factory loading desert east", region_name="factory loading desert", dead_end=False, group_type="land", room_tile="rom14_7", x_cord=304, y_cord=0, offset_direction="y", offset_value=208),
     MinitEntranceData(entrance_name="shoe shop outside south", region_name="shoe shop outside", dead_end=False, group_type="land", room_tile="rom14_8", x_cord=48, y_cord=224, offset_direction="x", offset_value=192),
     # MinitEntranceData(entrance_name="shoe shop outside door", region_name="shoe shop outside", dead_end=False, group_type="land", room_tile="rom14_8", x_cord=192, y_cord=176, offset_direction="fixed", offset_value=0),  # doorup
     MinitEntranceData(entrance_name="shoe shop shortcut", region_name="shoe shop shortcut", dead_end=False, group_type="land", room_tile="rom14_8", x_cord=0, y_cord=128, offset_direction="fixed", offset_value=0),
@@ -280,7 +262,7 @@ er_entrances: list[MinitEntranceData] = [
     MinitEntranceData(entrance_name="temple outside south", region_name="temple outside", dead_end=False, group_type="land", room_tile="rom14_10", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
     MinitEntranceData(entrance_name="temple outside west", region_name="temple outside", dead_end=False, group_type="land", room_tile="rom14_10", x_cord=0, y_cord=0, offset_direction="y", offset_value=224),
     # MinitEntranceData(entrance_name="temple outside door", region_name="temple outside", dead_end=False, group_type="land", room_tile="rom14_10", x_cord=160, y_cord=96, offset_direction="fixed", offset_value=0),
-    MinitEntranceData(entrance_name="desert RV main east", region_name="desert RV main", dead_end=False, group_type="land", room_tile="rom13_9", x_cord=304, y_cord=48, offset_direction="y", offset_value=144),
+    MinitEntranceData(entrance_name="desert RV main east", region_name="desert RV main", dead_end=False, group_type="land", room_tile="rom13_9", x_cord=304, y_cord=48, offset_direction="y", offset_value=128),
     MinitEntranceData(entrance_name="desert RV main south", region_name="desert RV main", dead_end=False, group_type="land", room_tile="rom13_9", x_cord=32, y_cord=224, offset_direction="x", offset_value=224),
     MinitEntranceData(entrance_name="desert RV main west", region_name="desert RV main", dead_end=False, group_type="land", room_tile="rom13_9", x_cord=0, y_cord=80, offset_direction="y", offset_value=32),
     # MinitEntranceData(entrance_name="desert RV main door", region_name="desert RV main", dead_end=False, group_type="land", room_tile="rom13_9", x_cord=144, y_cord=96, offset_direction="fixed", offset_value=0),  # doorup
@@ -297,27 +279,31 @@ er_entrances: list[MinitEntranceData] = [
     MinitEntranceData(entrance_name="desert left cliffs south", region_name="desert left cliffs", dead_end=False, group_type="land", room_tile="rom13_10", x_cord=32, y_cord=224, offset_direction="x", offset_value=272),
     MinitEntranceData(entrance_name="desert left cliffs west", region_name="desert left cliffs", dead_end=False, group_type="land", room_tile="rom13_10", x_cord=0, y_cord=96, offset_direction="fixed", offset_value=0),
 
-    MinitEntranceData(entrance_name="Overworld wet01", region_name="Overworld wet01", dead_end=False, group_type="water", room_tile="rom7_7", x_cord=304, y_cord=112, offset_direction="y", offset_value=112),
-    MinitEntranceData(entrance_name="Overworld wet02", region_name="Overworld wet02", dead_end=False, group_type="water", room_tile="rom7_8", x_cord=304, y_cord=0, offset_direction="y", offset_value=224),
-    MinitEntranceData(entrance_name="Overworld wet03", region_name="Overworld wet03", dead_end=False, group_type="water", room_tile="rom7_8", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
-    MinitEntranceData(entrance_name="Overworld wet04", region_name="Overworld wet04", dead_end=False, group_type="water", room_tile="rom6_9", x_cord=304, y_cord=0, offset_direction="y", offset_value=224),
-    MinitEntranceData(entrance_name="Overworld wet05", region_name="Overworld wet05", dead_end=False, group_type="water", room_tile="rom6_10", x_cord=304, y_cord=0, offset_direction="y", offset_value=224),
-    MinitEntranceData(entrance_name="Overworld wet06", region_name="Overworld wet06", dead_end=False, group_type="water", room_tile="rom6_11", x_cord=304, y_cord=0, offset_direction="y", offset_value=224),
-    MinitEntranceData(entrance_name="Overworld wet07", region_name="Overworld wet07", dead_end=False, group_type="water", room_tile="rom7_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
+    # MinitEntranceData(entrance_name="Overworld wet01", region_name="Overworld wet01", dead_end=False, group_type="water", room_tile="rom7_7", x_cord=304, y_cord=112, offset_direction="y", offset_value=112),
+    # MinitEntranceData(entrance_name="Overworld wet02", region_name="Overworld wet02", dead_end=False, group_type="water", room_tile="rom7_8", x_cord=304, y_cord=0, offset_direction="y", offset_value=224),
+    # MinitEntranceData(entrance_name="Overworld wet03", region_name="Overworld wet03", dead_end=False, group_type="water", room_tile="rom7_8", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
+    # MinitEntranceData(entrance_name="Overworld wet04", region_name="Overworld wet04", dead_end=False, group_type="water", room_tile="rom6_9", x_cord=304, y_cord=0, offset_direction="y", offset_value=224),
+    # MinitEntranceData(entrance_name="Overworld wet05", region_name="Overworld wet05", dead_end=False, group_type="water", room_tile="rom6_10", x_cord=304, y_cord=0, offset_direction="y", offset_value=224),
+    MinitEntranceData(entrance_name="Overworld wet rock east", region_name="Overworld wet rock", dead_end=False, group_type="water", room_tile="rom6_11", x_cord=304, y_cord=0, offset_direction="y", offset_value=224),
+    MinitEntranceData(entrance_name="Overworld wet rock south", region_name="Overworld wet rock", dead_end=False, group_type="water", room_tile="rom6_11", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
+    MinitEntranceData(entrance_name="Overworld wet passthrough north", region_name="Overworld wet passthrough", dead_end=False, group_type="water", room_tile="rom6_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
+    MinitEntranceData(entrance_name="Overworld wet passthrough south", region_name="Overworld wet passthrough", dead_end=False, group_type="water", room_tile="rom6_12", x_cord=0, y_cord=224, offset_direction="x", offset_value=304),
+    MinitEntranceData(entrance_name="Overworld treasure island", region_name="Overworld treasure island", dead_end=False, group_type="water", room_tile="rom6_13", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
+    # MinitEntranceData(entrance_name="Overworld wet07", region_name="Overworld wet07", dead_end=False, group_type="water", room_tile="rom7_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
     # MinitEntranceData(entrance_name="Overworld wet08", region_name="Overworld wet08", dead_end=False, group_type="water", room_tile="rom8_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
-    MinitEntranceData(entrance_name="Overworld wet09", region_name="Overworld wet09", dead_end=False, group_type="water", room_tile="rom9_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
-    MinitEntranceData(entrance_name="Overworld wet10", region_name="Overworld wet10", dead_end=False, group_type="water", room_tile="rom10_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
-    MinitEntranceData(entrance_name="Overworld wet11", region_name="Overworld wet11", dead_end=False, group_type="water", room_tile="rom11_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
-    MinitEntranceData(entrance_name="Overworld wet12", region_name="Overworld wet12", dead_end=False, group_type="water", room_tile="rom12_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=144),
+    # MinitEntranceData(entrance_name="Overworld wet09", region_name="Overworld wet09", dead_end=False, group_type="water", room_tile="rom9_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
+    # MinitEntranceData(entrance_name="Overworld wet10", region_name="Overworld wet10", dead_end=False, group_type="water", room_tile="rom10_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
+    # MinitEntranceData(entrance_name="Overworld wet11", region_name="Overworld wet11", dead_end=False, group_type="water", room_tile="rom11_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
+    MinitEntranceData(entrance_name="Overworld desert wet", region_name="Overworld desert", dead_end=False, group_type="water", room_tile="rom12_12", x_cord=0, y_cord=0, offset_direction="x", offset_value=144),
     # MinitEntranceData(entrance_name="Overworld island door", region_name="Overworld", dead_end=False, group_type="land", room_tile="rom8_15", x_cord=224, y_cord=160, offset_direction="fixed", offset_value=0),
-    MinitEntranceData(entrance_name="Overworld dry01", region_name="Overworld dry01", dead_end=False, group_type="land", room_tile="rom12_12", x_cord=160, y_cord=0, offset_direction="x", offset_value=144),
-    MinitEntranceData(entrance_name="Overworld dry02", region_name="Overworld dry02", dead_end=False, group_type="land", room_tile="rom13_11", x_cord=0, y_cord=16, offset_direction="y", offset_value=208),
-    MinitEntranceData(entrance_name="Overworld dry03", region_name="Overworld dry03", dead_end=False, group_type="land", room_tile="rom13_11", x_cord=32, y_cord=0, offset_direction="x", offset_value=272),
-    MinitEntranceData(entrance_name="Overworld dry04", region_name="Overworld dry04", dead_end=False, group_type="land", room_tile="rom14_11", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
-    MinitEntranceData(entrance_name="Overworld dry05", region_name="Overworld dry05", dead_end=False, group_type="land", room_tile="rom15_10", x_cord=0, y_cord=0, offset_direction="y", offset_value=224),
-    MinitEntranceData(entrance_name="Overworld dry06", region_name="Overworld dry06", dead_end=False, group_type="land", room_tile="rom15_9", x_cord=0, y_cord=48, offset_direction="y", offset_value=176),
-    MinitEntranceData(entrance_name="Overworld dry07", region_name="Overworld dry07", dead_end=False, group_type="land", room_tile="rom15_7", x_cord=0, y_cord=0, offset_direction="y", offset_value=208),
-    MinitEntranceData(entrance_name="Overworld dry08", region_name="Overworld dry08", dead_end=False, group_type="land", room_tile="rom14_6", x_cord=16, y_cord=224, offset_direction="x", offset_value=288),
+    MinitEntranceData(entrance_name="Overworld dry01", region_name="Overworld desert", dead_end=False, group_type="land", room_tile="rom12_12", x_cord=160, y_cord=0, offset_direction="x", offset_value=144),
+    MinitEntranceData(entrance_name="Overworld dry02", region_name="Overworld desert", dead_end=False, group_type="land", room_tile="rom13_11", x_cord=0, y_cord=16, offset_direction="y", offset_value=208),
+    MinitEntranceData(entrance_name="Overworld dry03", region_name="Overworld desert", dead_end=False, group_type="land", room_tile="rom13_11", x_cord=32, y_cord=0, offset_direction="x", offset_value=272),
+    MinitEntranceData(entrance_name="Overworld dry04", region_name="Overworld desert", dead_end=False, group_type="land", room_tile="rom14_11", x_cord=0, y_cord=0, offset_direction="x", offset_value=304),
+    MinitEntranceData(entrance_name="Overworld dry05", region_name="Overworld desert", dead_end=False, group_type="land", room_tile="rom15_10", x_cord=0, y_cord=0, offset_direction="y", offset_value=224),
+    MinitEntranceData(entrance_name="Overworld dry06", region_name="Overworld desert", dead_end=False, group_type="land", room_tile="rom15_9", x_cord=0, y_cord=48, offset_direction="y", offset_value=176),
+    MinitEntranceData(entrance_name="Overworld dry07", region_name="Overworld desert", dead_end=False, group_type="land", room_tile="rom15_7", x_cord=0, y_cord=0, offset_direction="y", offset_value=208),
+    MinitEntranceData(entrance_name="Overworld dry08", region_name="Overworld desert", dead_end=False, group_type="land", room_tile="rom14_6", x_cord=16, y_cord=224, offset_direction="x", offset_value=288),
 
 
     # MinitEntranceData(entrance_name="RV house", region_name="RV house", dead_end=True, group_type="land", room_tile="hom13_9", x_cord=144, y_cord=96, offset_direction="fixed", offset_value=0),
@@ -356,8 +342,8 @@ er_entrances: list[MinitEntranceData] = [
     MinitEntranceData(entrance_name="temple firebat test east", region_name="temple firebat test", dead_end=False, group_type="land", room_tile="dun15_10", x_cord=304, y_cord=32, offset_direction="fixed", offset_value=0),  # consider smushing together
     MinitEntranceData(entrance_name="temple firebat test west", region_name="temple firebat test", dead_end=False, group_type="land", room_tile="dun15_10", x_cord=0, y_cord=96, offset_direction="y", offset_value=32),
     MinitEntranceData(entrance_name="temple firebat chest", region_name="temple firebat chest", dead_end=True, group_type="land", room_tile="dun16_10", x_cord=0, y_cord=32, offset_direction="fixed", offset_value=0),
-    MinitEntranceData(entrance_name="temple coin test north", region_name="temple coin test", dead_end=False, group_type="land", room_tile="dun14_9", x_cord=160, y_cord=0, offset_direction="fixed", offset_value=0),
-    MinitEntranceData(entrance_name="temple coin test south", region_name="temple coin test", dead_end=False, group_type="land", room_tile="dun14_9", x_cord=144, y_cord=224, offset_direction="x", offset_value=32),
+    MinitEntranceData(entrance_name="temple coin test north", region_name="temple coin test north", dead_end=True, group_type="land", room_tile="dun14_9", x_cord=160, y_cord=0, offset_direction="fixed", offset_value=0),
+    MinitEntranceData(entrance_name="temple coin test south", region_name="temple coin test south", dead_end=True, group_type="land", room_tile="dun14_9", x_cord=144, y_cord=224, offset_direction="x", offset_value=32),
     MinitEntranceData(entrance_name="temple coin chest", region_name="temple coin chest", dead_end=True, group_type="land", room_tile="dun14_8", x_cord=160, y_cord=224, offset_direction="fixed", offset_value=0),
     # MinitEntranceData(entrance_name="hotel room door", region_name="hotel room", dead_end=False, group_type="land", room_tile="dun9_6", x_cord=208, y_cord=128, offset_direction="fixed", offset_value=0),
     # MinitEntranceData(entrance_name="hotel room teleport", region_name="hotel room", dead_end=False, group_type="land", room_tile="dun9_6", x_cord=256, y_cord=128, offset_direction="fixed", offset_value=0),
@@ -384,7 +370,7 @@ er_entrances: list[MinitEntranceData] = [
     MinitEntranceData(entrance_name="sewer bat arena south", region_name="sewer bat arena", dead_end=False, group_type="land", room_tile="dun8_9", x_cord=192, y_cord=224, offset_direction="x", offset_value=16),
     MinitEntranceData(entrance_name="sewer bat gate", region_name="sewer bat gate", dead_end=False, group_type="land", room_tile="dun8_9", x_cord=112, y_cord=0, offset_direction="x", offset_value=16),  # oneway
     # MinitEntranceData(entrance_name="sewer upper door", region_name="sewer upper", dead_end=False, group_type="land", room_tile="dun8_8", x_cord=64, y_cord=112, offset_direction="fixed", offset_value=0),
-    MinitEntranceData(entrance_name="sewer upper south", region_name="sewer upper", dead_end=False, group_type="land", room_tile="dun8_8", x_cord=112, y_cord=224, offset_direction="x", offset_value=16),
+    MinitEntranceData(entrance_name="sewer upper south", region_name="sewer upper", dead_end=True, group_type="land", room_tile="dun8_8", x_cord=112, y_cord=224, offset_direction="x", offset_value=16),
     MinitEntranceData(entrance_name="sewer tentacle", region_name="sewer tentacle", dead_end=True, group_type="water", room_tile="dun7_10", x_cord=304, y_cord=192, offset_direction="fixed", offset_value=0),
     # MinitEntranceData(entrance_name="island teleporter tile", region_name="island teleporter", dead_end=False, group_type="land", room_tile="dun8_15", x_cord=192, y_cord=48, offset_direction="fixed", offset_value=0),
     MinitEntranceData(entrance_name="island teleporter east", region_name="island teleporter", dead_end=False, group_type="land", room_tile="dun8_15", x_cord=304, y_cord=80, offset_direction="fixed", offset_value=0),
@@ -438,14 +424,14 @@ er_entrances: list[MinitEntranceData] = [
 # only used for client
 game_entrances: dict[str, list[dict[str, any]]] = {
     "rom7_10": [
-        {"CName": "lighthouse water upper west", "direction": "west", "baseCoor": 0, "offset": 240},
+        # {"CName": "lighthouse water upper west", "direction": "west", "baseCoor": 0, "offset": 240},
         {"CName": "lighthouse water upper north", "direction": "north", "baseCoor": 0, "offset": 320},
         {"CName": "lighthouse water upper east", "direction": "east", "baseCoor": 0, "offset": 240},
         {"CName": "lighthouse upper door", "direction": "door", "x": 93, "y": 128},
     ],
     "rom7_11": [
         {"CName": "lighthouse water lower west", "direction": "west", "baseCoor": 0, "offset": 240},
-        {"CName": "lighthouse water lower south", "direction": "south", "baseCoor": 0, "offset": 320},
+        # {"CName": "lighthouse water lower south", "direction": "south", "baseCoor": 0, "offset": 320},
         {"CName": "lighthouse water lower east", "direction": "east", "baseCoor": 0, "offset": 240},
         {"CName": "lighthouse lower door", "direction": "door", "x": 128, "y": 128},
         {"CName": "lighthouse bridge", "direction": "east", "baseCoor": 112, "offset": 16},
@@ -463,7 +449,7 @@ game_entrances: dict[str, list[dict[str, any]]] = {
         {"CName": "sword west", "direction": "west", "baseCoor": 48, "offset": 112},
         {"CName": "sword east", "direction": "east", "baseCoor": 32, "offset": 96},
         {"CName": "sword water east", "direction": "east", "baseCoor": 144, "offset": 96},
-        {"CName": "sword water south", "direction": "south", "baseCoor": 0, "offset": 320},
+        # {"CName": "sword water south", "direction": "south", "baseCoor": 0, "offset": 320},
         {"CName": "sword water west", "direction": "west", "baseCoor": 176, "offset": 64},
     ],
     "rom10_11": [
@@ -472,7 +458,7 @@ game_entrances: dict[str, list[dict[str, any]]] = {
         {"CName": "2crab land north main", "direction": "north", "baseCoor": 32, "offset": 208},
         {"CName": "2crab land north river", "direction": "north", "baseCoor": 240, "offset": 16},
         {"CName": "2crab water east", "direction": "east", "baseCoor": 144, "offset": 96},
-        {"CName": "2crab water south", "direction": "south", "baseCoor": 0, "offset": 320},
+        # {"CName": "2crab water south", "direction": "south", "baseCoor": 0, "offset": 320},
         {"CName": "2crab water west", "direction": "west", "baseCoor": 144, "offset": 96},
         {"CName": "2crab tree exit", "direction": "north", "baseCoor": 256, "offset": 32},
     ],
@@ -480,7 +466,7 @@ game_entrances: dict[str, list[dict[str, any]]] = {
         {"CName": "dolphin land west", "direction": "west", "baseCoor": 16, "offset": 112},
         {"CName": "dolphin bushes", "direction": "north", "baseCoor": 272, "offset": 16},
         {"CName": "dolphin water east", "direction": "east", "baseCoor": 16, "offset": 224},
-        {"CName": "dolphin water south", "direction": "south", "baseCoor": 0, "offset": 320},
+        # {"CName": "dolphin water south", "direction": "south", "baseCoor": 0, "offset": 320},
         {"CName": "dolphin water west", "direction": "west", "baseCoor": 144, "offset": 96},
     ],
     "rom12_11": [
@@ -502,11 +488,11 @@ game_entrances: dict[str, list[dict[str, any]]] = {
     ],
     "rom7_9": [
         {"CName": "above lighthouse land", "direction": "east", "baseCoor": 144, "offset": 32},
-        {"CName": "above lighthouse water north", "direction": "north", "baseCoor": 0, "offset": 320},
+        # {"CName": "above lighthouse water north", "direction": "north", "baseCoor": 0, "offset": 320},
         {"CName": "above lighthouse water east upper", "direction": "east", "baseCoor": 0, "offset": 144},
         {"CName": "above lighthouse water east lower", "direction": "east", "baseCoor": 224, "offset": 16},
         {"CName": "above lighthouse water south", "direction": "south", "baseCoor": 0, "offset": 320},
-        {"CName": "above lighthouse water west", "direction": "west", "baseCoor": 0, "offset": 240},
+        # {"CName": "above lighthouse water west", "direction": "west", "baseCoor": 0, "offset": 240},
     ],
     "rom9_10": [
         {"CName": "plant bushes", "direction": "west", "baseCoor": 128, "offset": 64},
@@ -582,7 +568,7 @@ game_entrances: dict[str, list[dict[str, any]]] = {
         {"CName": "sewer island water north", "direction": "north", "baseCoor": 0, "offset": 208},
         {"CName": "sewer island water east", "direction": "east", "baseCoor": 128, "offset": 48},
         {"CName": "sewer island water south", "direction": "south", "baseCoor": 0, "offset": 128},
-        {"CName": "sewer island water west", "direction": "west", "baseCoor": 0, "offset": 240},
+    #    {"CName": "sewer island water west", "direction": "west", "baseCoor": 0, "offset": 240},
         {"CName": "sewer island mainland north", "direction": "north", "baseCoor": 208, "offset": 80},
         {"CName": "sewer island mainland south", "direction": "south", "baseCoor": 160, "offset": 96},
         {"CName": "sewer island mainland east", "direction": "east", "baseCoor": 80, "offset": 32},
@@ -591,7 +577,7 @@ game_entrances: dict[str, list[dict[str, any]]] = {
         {"CName": "throwcheck land north", "direction": "north", "baseCoor": 48, "offset": 208},
         {"CName": "throwcheck land south", "direction": "south", "baseCoor": 208, "offset": 80},
         {"CName": "throwcheck water south", "direction": "south", "baseCoor": 0, "offset": 208},
-        {"CName": "throwcheck water west", "direction": "west", "baseCoor": 112, "offset": 128},
+        # {"CName": "throwcheck water west", "direction": "west", "baseCoor": 112, "offset": 128},
         {"CName": "throwcheck box", "direction": "east", "baseCoor": 80, "offset": 16},
     ],
     "rom8_6": [
@@ -712,7 +698,7 @@ game_entrances: dict[str, list[dict[str, any]]] = {
         {"CName": "temple outside door", "direction": "door", "x": 160, "y": 96},
     ],
     "rom13_9": [
-        {"CName": "desert RV main east", "direction": "east", "baseCoor": 48, "offset": 160},
+        {"CName": "desert RV main east", "direction": "east", "baseCoor": 48, "offset": 144},
         {"CName": "desert RV main south", "direction": "south", "baseCoor": 32, "offset": 240},
         {"CName": "desert RV main west", "direction": "west", "baseCoor": 80, "offset": 48},
         {"CName": "desert RV main door", "direction": "door", "x": 144, "y": 96},
@@ -737,39 +723,47 @@ game_entrances: dict[str, list[dict[str, any]]] = {
     "rom8_15": [
         {"CName": "Overworld island door", "direction": "door", "x": 224, "y": 160},
     ],
-    "rom7_7": [
-        {"CName": "Overworld wet01", "direction": "east", "baseCoor": 112, "offset": 128},
-    ],
-    "rom7_8": [
-        {"CName": "Overworld wet02", "direction": "east", "baseCoor": 0, "offset": 240},
-        {"CName": "Overworld wet03", "direction": "south", "baseCoor": 0, "offset": 320},
-    ],
-    "rom6_9": [
-        {"CName": "Overworld wet04", "direction": "east", "baseCoor": 0, "offset": 240},
-    ],
-    "rom6_10": [
-        {"CName": "Overworld wet05", "direction": "east", "baseCoor": 0, "offset": 240},
-    ],
-    "rom6_11": [
-        {"CName": "Overworld wet06", "direction": "east", "baseCoor": 0, "offset": 240},
-    ],
-    "rom7_12": [
-        {"CName": "Overworld wet07", "direction": "north", "baseCoor": 0, "offset": 320},
-    ],
-    # "rom8_12": [
-        # {"CName": "Overworld wet08", "direction": "north", "baseCoor": 0, "offset": 320},
+    # "rom7_7": [
+    #     {"CName": "Overworld wet01", "direction": "east", "baseCoor": 112, "offset": 128},
     # ],
-    "rom9_12": [
-        {"CName": "Overworld wet09", "direction": "north", "baseCoor": 0, "offset": 320},
+    # "rom7_8": [
+    #     {"CName": "Overworld wet02", "direction": "east", "baseCoor": 0, "offset": 240},
+    #     {"CName": "Overworld wet03", "direction": "south", "baseCoor": 0, "offset": 320},
+    # ],
+    # "rom6_9": [
+    #     {"CName": "Overworld wet04", "direction": "east", "baseCoor": 0, "offset": 240},
+    # ],
+    # "rom6_10": [
+    #     {"CName": "Overworld wet05", "direction": "east", "baseCoor": 0, "offset": 240},
+    # ],
+    "rom6_11": [
+        {"CName": "Overworld wet rock east", "direction": "east", "baseCoor": 0, "offset": 240},
+        {"CName": "Overworld wet rock south", "direction": "south", "baseCoor": 0, "offset": 320},
     ],
-    "rom10_12": [
-        {"CName": "Overworld wet10", "direction": "north", "baseCoor": 0, "offset": 320},
+    "rom6_12": [
+        {"CName": "Overworld wet passthrough north", "direction": "north", "baseCoor": 0, "offset": 320},
+        {"CName": "Overworld wet passthrough south", "direction": "south", "baseCoor": 0, "offset": 320},
     ],
-    "rom11_12": [
-        {"CName": "Overworld wet11", "direction": "north", "baseCoor": 0, "offset": 320},
+    "rom6_13": [
+        {"CName": "Overworld treasure island", "direction": "north", "baseCoor": 0, "offset": 320},
     ],
+    #  "rom7_12": [
+    #     {"CName": "Overworld wet07", "direction": "north", "baseCoor": 0, "offset": 320},
+    # ],
+    # "rom8_12": [
+    #     {"CName": "Overworld wet08", "direction": "north", "baseCoor": 0, "offset": 320},
+    # ],
+    # "rom9_12": [
+    #     {"CName": "Overworld wet09", "direction": "north", "baseCoor": 0, "offset": 320},
+    # ],
+    # "rom10_12": [
+    #     {"CName": "Overworld wet10", "direction": "north", "baseCoor": 0, "offset": 320},
+    # ],
+    # "rom11_12": [
+    #     {"CName": "Overworld wet11", "direction": "north", "baseCoor": 0, "offset": 320},
+    # ],
     "rom12_12": [
-        {"CName": "Overworld wet12", "direction": "north", "baseCoor": 0, "offset": 160},
+        {"CName": "Overworld desert wet", "direction": "north", "baseCoor": 0, "offset": 160},
         {"CName": "Overworld dry01", "direction": "north", "baseCoor": 160, "offset": 160},
     ],
     "rom13_11": [
