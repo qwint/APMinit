@@ -4,6 +4,7 @@ import time
 import os
 import urllib.parse
 import aiohttp.web
+from typing import Any
 from argparse import ArgumentParser, Namespace
 
 import Utils
@@ -49,7 +50,10 @@ class MinitCommandProcessor(SuperCommandProcessor):
 
 class ProxyGameContext(SuperContext):
     game = GAMENAME
+
     httpServer_task: asyncio.Task[None] | None = None
+    socket_server = None  # TODO: type this with ServerConnection
+
     command_processor = MinitCommandProcessor
     tags = set()
     last_sent_death: float = time.time()
@@ -109,63 +113,38 @@ class ProxyGameContext(SuperContext):
         await self.get_username()
         await self.send_connect()
 
-    async def locationHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
-        """handle POST at /Locations that uses scouts to return useful info"""
-        requestjson = await request.json()
+    async def locationHandler(self, locations: list[int]) -> str:
+        """handle locations data from game and use scouts to return useful info"""
+        await self.check_locations(locations)
 
-        await self.check_locations(requestjson["Locations"])
+        localResponse = self.build_local_locations_response(locations)
+        return json.dumps(localResponse)
 
-        localResponse = self.build_local_locations_response(requestjson)
-        return aiohttp.web.json_response(localResponse)
-
-    async def goalHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
-        """handle POST at /Goal"""
-        requestjson = await request.text()
-        response = self.build_goal_response(requestjson)
+    async def goalHandler(self, goal: str) -> None:
+        """handle goal attempt from game checking for enabled goals before sending to server"""
+        response = self.build_goal_response(goal)
         if response:
             await self.send_msgs(response)
-        return aiohttp.web.json_response(response)
 
-    async def deathHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
-        """handle POST at /Death"""
+    async def deathHandler(self) -> None:
+        """handle death ping from game"""
         if self.slot_data["death_link"]:
-            response = self.build_deathlink_response()
             await self.send_death(f"{self.player_names[self.slot]} ran out of time")  # consider more silly messages
-            return aiohttp.web.json_response(response)
-        else:
-            return aiohttp.web.json_response("deathlink disabled")
 
-    async def deathpollHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
-        """handle GET at /Deathpoll"""
-        if self.slot_data["death_link"]:
-            cTime = 0
-            while (cTime < 20):
-                if self.last_death_link > self.last_sent_death:
-                    self.last_sent_death = self.last_death_link
-                    return aiohttp.web.json_response({"Deathlink": True})
-                else:
-                    cTime += 1
-                    await asyncio.sleep(1)
-            return aiohttp.web.json_response({"Deathlink": False})
-        else:
-            return aiohttp.web.json_response("deathlink disabled")
+    async def itemsHandler(self) -> str:
+        """handle item sync from game"""
+        return json.dumps(self.build_item_response())
 
-    async def itemsHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
-        """handle GET at /Items"""
-        response = self.build_item_response()
-        return aiohttp.web.json_response(response)
-
-    async def datapackageHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
-        """handle GET at /Datapackage"""
-        response = self.build_datapackage_response()
-        # response = {'datapackage':'FROM MINIT - need to figure out data'}
-        # await self.send_msgs(response)
-        return aiohttp.web.json_response(response)
-
-    async def erConnHandler(self, request: aiohttp.web.Request) -> aiohttp.web.Response:
-        """handle GET at /ErConnections"""
+    async def erConnHandler(self) -> str:
+        """handle er connection sync from game"""
         response = self.build_er_response()
-        return aiohttp.web.json_response(response)
+        return json.dumps(response)
+
+    def on_deathlink(self, data: dict[str, Any]) -> None:
+        # CommonClient function run on received deathlinks
+        super().on_deathlink(data)
+        if self.socket_server is not None:
+            Utils.async_start(self.socket_server.send(json.dumps({"Deathlink": True})))
 
     def build_er_response(self):
         """
@@ -219,7 +198,7 @@ class ProxyGameContext(SuperContext):
         """
         connections = self.slot_data["ER_connections"]
         if not connections:
-            return "ER Disabled"
+            return {"Entrances": None}  # TODO: see if this translates fine in game
         er_data_lookup = {data.entrance_name: data for data in er_entrances}
         erMessage = {"Entrances": game_entrances}
         for connection in connections:
@@ -241,9 +220,6 @@ class ProxyGameContext(SuperContext):
 
         return erMessage
 
-    def build_deathlink_response(self):
-        return "death sent"
-
     def build_goal_response(self, request: str):
         if request in self.goals:
             goalmessage = [{
@@ -254,7 +230,7 @@ class ProxyGameContext(SuperContext):
             goalmessage = None
         return goalmessage
 
-    def build_local_locations_response(self, request: json) -> json:
+    def build_local_locations_response(self, locations: list[int]) -> json:
         """
         expecting request to be json body in the form of
         {"LocationResponse":
@@ -264,11 +240,11 @@ class ProxyGameContext(SuperContext):
         - for a remote item
         """
 
-        locations = set(request["Locations"]).difference(self.locations_checked)
+        locations = set(locations).difference(self.locations_checked)
         if len(locations) != 1:
             return {"Location": "Not found in scout cache"}  # TODO update if client can handle
 
-        location = request["Locations"][0]
+        location = locations[0]
         if not self.locations_info:
             return {"Location": "Not found in scout cache"}  # TODO update if client can handle
 
@@ -325,21 +301,13 @@ class ProxyGameContext(SuperContext):
         }
         return itemmessage
 
-    # TODO update to transform the data
-    # - will eventually handle the datapackage from
-    # - CommonContext.consume_network_data_package() to make them minit pretty
-    def build_datapackage_response(self):
-        datapackagemessage = [{"cmd": "blah", "data": "blah"}]
-        return datapackagemessage
-
 
 async def main(args):
-    from .proxyServer import Webserver, http_server_loop
+    from .socketServer import proxy_client
 
     ctx = ProxyGameContext(args.connect, args.password)
-    webserver = Webserver(ctx)
-    ctx.httpServer_task = asyncio.create_task(http_server_loop(webserver), name="http server loop")
-
+    prox = proxy_client(ctx)
+    ctx.httpServer_task = asyncio.create_task(prox.run(), name="websocket loop")
     ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
 
     if tracker_loaded:
