@@ -1,6 +1,7 @@
 import asyncio
 import json
 from websockets.asyncio.server import serve, ServerConnection
+from websockets.exceptions import ConnectionClosedError
 
 #from .MinitClient import ProxyGameContext
 
@@ -13,7 +14,7 @@ class proxy_client:
         self.port = 11311
 
     async def run(self):
-        server = await serve(self.echo, self.host, self.port)
+        server = await serve(self.echo, self.host, self.port, ping_interval=None)  # TODO: see if i can get gamemaker to respect ping/pong and turn this back on
         try:
             await server.serve_forever()
         finally:
@@ -35,12 +36,17 @@ class proxy_client:
                     await self.ctx.goalHandler(data["goal"])
                 elif type == "death":
                     await self.ctx.deathHandler()
-                    message = json.dumps({"type": "deathlink"})
                 elif type == "knockback":
                     pass
+                elif type == "er_connections":
+                    message = await self.ctx.erConnHandler()
+                elif type == "items":
+                    message = await self.ctx.itemsHandler()
 
                 if message is not None:
                     await websocket.send(message)
+        except ConnectionClosedError:
+            pass  # TODO: log
         finally:
             self.ctx.socket_server = None
 

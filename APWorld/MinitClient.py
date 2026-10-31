@@ -144,12 +144,14 @@ class ProxyGameContext(SuperContext):
         # CommonClient function run on received deathlinks
         super().on_deathlink(data)
         if self.socket_server is not None:
-            Utils.async_start(self.socket_server.send(json.dumps({"Deathlink": True})))
+            Utils.async_start(self.socket_server.send(json.dumps({"type": "death"})))
 
     def build_er_response(self):
         """
         erMessage format:
-        {"Entrances": [
+        {"type": "entrance_connections",
+         "enabled": True,
+         "Entrances": [
             "hom10_10": [
                 {
                     "direction": "south",
@@ -196,11 +198,13 @@ class ProxyGameContext(SuperContext):
             ]
         ]}
         """
+        erMessage = {"type": "entrance_connections", "enabled": True}
         connections = self.slot_data["ER_connections"]
         if not connections:
-            return {"Entrances": None}  # TODO: see if this translates fine in game
+            erMessage["enabled"] = False
+            return erMessage
         er_data_lookup = {data.entrance_name: data for data in er_entrances}
-        erMessage = {"Entrances": game_entrances}
+        erMessage["Entrances"] = game_entrances
         for connection in connections:
             left, right = connection
             left_entrance = er_data_lookup[left]
@@ -233,23 +237,22 @@ class ProxyGameContext(SuperContext):
     def build_local_locations_response(self, locations: list[int]) -> json:
         """
         expecting request to be json body in the form of
-        {"LocationResponse":
-            {"Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
+        {"type": "location_response", "Player": "qwint", "Item": "ItemGrinder", "Code": 60017}
         - for a local item
-        {"LocationResponse": {"Player": "OtherPlayer", "Item": "ItemGrinder"}
+        {"type": "location_response", "Player": "OtherPlayer", "Item": "ItemGrinder"}
         - for a remote item
         """
 
         locations = set(locations).difference(self.locations_checked)
         if len(locations) != 1:
-            return {"Location": "Not found in scout cache"}  # TODO update if client can handle
+            return {"type": "location_response", "Location": "Not found in scout cache"}  # TODO update if client can handle
 
-        location = locations[0]
+        location = locations.pop()
         if not self.locations_info:
-            return {"Location": "Not found in scout cache"}  # TODO update if client can handle
+            return {"type": "location_response", "Location": "Not found in scout cache"}  # TODO update if client can handle
 
         if location not in self.locations_info:
-            return {"Location": "Not found in scout cache"}  # TODO update if client can handle
+            return {"type": "location_response", "Location": "Not found in scout cache"}  # TODO update if client can handle
 
         loc = self.locations_info[location]
         slot = loc.player
@@ -259,17 +262,18 @@ class ProxyGameContext(SuperContext):
 
         if self.slot_concerns_self(slot):
             locationmessage = {
+                "type": "location_response",
                 "Player": player,
                 "Item": item,
                 "Code": code}
         else:
-            locationmessage = {"Player": player, "Item": item}
+            locationmessage = {"type": "location_response", "Player": player, "Item": item}
         return locationmessage
 
     def build_item_response(self):
         """
         expecting request to be json body in the form of
-        {"Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
+        {"type": "items", "Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
         """
         itemIds = []
         coins = 0
@@ -292,6 +296,7 @@ class ProxyGameContext(SuperContext):
             else:
                 itemIds.append(item[0])
         itemmessage = {
+            "type": "items",
             "Items": itemIds,
             "Coins": coins,
             "Hearts": hearts,
