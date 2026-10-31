@@ -55,7 +55,7 @@ class ProxyGameContext(SuperContext):
     socket_server = None  # TODO: type this with ServerConnection
 
     command_processor = MinitCommandProcessor
-    tags = set()
+    tags = {"KnockbackLink"}
     last_sent_death: float = time.time()
     slot_data: dict[str, any]
     death_amnisty_total: int
@@ -94,10 +94,16 @@ class ProxyGameContext(SuperContext):
 
         # if cmd == 'LocationInfo':
         #     save(ctx.locations_info)
-        # if cmd == 'ReceivedItems':
-        #     #TODO make this actually send minit a ping
-        #      - or check if it can be handled with ctx.watcher_event instead
-        #     logger.info("send minit a ping")
+        if cmd == 'ReceivedItems':
+            self.send_to_socket(self.build_item_response())
+        if cmd == "Bounce":
+            source_name: str | None = args["data"].get("source")
+            if "KnockbackLink" in args["tags"] and source_name != ctx.player_names[ctx.slot]:
+                self.send_to_socket({"type": "knockback", "x": args["data"]["x"], "y": args["data"]["y"]})
+
+    def send_to_socket(self, data: json):
+        if self.socket_server is not None:
+            Utils.async_start(self.socket_server.send(json.dumps(data)))
 
     async def send_death(self, death_text: str = ""):
         self.death_amnisty_count += 1
@@ -105,6 +111,24 @@ class ProxyGameContext(SuperContext):
             await super().send_death(death_text)
             self.last_sent_death = time.time()
             self.death_amnisty_count = 0
+
+    async def knockbackHandler(self, x: int, y: int) -> None:
+        """handle KnockbackLink packets from client"""
+        # TODO: handle disabling here and in on_package
+        Utils.async_start(ctx.send_msg([{
+            "cmd": "Bounce",
+            "tags": ["KnockbackLink"],
+            "source": ctx.player_names[ctx.slot],
+            "cause": f"{ctx.player_name[ctx.slot]} got hit",
+            "time": time.time(),
+            "value": {
+                "x": x,
+                "y": 0,
+                "z": y,  # TODO
+            }
+            #???
+            #profit
+        }]))
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
@@ -143,8 +167,7 @@ class ProxyGameContext(SuperContext):
     def on_deathlink(self, data: dict[str, Any]) -> None:
         # CommonClient function run on received deathlinks
         super().on_deathlink(data)
-        if self.socket_server is not None:
-            Utils.async_start(self.socket_server.send(json.dumps({"type": "death"})))
+        self.send_to_socket({"type": "death"})
 
     def build_er_response(self):
         """

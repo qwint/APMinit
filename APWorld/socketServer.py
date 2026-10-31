@@ -37,7 +37,7 @@ class proxy_client:
                 elif type == "death":
                     await self.ctx.deathHandler()
                 elif type == "knockback":
-                    pass
+                    await self.ctx.knockbackHandler(data["x"], data["y"])
                 elif type == "er_connections":
                     message = await self.ctx.erConnHandler()
                 elif type == "items":
