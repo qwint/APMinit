@@ -231,15 +231,18 @@ class MinitWorld(World):
         free_checks = [
             "watering can",  # deadend
             "camera house outside south",  # deadend
-            "glove outside east",
-            "glove outside west",
             "factory loading upper north",
             "factory loading upper east",
             "factory loading upper south",
             "factory snakehall north",
             "factory queue",  # deadend
-            "trophy room",  # deadend
             ]  # consider removing the deadends because they could have a higher chance of killing the seed
+        if self.options.darkrooms > 0:
+            free_checks += [
+                "glove outside east",
+                "glove outside west",
+                "trophy room",  # deadend
+            ]
         room_lookup = {
             "camera house outside south": "camera house inside",
             "glove outside east": "glove inside",
