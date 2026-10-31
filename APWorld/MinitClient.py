@@ -99,7 +99,7 @@ class ProxyGameContext(SuperContext):
         if cmd == "Bounce":
             source_name: str | None = args["data"].get("source")
             if "KnockbackLink" in args["tags"] and source_name != ctx.player_names[ctx.slot]:
-                self.send_to_socket({"type": "knockback", "x": args["data"]["x"], "y": args["data"]["y"]})
+                self.send_to_socket({"type": "knockback", "x": args["data"]["x"], "y": args["data"]["z"]})  # TODO: fix letters
 
     def send_to_socket(self, data: json):
         if self.socket_server is not None:
