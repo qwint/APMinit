@@ -81,8 +81,8 @@ class ProxyGameContext(SuperContext):
         if cmd == 'Connected':
             self.slot_data = args["slot_data"]
             self.death_amnisty_total = self.slot_data["death_amnisty_total"]
-            # if load(ctx.locations_info):
-            #     load(ctx.locations_info)
+            # if load(self.locations_info):
+            #     load(self.locations_info)
             # else:
             Utils.async_start(self.send_msgs([{
                 "cmd": "LocationScouts",
@@ -93,13 +93,13 @@ class ProxyGameContext(SuperContext):
             Utils.async_start(self.update_death_link(self.slot_data["death_link"]))
 
         # if cmd == 'LocationInfo':
-        #     save(ctx.locations_info)
+        #     save(self.locations_info)
         if cmd == 'ReceivedItems':
             self.send_to_socket(self.build_item_response())
-        if cmd == "Bounce":
-            source_name: str | None = args["data"].get("source")
-            if "KnockbackLink" in args["tags"] and source_name != ctx.player_names[ctx.slot]:
-                self.send_to_socket({"type": "knockback", "x": args["data"]["x"], "y": args["data"]["z"]})  # TODO: fix letters
+        if cmd == "Bounced" and "data" in args:
+            logger.info(args["data"])
+            if "KnockbackLink" in args["tags"] and source_name != self.player_names[self.slot]:
+                self.send_to_socket({"type": "knockback", "x": args["data"]["value"]["x"], "y": args["data"]["value"]["z"]})  # TODO: fix letters
 
     def send_to_socket(self, data: json):
         if self.socket_server is not None:
@@ -115,19 +115,21 @@ class ProxyGameContext(SuperContext):
     async def knockbackHandler(self, x: int, y: int) -> None:
         """handle KnockbackLink packets from client"""
         # TODO: handle disabling here and in on_package
-        Utils.async_start(ctx.send_msg([{
+        Utils.async_start(self.send_msgs([{
             "cmd": "Bounce",
             "tags": ["KnockbackLink"],
-            "source": ctx.player_names[ctx.slot],
-            "cause": f"{ctx.player_name[ctx.slot]} got hit",
-            "time": time.time(),
-            "value": {
-                "x": x,
-                "y": 0,
-                "z": y,  # TODO
-            }
+            "data": {
+                "source": self.player_names[self.slot],
+                "cause": f"{self.player_names[self.slot]} got hit",
+                "time": time.time(),
+                "value": {
+                    "x": x,
+                    "y": 0,
+                    "z": y,  # TODO
+                }
             #???
             #profit
+            }
         }]))
 
     async def server_auth(self, password_requested: bool = False):
