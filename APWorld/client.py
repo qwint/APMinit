@@ -1,7 +1,7 @@
 import asyncio
 import json
 import time
-from typing import Any
+import typing
 
 import Utils
 from CommonClient import (
@@ -49,7 +49,7 @@ class ProxyGameContext(SuperContext):
     socket_server = None  # TODO: type this with ServerConnection
 
     command_processor = MinitCommandProcessor
-    tags = {"KnockbackLink"}
+    tags: typing.ClassVar = {"KnockbackLink"}
     last_sent_death: float = time.time()
     slot_data: dict[str, any]
     death_amnisty_total: int
@@ -167,7 +167,7 @@ class ProxyGameContext(SuperContext):
         response = self.build_er_response()
         return json.dumps(response)
 
-    def on_deathlink(self, data: dict[str, Any]) -> None:
+    def on_deathlink(self, data: dict[str, typing.Any]) -> None:
         # CommonClient function run on received deathlinks
         super().on_deathlink(data)
         self.send_to_socket({"type": "death"})

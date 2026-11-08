@@ -1,4 +1,4 @@
-from typing import Any, TextIO
+import typing
 
 from BaseClasses import (
     CollectionState,
@@ -96,7 +96,7 @@ class MinitWebWorld(WebWorld):
         ["qwint"]
     )
 
-    tutorials = [setup]
+    tutorials: typing.ClassVar = [setup]
 
 
 def launch_client(*args):
@@ -127,9 +127,13 @@ class MinitWorld(World):
     output_connections: list[tuple[str, str]]
     spoiler_hints: dict[str, str]
 
-    item_name_to_id = {name: data.code for name, data in item_table.items() if data.code is not None}
-    location_name_to_id = {name: data.code for name, data in location_table.items() if data.code is not None}
-    locked_locations = {name: data for name, data in location_table.items() if data.locked_item}
+    item_name_to_id: typing.ClassVar = {
+        name: data.code for name, data in item_table.items() if data.code is not None
+    }
+    location_name_to_id: typing.ClassVar = {
+        name: data.code for name, data in location_table.items() if data.code is not None
+    }
+    # locked_locations: typing.ClassVar = {name: data for name, data in location_table.items() if data.locked_item}
     item_name_groups = item_groups
 
     def generate_early(self):
@@ -281,7 +285,7 @@ class MinitWorld(World):
         self.output_connections = [("dog house south", starting_entrance,), (starting_entrance, "dog house south",)]
         # manually connect our free check entrance and hardcode it into our output connections for the client
 
-    def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
+    def write_spoiler_header(self, spoiler_handle: typing.TextIO) -> None:
         if self.options.er_option == "off":
             return
 
@@ -352,7 +356,7 @@ class MinitWorld(World):
                 # we want spoiler paths to events but not hint text
                 hint_data[self.player][loc.address] = text
 
-    def fill_slot_data(self) -> dict[str, Any]:
+    def fill_slot_data(self) -> dict[str, typing.Any]:
         slot_data = self.options.as_dict(
                 "death_link",
                 "death_amnisty_total",
@@ -362,7 +366,7 @@ class MinitWorld(World):
 
         return slot_data
 
-    def interpret_slot_data(self, slot_data: dict[str, Any]):
+    def interpret_slot_data(self, slot_data: dict[str, typing.Any]):
         if not slot_data["ER_connections"]:
             return
         try:

@@ -1,3 +1,5 @@
+import typing
+
 from .bases import MinitTestBase, SelectSeedMinit
 
 can_open_chest = [
@@ -141,7 +143,7 @@ class TestChestAccess(MinitTestBase):
 
 
 class TestDarkroom0(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "darkrooms": 0,
     }
 
@@ -166,7 +168,7 @@ class TestDarkroom0(MinitTestBase):
 
 
 class TestDarkroom1(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "darkrooms": 1,
     }
 
@@ -199,7 +201,7 @@ class TestDarkroom1(MinitTestBase):
 
 
 class TestDarkroom2(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "darkrooms": 2,
     }
 
@@ -232,7 +234,7 @@ class TestDarkroom2(MinitTestBase):
 
 
 class TestDarkroom3(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "darkrooms": 3,
     }
 
@@ -257,25 +259,25 @@ class TestDarkroom3(MinitTestBase):
 
 
 class TestToiletGoal(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "chosen_goal": 1,
     }
 
 
 class TestAnyGoal(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "chosen_goal": 2,
     }
 
 
 class TestER(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "er_option": 1,
     }
 
 
 class TestERDarkroom0(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "darkrooms": 0,
         "er_option": 1,
     }
@@ -293,7 +295,7 @@ class TestERDarkroom0(MinitTestBase):
 
 
 class TestERDarkroom1(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "darkrooms": 1,
         "er_option": 1,
     }
@@ -319,7 +321,7 @@ class TestERDarkroom1(MinitTestBase):
 
 
 class TestERDarkroom2(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "darkrooms": 2,
         "er_option": 1,
     }
@@ -345,7 +347,7 @@ class TestERDarkroom2(MinitTestBase):
 
 
 class TestERDarkroom3(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "darkrooms": 3,
         "er_option": 1,
     }
@@ -363,14 +365,14 @@ class TestERDarkroom3(MinitTestBase):
 
 
 class TestERSeed(SelectSeedMinit):
-    options = {
+    options: typing.ClassVar = {
         "er_option": 1,
     }
     seed = 63716117118555143701
 
 
 class TestProgressiveChestAccess(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "progressive_sword": 0,
     }
 
@@ -393,7 +395,7 @@ class TestProgressiveChestAccess(MinitTestBase):
 
 
 class TestRevProgressiveChestAccess(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "progressive_sword": 1,
     }
 
@@ -416,7 +418,7 @@ class TestRevProgressiveChestAccess(MinitTestBase):
 
 
 # class TestStartInventoryFromPool1(MinitTestBase):
-#     options = {
+#     options: typing.ClassVar = {
 #         "start_inventory_from_pool": {"ItemTrophy": 1},
 #     }
 
@@ -433,7 +435,7 @@ class TestRevProgressiveChestAccess(MinitTestBase):
 
 
 # class TestStartInventoryFromPool2(MinitTestBase):
-#     options = {
+#     options: typing.ClassVar = {
 #         "start_inventory_from_pool": {"ItemTrophy": 1,
 #                                       "ItemTurboInk": 1},
 #     }
@@ -452,7 +454,7 @@ class TestRevProgressiveChestAccess(MinitTestBase):
 
 
 # class TestStartInventoryFromPool3(MinitTestBase):
-#     options = {
+#     options: typing.ClassVar = {
 #         "start_inventory_from_pool": {"ItemFlashLight": 1},
 #     }
 
@@ -469,7 +471,7 @@ class TestRevProgressiveChestAccess(MinitTestBase):
 
 
 # class TestStartInventoryFromPool4(MinitTestBase):
-#     options = {
+#     options: typing.ClassVar = {
 #         "start_inventory": {"ItemFlashLight": 1},
 #     }
 
@@ -486,7 +488,7 @@ class TestRevProgressiveChestAccess(MinitTestBase):
 
 
 class TestMinHP(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "min_hp": True,
     }
 
@@ -503,7 +505,7 @@ class TestMinHP(MinitTestBase):
 
 
 class TestFullHP(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "min_hp": False,
     }
 
@@ -525,7 +527,7 @@ class TestFullHP(MinitTestBase):
 
 
 class TestDamageBoosts(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "damage_boosts": True,
     }
 
@@ -536,7 +538,7 @@ class TestDamageBoosts(MinitTestBase):
 
 
 class TestDamageBoosts2(MinitTestBase):
-    options = {
+    options: typing.ClassVar = {
         "damage_boosts": False,
     }
 
