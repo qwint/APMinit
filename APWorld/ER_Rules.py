@@ -282,7 +282,7 @@ location_rules = {
     "Desert RV - ItemTurboInk": darkroom3_helper & Has("Tentacle", 8),
     "Desert RV - Temple Coin": sword_helper & darkroom2_helper,
     # this may change if i connect the other temple puzzles
-    "Desert RV - Fire Bat Coin": chest_helper & darkroom2_helper,
+    "Desert RV - Fire Bat Coin": chest_helper & darkroom3_helper,
     # this may change if i connect the other temple puzzles
     "Desert RV - Truck Supplies Coin": sword_helper,
     "Desert RV - Broken Truck":  chest_helper,
