@@ -3,7 +3,6 @@ import json
 from websockets.asyncio.server import serve, ServerConnection
 from websockets.exceptions import ConnectionClosedError
 
-#from .MinitClient import ProxyGameContext
 
 ProxyGameContext = object
 

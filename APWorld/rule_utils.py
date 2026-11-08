@@ -1,6 +1,6 @@
 from rule_builder.options import OptionFilter
 from rule_builder.rules import Has, HasAll, HasAny, Rule
-from .Options import Darkrooms, Obscure
+from .options import Darkrooms, Obscure
 
 
 obscure_enabled = OptionFilter(Obscure, Obscure.option_true)

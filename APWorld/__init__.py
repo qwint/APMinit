@@ -1,4 +1,5 @@
-from worlds.AutoWorld import World, WebWorld
+from typing import Any, TextIO
+
 from BaseClasses import (
     Region,
     Location,
@@ -7,35 +8,36 @@ from BaseClasses import (
     # Entrance,
     Tutorial,
     CollectionState,
+    EntranceType,
 )
-from .Items import (
+from entrance_rando import randomize_entrances
+from worlds.AutoWorld import World, WebWorld
+from worlds.LauncherComponents import (
+    Component,
+    components,
+    Type,
+)
+
+from .items import (
     MinitItem,
     # MinitItemData,
     item_table,
     item_frequencies,
     item_groups,
 )
-from .Locations import location_table
-from .Regions import region_table
-from .ERData import (
+from .locations import location_table
+from .regions import region_table
+from .er_data import (
     er_regions,
     er_entrances,
     minit_target_group_lookup,
     er_static_connections,
 )
-from .Options import MinitGameOptions
-# from worlds.generic.Rules import add_rule, set_rule, forbid_item
-from .Rules import MinitRules
-from .ER_Rules import ER_MinitRules
-from . import RuleUtils
-from typing import Any, TextIO
-from worlds.LauncherComponents import (
-    Component,
-    components,
-    Type,
-)
-from entrance_rando import randomize_entrances
-from BaseClasses import EntranceType
+from .options import MinitGameOptions
+from .rules import MinitRules
+from .er_rules import ER_MinitRules
+from . import rule_utils
+
 
 #TODO - save mod specific values like location_sent etc.
 
@@ -102,8 +104,8 @@ class MinitWebWorld(WebWorld):
 
 def launch_client(*args):
     from worlds.LauncherComponents import launch as launch_component
-    from .MinitClient import launch
-    launch_component(launch, name="MinitClient", args=args)
+    from .client import launch
+    launch_component(launch, name="Minit Client", args=args)
 
 
 components.append(Component(
@@ -397,10 +399,10 @@ class MinitWorld(World):
 
         if self.options.chosen_goal == "any_goal":
             self.set_completion_rule(
-                RuleUtils.completion_rules["boss_fight"] | RuleUtils.completion_rules["toilet_goal"]
+                rule_utils.completion_rules["boss_fight"] | rule_utils.completion_rules["toilet_goal"]
                 )
         else:
-            self.set_completion_rule(RuleUtils.completion_rules[self.options.chosen_goal.current_key])
+            self.set_completion_rule(rule_utils.completion_rules[self.options.chosen_goal.current_key])
 
         if bool(self.options.starting_sword):
             self.multiworld.local_early_items[self.player][self.get_sword_item_name()] = 1

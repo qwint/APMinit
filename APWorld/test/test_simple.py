@@ -52,12 +52,12 @@ ER_Darkrooms1 = [
 
 ER_Darkrooms2 = [
     "Dog House - Sewer Coin",
-    "Desert RV - Fire Bat Coin",
     "Desert RV - Quicksand Coin",
     "Hotel Room - ItemGrinder",
     ]
 
 ER_Darkrooms3 = [
+    "Desert RV - Fire Bat Coin",
     "Dog House - Hidden Snake Coin",
     "Dog House - Sewer Tentacle",
     "Desert RV - ItemTurboInk",

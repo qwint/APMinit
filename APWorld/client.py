@@ -12,7 +12,7 @@ from CommonClient import (
     handle_url_arg,
 )
 
-from .ERData import er_entrances, game_entrances
+from .er_data import er_entrances, game_entrances
 tracker_loaded = False
 try:
     from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
@@ -328,7 +328,7 @@ class ProxyGameContext(SuperContext):
 
 
 async def main(args):
-    from .socketServer import proxy_client
+    from .socket_server import proxy_client
 
     ctx = ProxyGameContext(args.connect, args.password)
     prox = proxy_client(ctx)
