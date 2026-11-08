@@ -6,7 +6,7 @@ from websockets.exceptions import ConnectionClosedError
 
 ProxyGameContext = object
 
-class proxy_client:
+class ProxyClient:
     def __init__(self, ctx):
         self.ctx = ctx
         self.host = "localhost"
@@ -29,18 +29,18 @@ class proxy_client:
                 type = data["type"]
                 message = None
                 if type == "locations":
-                    locs = await self.ctx.locationHandler(data["locations"])
+                    locs = await self.ctx.location_handler(data["locations"])
                     message = locs  #?
                 elif type == "goal":
-                    await self.ctx.goalHandler(data["goal"])
+                    await self.ctx.goal_handler(data["goal"])
                 elif type == "death":
-                    await self.ctx.deathHandler()
+                    await self.ctx.death_handler()
                 elif type == "knockback":
-                    await self.ctx.knockbackHandler(data["x"], data["y"])
+                    await self.ctx.knockback_handler(data["x"], data["y"])
                 elif type == "er_connections":
-                    message = await self.ctx.erConnHandler()
+                    message = await self.ctx.er_conn_handler()
                 elif type == "items":
-                    message = await self.ctx.itemsHandler()
+                    message = await self.ctx.items_handler()
 
                 if message is not None:
                     await websocket.send(message)
@@ -51,7 +51,7 @@ class proxy_client:
 
 
 def socket_server_loop(ctx: ProxyGameContext):
-    prox = proxy_client(ctx)
+    prox = ProxyClient(ctx)
     asyncio.run(prox.run())
 
 if __name__ == "__main__":

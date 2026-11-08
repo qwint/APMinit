@@ -350,7 +350,7 @@ location_rules = {
 }
 
 
-class ER_MinitRules:
+class ERMinitRules:
     world: MinitWorld
 
     def __init__(self, world: MinitWorld) -> None:
@@ -363,7 +363,7 @@ class ER_MinitRules:
         else:
             return "", ""
 
-    def set_Minit_rules(self) -> None:
+    def set_minit_rules(self) -> None:
         for region in self.world.get_regions():
             for entrance in region.exits:
                 if entrance.name in region_rules:

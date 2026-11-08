@@ -227,7 +227,7 @@ class MinitRules:
     def __init__(self, world: MinitWorld) -> None:
         self.world = world
 
-    def set_Minit_rules(self) -> None:
+    def set_minit_rules(self) -> None:
         for region in self.world.get_regions():
             for entrance in region.entrances:
                 if entrance.name in region_rules:

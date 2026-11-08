@@ -1,4 +1,4 @@
-from .bases import MinitTestBase, selectSeedMinit
+from .bases import MinitTestBase, SelectSeedMinit
 
 can_open_chest = [
     "Dog House - Land is Great Coin",
@@ -137,7 +137,7 @@ class TestChestAccess(MinitTestBase):
     #   """Test locations that do not require a held item"""
     #   locations = ["Hotel Room - Queue","Hotel Room - Inside Truck"]
     #   items = [["ItemWateringCan"]]
-    #   self.assertAccessIndependency(locations, items, only_check_listed=True)
+    #   self.assert_access_independency(locations, items, only_check_listed=True)
 
 
 class TestDarkroom0(MinitTestBase):
@@ -195,7 +195,7 @@ class TestDarkroom1(MinitTestBase):
         items = [
             ["ItemFlashLight"],
             ]
-        self.assertAccessWithout(locations, items)
+        self.assert_access_without(locations, items)
 
 
 class TestDarkroom2(MinitTestBase):
@@ -218,7 +218,7 @@ class TestDarkroom2(MinitTestBase):
         items = [
             ["ItemFlashLight", "ItemSwim", "ItemGlove"]
         ]
-        self.assertAccessWithout(locations, items)
+        self.assert_access_without(locations, items)
 
     def test_minit_darkrooms(self):
         """Test locations that do not require Flashlight"""
@@ -228,7 +228,7 @@ class TestDarkroom2(MinitTestBase):
         items = [
             ["ItemFlashLight"],
             ]
-        self.assertAccessWithout(locations, items)
+        self.assert_access_without(locations, items)
 
 
 class TestDarkroom3(MinitTestBase):
@@ -242,7 +242,7 @@ class TestDarkroom3(MinitTestBase):
         items = [
             ["ItemFlashLight", "ItemSwim", "ItemGlove"]
         ]
-        self.assertAccessWithout(locations, items)
+        self.assert_access_without(locations, items)
 
     def test_minit_darkrooms(self):
         """Test locations that do not require Flashlight"""
@@ -253,7 +253,7 @@ class TestDarkroom3(MinitTestBase):
         items = [
             ["ItemFlashLight"],
             ]
-        self.assertAccessWithout(locations, items)
+        self.assert_access_without(locations, items)
 
 
 class TestToiletGoal(MinitTestBase):
@@ -315,7 +315,7 @@ class TestERDarkroom1(MinitTestBase):
         items = [
             ["ItemFlashLight"],
             ]
-        self.assertAccessWithout(locations, items)
+        self.assert_access_without(locations, items)
 
 
 class TestERDarkroom2(MinitTestBase):
@@ -341,7 +341,7 @@ class TestERDarkroom2(MinitTestBase):
         items = [
             ["ItemFlashLight"],
             ]
-        self.assertAccessWithout(locations, items)
+        self.assert_access_without(locations, items)
 
 
 class TestERDarkroom3(MinitTestBase):
@@ -359,10 +359,10 @@ class TestERDarkroom3(MinitTestBase):
         items = [
             ["ItemFlashLight"],
             ]
-        self.assertAccessWithout(locations, items)
+        self.assert_access_without(locations, items)
 
 
-class TestERSeed(selectSeedMinit):
+class TestERSeed(SelectSeedMinit):
     options = {
         "er_option": 1,
     }
@@ -546,15 +546,15 @@ class TestDamageBoosts2(MinitTestBase):
         # heartpiece
 
 
-class TestSeed1(selectSeedMinit):
+class TestSeed1(SelectSeedMinit):
     seed = 95400472555641845910
 
 
-class TestSeed2(selectSeedMinit):
+class TestSeed2(SelectSeedMinit):
     seed = 20545238613336522738
 
 
-class TestSeed3(selectSeedMinit):
+class TestSeed3(SelectSeedMinit):
     seed = 40237425953666301908
 
 # 20481966185286985687

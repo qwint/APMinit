@@ -44,7 +44,7 @@ class MinitCommandProcessor(SuperCommandProcessor):
 class ProxyGameContext(SuperContext):
     game = GAMENAME
 
-    httpServer_task: asyncio.Task[None] | None = None
+    proxy_task: asyncio.Task[None] | None = None
     socket_server = None  # TODO: type this with ServerConnection
 
     command_processor = MinitCommandProcessor
@@ -109,7 +109,7 @@ class ProxyGameContext(SuperContext):
             self.last_sent_death = time.time()
             self.death_amnisty_count = 0
 
-    async def knockbackHandler(self, x: int, y: int) -> None:
+    async def knockback_handler(self, x: int, y: int) -> None:
         """handle KnockbackLink packets from client"""
         if "KnockbackLink" not in self.tags:
             return
@@ -135,29 +135,29 @@ class ProxyGameContext(SuperContext):
         await self.get_username()
         await self.send_connect()
 
-    async def locationHandler(self, locations: list[int]) -> str:
+    async def location_handler(self, locations: list[int]) -> str:
         """handle locations data from game and use scouts to return useful info"""
         await self.check_locations(locations)
 
-        localResponse = self.build_local_locations_response(locations)
-        return json.dumps(localResponse)
+        local_response = self.build_local_locations_response(locations)
+        return json.dumps(local_response)
 
-    async def goalHandler(self, goal: str) -> None:
+    async def goal_handler(self, goal: str) -> None:
         """handle goal attempt from game checking for enabled goals before sending to server"""
         response = self.build_goal_response(goal)
         if response:
             await self.send_msgs(response)
 
-    async def deathHandler(self) -> None:
+    async def death_handler(self) -> None:
         """handle death ping from game"""
         if self.slot_data["death_link"]:
             await self.send_death(f"{self.player_names[self.slot]} ran out of time")  # consider more silly messages
 
-    async def itemsHandler(self) -> str:
+    async def items_handler(self) -> str:
         """handle item sync from game"""
         return json.dumps(self.build_item_response())
 
-    async def erConnHandler(self) -> str:
+    async def er_conn_handler(self) -> str:
         """handle er connection sync from game"""
         response = self.build_er_response()
         return json.dumps(response)
@@ -169,7 +169,7 @@ class ProxyGameContext(SuperContext):
 
     def build_er_response(self):
         """
-        erMessage format:
+        er_message format:
         {"type": "entrance_connections",
          "enabled": True,
          "Entrances": [
@@ -219,13 +219,13 @@ class ProxyGameContext(SuperContext):
             ]
         ]}
         """
-        erMessage = {"type": "entrance_connections", "enabled": True}
+        er_message = {"type": "entrance_connections", "enabled": True}
         connections = self.slot_data["ER_connections"]
         if not connections:
-            erMessage["enabled"] = False
-            return erMessage
+            er_message["enabled"] = False
+            return er_message
         er_data_lookup = {data.entrance_name: data for data in er_entrances}
-        erMessage["Entrances"] = game_entrances
+        er_message["Entrances"] = game_entrances
         for connection in connections:
             left, right = connection
             left_entrance = er_data_lookup[left]
@@ -233,9 +233,9 @@ class ProxyGameContext(SuperContext):
             left_tile = left_entrance.room_tile
             left_name = left_entrance.entrance_name
 
-            for index, entrance in enumerate(erMessage["Entrances"][left_tile]):
+            for index, entrance in enumerate(er_message["Entrances"][left_tile]):
                 if left_name == entrance["CName"]:
-                    erMessage["Entrances"][left_tile][index]["out"] = {
+                    er_message["Entrances"][left_tile][index]["out"] = {
                         "tile": right_entrance.room_tile,
                         "x": right_entrance.x_cord,
                         "y": right_entrance.y_cord,
@@ -243,7 +243,7 @@ class ProxyGameContext(SuperContext):
                         "offNum": right_entrance.offset_value,
                         }
 
-        return erMessage
+        return er_message
 
     def build_goal_response(self, request: str):
         if request in self.goals:
@@ -296,12 +296,12 @@ class ProxyGameContext(SuperContext):
         expecting request to be json body in the form of
         {"type": "items", "Items": [123,456],"Coins":2, "Hearts": 1, "Tentacles":4}
         """
-        itemIds = []
+        item_ids = []
         coins = 0
         hearts = 0
         tentacles = 0
-        swordsF = 0
-        swordsR = 0
+        swords_f = 0
+        swords_r = 0
         for item in self.items_received:
             # TODO - change to lookup ids for actual item names
             if item[0] == 60000:
@@ -311,28 +311,28 @@ class ProxyGameContext(SuperContext):
             elif item[0] == 60002:
                 tentacles += 1
             elif item[0] == 60021:
-                swordsF += 1
+                swords_f += 1
             elif item[0] == 60022:
-                swordsR += 1
+                swords_r += 1
             else:
-                itemIds.append(item[0])
+                item_ids.append(item[0])
         return {
             "type": "items",
-            "Items": itemIds,
+            "Items": item_ids,
             "Coins": coins,
             "Hearts": hearts,
             "Tentacles": tentacles,
-            "swordsF": swordsF,
-            "swordsR": swordsR,
+            "swordsF": swords_f,
+            "swordsR": swords_r,
         }
 
 
 async def main(args):
-    from .socket_server import proxy_client
+    from .socket_server import ProxyClient
 
     ctx = ProxyGameContext(args.connect, args.password)
-    prox = proxy_client(ctx)
-    ctx.httpServer_task = asyncio.create_task(prox.run(), name="websocket loop")
+    prox = ProxyClient(ctx)
+    ctx.proxy_task = asyncio.create_task(prox.run(), name="websocket loop")
     ctx.server_task = asyncio.create_task(server_loop(ctx), name="server loop")
 
     if tracker_loaded:

@@ -8,7 +8,7 @@ class MinitTestBase(WorldTestBase):
     game = "Minit"
     world: MinitWorld
 
-    def assertAccessIndependency(
+    def assert_access_independency(
             self,
             locations: list[str],
             possible_items: typing.Iterable[typing.Iterable[str]],
@@ -29,7 +29,7 @@ class MinitTestBase(WorldTestBase):
             for item in items:
                 state.remove(item)
 
-    def assertAccessWithout(
+    def assert_access_without(
             self,
             locations: list[str],
             possible_items: typing.Iterable[typing.Iterable[str]]) -> None:
@@ -52,7 +52,7 @@ class MinitTestBase(WorldTestBase):
                 f"{location} is not reachable without {all_items}")
 
 
-class selectSeedMinit(WorldTestBase):
+class SelectSeedMinit(WorldTestBase):
     game = "Minit"
     # player: typing.ClassVar[int] = 1
     seed = 0

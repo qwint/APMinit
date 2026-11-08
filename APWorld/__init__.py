@@ -35,7 +35,7 @@ from .er_data import (
 )
 from .options import MinitGameOptions
 from .rules import MinitRules
-from .er_rules import ER_MinitRules
+from .er_rules import ERMinitRules
 from . import rule_utils
 
 
@@ -383,9 +383,9 @@ class MinitWorld(World):
 
     def set_rules(self):
         if self.options.er_option == "off":
-            MinitRules(self).set_Minit_rules()
+            MinitRules(self).set_minit_rules()
         else:
-            ER_MinitRules(self).set_Minit_rules()
+            ERMinitRules(self).set_minit_rules()
 
             self.output_connections += randomize_entrances(
                 world=self,
