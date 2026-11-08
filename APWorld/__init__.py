@@ -411,8 +411,7 @@ class MinitWorld(World):
     def get_filler_item_name(self) -> str:
         if bool(self.options.min_hp):
             return "Coin"
-        else:
-            return "HeartPiece"
+        return "HeartPiece"
 
     def collect(self, state: CollectionState, item: "Item") -> bool:
         change = super().collect(state, item)

@@ -360,10 +360,10 @@ class ERMinitRules:
 
     def rev(self, e_name: str) -> (str, str):
         e_list = e_name.split(" -> ")
-        if len(e_list) == 2:
-            return f"{e_list[1]} <-> {e_list[0]}", f"{e_list[0]} <-> {e_list[1]}"
-        else:
+        if len(e_list) != 2:
             return "", ""
+        return f"{e_list[1]} <-> {e_list[0]}", f"{e_list[0]} <-> {e_list[1]}"
+
 
     def set_minit_rules(self) -> None:
         for region in self.world.get_regions():

@@ -98,7 +98,8 @@ location_rules = {
     "Dog House - House Pot Coin": Has("has_sword"),
     "Dog House - Sewer Island Coin": Has("has_sword") & rule_utils.has_darkroom3 & rule_utils.can_open_chest,
     "Dog House - Sewer Coin": HasAll("has_sword", "ItemSwim") & rule_utils.has_darkroom3 & rule_utils.can_open_chest,
-    "Dog House - Land is Great Coin": rule_utils.can_open_chest & Or(HasAll("has_sword", "ItemCoffee"), Has("ItemSwim")),
+    "Dog House - Land is Great Coin": rule_utils.can_open_chest & Or(HasAll("has_sword", "ItemCoffee"),
+                                                                     Has("ItemSwim")),
     "Dog House - Hidden Snake Coin":
         HasAny("has_sword", "ItemSwim") & rule_utils.has_darkroom2 & rule_utils.can_open_chest,
     "Dog House - Waterfall Coin": rule_utils.can_open_chest & Has("ItemSwim"),

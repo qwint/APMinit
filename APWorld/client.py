@@ -96,7 +96,11 @@ class ProxyGameContext(SuperContext):
                 pass
             elif "KnockbackLink" in args["tags"] and source_name != self.player_names[self.slot]:
                 if "KnockbackLink" in self.tags:
-                    self.send_to_socket({"type": "knockback", "x": args["data"]["value"]["x"], "y": args["data"]["value"]["z"]})
+                    self.send_to_socket({
+                        "type": "knockback",
+                        "x": args["data"]["value"]["x"],
+                        "y": args["data"]["value"]["z"],
+                    })
                     # switches y/z to convert between knockback link and gamemaker
 
     def send_to_socket(self, data: json):
@@ -267,14 +271,17 @@ class ProxyGameContext(SuperContext):
 
         locations = set(locations).difference(self.locations_checked)
         if len(locations) != 1:
-            return {"type": "location_response", "Location": "Not found in scout cache"}  # TODO update if client can handle
+            return {"type": "location_response", "Location": "Not found in scout cache"}
+            # TODO update if client can handle
 
         location = locations.pop()
         if not self.locations_info:
-            return {"type": "location_response", "Location": "Not found in scout cache"}  # TODO update if client can handle
+            return {"type": "location_response", "Location": "Not found in scout cache"}
+            # TODO update if client can handle
 
         if location not in self.locations_info:
-            return {"type": "location_response", "Location": "Not found in scout cache"}  # TODO update if client can handle
+            return {"type": "location_response", "Location": "Not found in scout cache"}
+            # TODO update if client can handle
 
         loc = self.locations_info[location]
         slot = loc.player

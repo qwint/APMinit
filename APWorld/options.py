@@ -82,13 +82,13 @@ class Goal(Choice):
     default = 0
 
     def parse_goals(self) -> list[str]:
-        if self == "boss_fight":
-            return ["boss"]
-        elif self == "toilet_goal":
-            return ["toilet"]
-        elif self == "any_goal":
-            return ["toilet", "boss"]
-        raise Exception("Unknown goal")
+        ret = {
+            "boss_fight": ["boss"],
+            "toilet_goal": ["toilet"],
+            "any_goal": ["toilet", "boss"],
+        }
+        return ret[self.current_key]
+
 
 class EntranceRando(Choice):
     """Choose if the room entrances are randomized as well."""

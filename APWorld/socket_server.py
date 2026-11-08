@@ -13,7 +13,8 @@ class ProxyClient:
         self.port = 11311
 
     async def run(self):
-        server = await serve(self.echo, self.host, self.port, ping_interval=None)  # TODO: see if i can get gamemaker to respect ping/pong and turn this back on
+        server = await serve(self.echo, self.host, self.port, ping_interval=None)
+        # TODO: see if i can get gamemaker to respect ping/pong and turn this back on
         try:
             await server.serve_forever()
         finally:
