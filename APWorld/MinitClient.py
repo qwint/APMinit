@@ -97,9 +97,13 @@ class ProxyGameContext(SuperContext):
         if cmd == 'ReceivedItems':
             self.send_to_socket(self.build_item_response())
         if cmd == "Bounced" and "data" in args:
-            logger.info(args["data"])
-            if "KnockbackLink" in args["tags"] and source_name != self.player_names[self.slot]:
-                self.send_to_socket({"type": "knockback", "x": args["data"]["value"]["x"], "y": args["data"]["value"]["z"]})  # TODO: fix letters
+            source_name = args["data"].get("source")
+            if source_name is None:
+                pass
+            elif "KnockbackLink" in args["tags"] and source_name != self.player_names[self.slot]:
+                if "KnockbackLink" in self.tags:
+                    self.send_to_socket({"type": "knockback", "x": args["data"]["value"]["x"], "y": args["data"]["value"]["z"]})
+                    # switches y/z to convert between knockback link and gamemaker
 
     def send_to_socket(self, data: json):
         if self.socket_server is not None:
@@ -114,7 +118,8 @@ class ProxyGameContext(SuperContext):
 
     async def knockbackHandler(self, x: int, y: int) -> None:
         """handle KnockbackLink packets from client"""
-        # TODO: handle disabling here and in on_package
+        if "KnockbackLink" not in self.tags:
+            return
         Utils.async_start(self.send_msgs([{
             "cmd": "Bounce",
             "tags": ["KnockbackLink"],
@@ -125,10 +130,8 @@ class ProxyGameContext(SuperContext):
                 "value": {
                     "x": x,
                     "y": 0,
-                    "z": y,  # TODO
+                    "z": y,  # switch y/z to convert between knockback link and gamemaker
                 }
-            #???
-            #profit
             }
         }]))
 
