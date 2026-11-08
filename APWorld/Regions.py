@@ -1,6 +1,3 @@
-from BaseClasses import CollectionState
-
-
 region_table: dict[str, list[str]] = {
     "Menu": ["Dog House"],
     "Dog House": ["Island Shack", "Desert RV", "Hotel Room"],

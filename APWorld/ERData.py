@@ -1,4 +1,3 @@
-from BaseClasses import Entrance, Region
 from typing import NamedTuple
 
 
@@ -839,6 +838,7 @@ game_entrances: dict[str, list[dict[str, any]]] = {
     "dun14_8": [
         {"CName": "shoe shop downstairs door", "direction": "door", "x": 160, "y": 96},
         {"CName": "shoe shop downstairs teleport", "direction": "door", "x": 144, "y": 64},
+        {"CName": "temple coin chest", "direction": "south", "baseCoor": 160, "offset": 16},
     ],
     "dun14_10": [
         {"CName": "temple main north", "direction": "north", "baseCoor": 144, "offset": 48},
@@ -867,9 +867,6 @@ game_entrances: dict[str, list[dict[str, any]]] = {
     "dun14_9": [
         {"CName": "temple coin test north", "direction": "north", "baseCoor": 160, "offset": 16},
         {"CName": "temple coin test south", "direction": "south", "baseCoor": 144, "offset": 48},
-    ],
-    "dun14_8": [
-        {"CName": "temple coin chest", "direction": "south", "baseCoor": 160, "offset": 16},
     ],
     "dun9_6": [
         {"CName": "hotel room door", "direction": "door", "x": 208, "y": 128},

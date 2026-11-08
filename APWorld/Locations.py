@@ -1,5 +1,7 @@
+from collections.abc import Callable
+from typing import NamedTuple
+
 from worlds.AutoWorld import World
-from typing import NamedTuple, Callable  # Dict
 
 
 class MinitLocationData(NamedTuple):

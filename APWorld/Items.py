@@ -1,6 +1,8 @@
+from collections.abc import Callable
+from typing import NamedTuple
+
 from BaseClasses import Item, ItemClassification
 from worlds.AutoWorld import World
-from typing import NamedTuple, Callable
 
 
 class MinitItem(Item):

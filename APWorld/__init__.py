@@ -6,10 +6,7 @@ from BaseClasses import (
     ItemClassification,
     # Entrance,
     Tutorial,
-)
-from settings import (
-    Group,
-    FilePath,
+    CollectionState,
 )
 from .Items import (
     MinitItem,
@@ -25,7 +22,6 @@ from .ERData import (
     er_entrances,
     minit_target_group_lookup,
     er_static_connections,
-    door_names,
 )
 from .Options import MinitGameOptions
 # from worlds.generic.Rules import add_rule, set_rule, forbid_item
@@ -38,7 +34,6 @@ from worlds.LauncherComponents import (
     components,
     Type,
 )
-from Utils import visualize_regions
 from entrance_rando import randomize_entrances
 from BaseClasses import EntranceType
 
@@ -152,7 +147,6 @@ class MinitWorld(World):
         return MinitItem(name, item_clas, data.code, self.player)
 
     def create_items(self):
-        item_count = 0
         itempool = []
         for item_name, item_data in item_table.items():
             if item_data.code and item_data.can_create(self):
@@ -210,7 +204,6 @@ class MinitWorld(World):
 
         er_on = bool(self.options.er_option)
         starting_entrance = ""
-        early_location_list: list[Location] = []
         self.add_regions_and_locations(er_on)
         if not er_on:
             self.output_connections = None
@@ -228,7 +221,7 @@ class MinitWorld(World):
             return
 
         # make at least one of the early entrances into a check that you can pick up for free
-        free_checks = [
+        early_location_list = [
             "watering can",  # deadend
             "camera house outside south",  # deadend
             "factory loading upper north",
@@ -238,7 +231,7 @@ class MinitWorld(World):
             "factory queue",  # deadend
             ]  # consider removing the deadends because they could have a higher chance of killing the seed
         if self.options.darkrooms > 0:
-            free_checks += [
+            early_location_list += [
                 "glove outside east",
                 "glove outside west",
                 "trophy room",  # deadend
@@ -253,7 +246,7 @@ class MinitWorld(World):
             "factory snakehall north": "factory loading upper",
         }
 
-        starting_entrance = self.random.choices(free_checks)[0]
+        starting_entrance = self.random.choices(early_location_list)[0]
         starting_region = room_lookup.get(starting_entrance, starting_entrance)
         # default to entrance name if it's not in lookup
         # print(f"adding {starting_entrance} to starting region to make single player ER playable")
@@ -268,13 +261,8 @@ class MinitWorld(World):
             # forbid_item(early_location, "HeartPiece", self.player)
             # forbid_item(early_location, "Tentacle", self.player)
 
-        manual_connect_start = None
-        manual_connect_end = None
-        # add_manual_connect = True
-
         for er_entrance in er_entrances:
             region = self.get_region(er_entrance.region_name)
-            # entrance.is_dead_end = er_entrance[2]
 
             en1 = region.create_exit(er_entrance.entrance_name)
             en1.randomization_type = EntranceType.TWO_WAY
@@ -297,7 +285,7 @@ class MinitWorld(World):
         if self.options.er_option == "off":
             return
 
-        spoiler_handle.write(f"Entrance Rando Location Paths:\n")
+        spoiler_handle.write("Entrance Rando Location Paths:\n")
         for location, path in self.spoiler_hints.items():
             spoiler_handle.write(f"\t{location}: {path}\n")
 
@@ -387,7 +375,9 @@ class MinitWorld(World):
                 e_dict[connection[0]].connected_region = e_dict[connection[1]].parent_region
         except AssertionError:
             import logging
-            logging.getLogger("Client").info(f"Tracker: ER Handling failed because of unknown entrances, confirm your AP install can support ER")
+            logging.getLogger("Client").info(
+                "Tracker: ER Handling failed because of unknown entrances, confirm your AP install can support ER"
+            )
 
     def set_rules(self):
         if self.options.er_option == "off":
@@ -424,13 +414,13 @@ class MinitWorld(World):
         else:
             return "HeartPiece"
 
-    def collect(self, state: "CollectionState", item: "Item") -> bool:
+    def collect(self, state: CollectionState, item: "Item") -> bool:
         change = super().collect(state, item)
         if change and item.name in item_groups["swords"]:
             state.add_item("has_sword", self.player)
         return change
 
-    def remove(self, state: "CollectionState", item: "Item") -> bool:
+    def remove(self, state: CollectionState, item: "Item") -> bool:
         change = super().remove(state, item)
         if change and item.name in item_groups["swords"]:
             state.remove_item("has_sword", self.player)

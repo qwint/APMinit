@@ -16,13 +16,6 @@ class MinitTestBase(WorldTestBase):
         """Asserts that the provided locations can't be reached without
         the listed items but can be reached with any
         one of the provided combinations"""
-        all_items = [
-            item_name for
-            item_names in
-            possible_items for
-            item_name in
-            item_names
-            ]
 
         state = CollectionState(self.multiworld)
 

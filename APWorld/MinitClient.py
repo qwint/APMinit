@@ -1,24 +1,17 @@
 import asyncio
 import json
 import time
-import os
-import urllib.parse
-import aiohttp.web
 from typing import Any
-from argparse import ArgumentParser, Namespace
 
 import Utils
 from NetUtils import ClientStatus, RawJSONtoTextParser
 from CommonClient import (
-    CommonContext,
     logger,
     get_base_parser,
     server_loop,
-    ClientCommandProcessor,
     handle_url_arg,
 )
 
-from .Items import item_table
 from .ERData import er_entrances, game_entrances
 tracker_loaded = False
 try:
@@ -78,7 +71,7 @@ class ProxyGameContext(SuperContext):
 
     def on_package(self, cmd: str, args: dict):
         super().on_package(cmd, args)
-        if cmd == 'Connected':
+        if cmd == "Connected":
             self.slot_data = args["slot_data"]
             self.death_amnisty_total = self.slot_data["death_amnisty_total"]
             # if load(self.locations_info):
@@ -94,7 +87,7 @@ class ProxyGameContext(SuperContext):
 
         # if cmd == 'LocationInfo':
         #     save(self.locations_info)
-        if cmd == 'ReceivedItems':
+        if cmd == "ReceivedItems":
             self.send_to_socket(self.build_item_response())
         if cmd == "Bounced" and "data" in args:
             source_name = args["data"].get("source")
@@ -137,7 +130,7 @@ class ProxyGameContext(SuperContext):
 
     async def server_auth(self, password_requested: bool = False):
         if password_requested and not self.password:
-            await super(ProxyGameContext, self).server_auth(password_requested)
+            await super().server_auth(password_requested)
 
         await self.get_username()
         await self.send_connect()
@@ -323,7 +316,7 @@ class ProxyGameContext(SuperContext):
                 swordsR += 1
             else:
                 itemIds.append(item[0])
-        itemmessage = {
+        return {
             "type": "items",
             "Items": itemIds,
             "Coins": coins,
@@ -332,7 +325,6 @@ class ProxyGameContext(SuperContext):
             "swordsF": swordsF,
             "swordsR": swordsR,
         }
-        return itemmessage
 
 
 async def main(args):
@@ -367,6 +359,6 @@ def launch(*args):
     colorama.deinit()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
     launch(*sys.argv[-1:])

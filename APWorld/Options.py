@@ -87,7 +87,7 @@ class Goal(Choice):
             return ["toilet"]
         elif self == "any_goal":
             return ["toilet", "boss"]
-
+        raise Exception("Unknown goal")
 
 class EntranceRando(Choice):
     """Choose if the room entrances are randomized as well."""
