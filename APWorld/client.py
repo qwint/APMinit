@@ -4,23 +4,24 @@ import time
 from typing import Any
 
 import Utils
-from NetUtils import ClientStatus, RawJSONtoTextParser
 from CommonClient import (
-    logger,
     get_base_parser,
-    server_loop,
     handle_url_arg,
+    logger,
+    server_loop,
 )
+from NetUtils import ClientStatus, RawJSONtoTextParser
 
 from .er_data import er_entrances, game_entrances
+
 tracker_loaded = False
 try:
-    from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
     from worlds.tracker.TrackerClient import TrackerCommandProcessor as SuperCommandProcessor
+    from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext
     tracker_loaded = True
 except ModuleNotFoundError:
-    from CommonClient import CommonContext as SuperContext
     from CommonClient import ClientCommandProcessor as SuperCommandProcessor
+    from CommonClient import CommonContext as SuperContext
 
 
 DEBUG = False

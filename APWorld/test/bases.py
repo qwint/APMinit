@@ -1,6 +1,8 @@
-from test.bases import WorldTestBase
 import typing
+
 from BaseClasses import CollectionState
+from test.bases import WorldTestBase
+
 from .. import MinitWorld
 
 

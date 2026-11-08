@@ -1,13 +1,14 @@
 from dataclasses import dataclass
 from typing import ClassVar
+
 from Options import (
-    Toggle,
     Choice,
-    PerGameCommonOptions,
     DeathLink,
+    PerGameCommonOptions,
     Range,
     StartInventoryPool,
-    )
+    Toggle,
+)
 
 
 class EarlySword(Toggle):

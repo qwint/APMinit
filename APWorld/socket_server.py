@@ -1,8 +1,8 @@
 import asyncio
 import json
-from websockets.asyncio.server import serve, ServerConnection
-from websockets.exceptions import ConnectionClosedError
 
+from websockets.asyncio.server import ServerConnection, serve
+from websockets.exceptions import ConnectionClosedError
 
 ProxyGameContext = object
 

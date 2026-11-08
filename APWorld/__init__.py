@@ -1,43 +1,40 @@
 from typing import Any, TextIO
 
 from BaseClasses import (
-    Region,
-    Location,
-    Item,
-    ItemClassification,
-    # Entrance,
-    Tutorial,
     CollectionState,
     EntranceType,
+    Item,
+    ItemClassification,
+    Location,
+    Region,
+    Tutorial,
 )
 from entrance_rando import randomize_entrances
-from worlds.AutoWorld import World, WebWorld
+from worlds.AutoWorld import WebWorld, World
 from worlds.LauncherComponents import (
     Component,
-    components,
     Type,
+    components,
 )
 
+from . import rule_utils
+from .er_data import (
+    er_entrances,
+    er_regions,
+    er_static_connections,
+    minit_target_group_lookup,
+)
+from .er_rules import ERMinitRules
 from .items import (
     MinitItem,
-    # MinitItemData,
-    item_table,
     item_frequencies,
     item_groups,
+    item_table,
 )
 from .locations import location_table
-from .regions import region_table
-from .er_data import (
-    er_regions,
-    er_entrances,
-    minit_target_group_lookup,
-    er_static_connections,
-)
 from .options import MinitGameOptions
+from .regions import region_table
 from .rules import MinitRules
-from .er_rules import ERMinitRules
-from . import rule_utils
-
 
 #TODO - save mod specific values like location_sent etc.
 
@@ -104,6 +101,7 @@ class MinitWebWorld(WebWorld):
 
 def launch_client(*args):
     from worlds.LauncherComponents import launch as launch_component
+
     from .client import launch
     launch_component(launch, name="Minit Client", args=args)
 
