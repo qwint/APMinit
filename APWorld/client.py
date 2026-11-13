@@ -419,7 +419,23 @@ async def main(args):
     else:
         import configparser
         config = configparser.RawConfigParser()
+        config_updated = False
         config.read(CONFIG_PATH)
+        if not config.has_section("minit"):
+            config.add_section("minit")
+            config.set("minit", "death_link", "0")
+            config.set("minit", "knockback_link", "0")
+            config_updated = True
+        if not config.has_option("minit", "death_link"):
+            config.set("minit", "death_link", "0")
+            config_updated = True
+        if not config.has_option("minit", "knockback_link"):
+            config.set("minit", "knockback_link", "0")
+            config_updated = True
+        if config_updated:
+            with open(CONFIG_PATH, "w") as f:
+                config.write(f)
+
         dl = config.get("minit", "death_link")
         kb = config.get("minit", "knockback_link")
         if int(dl):
