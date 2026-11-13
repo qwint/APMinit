@@ -41,6 +41,14 @@ class MinitCommandProcessor(SuperCommandProcessor):
         logger.info(f"Amnisty set to {self.ctx.death_amnisty_total}. \
             Deaths towards Amnisty reset.")
 
+    def _cmd_open_settings(self) -> bool:
+        """Open the settings panel."""
+        if Utils.gui_enabled:
+            self.ctx.ui.open_settings()
+            return True
+        else:
+            self.output("Settings GUI is only avaliable in kivy, manually edit data/minit_settings.ini for nogui")
+            return False
 
 class ProxyGameContext(SuperContext):
     game = GAMENAME
@@ -49,7 +57,7 @@ class ProxyGameContext(SuperContext):
     socket_server = None  # TODO: type this with ServerConnection
 
     command_processor = MinitCommandProcessor
-    tags: typing.ClassVar = {"KnockbackLink"}
+    tags: typing.ClassVar = set()
     last_sent_death: float = time.time()
     slot_data: dict[str, any]
     death_amnisty_total: int
@@ -67,8 +75,49 @@ class ProxyGameContext(SuperContext):
 
     def make_gui(self):
         ui = super().make_gui()
-        ui.base_title = "Minit Client"
-        return ui
+        class MinitGui(ui):
+            base_title = "Minit Client"
+
+            def get_application_config(self, defaultpath: str = "") -> str:
+                return Utils.user_path("data", "minit_client.ini")
+
+            def build_settings(self, settings):
+                super().build_settings(settings)
+                json_data = [
+                    {
+                        "type": "bool",
+                        "title": "DeathLink",
+                        "desc": "Enable DeathLink",
+                        "section": "minit",
+                        "key": "death_link",
+                    },
+                    {
+                        "type": "bool",
+                        "title": "KnockbackLink",
+                        "desc": "Enable KnockbackLink",
+                        "section": "minit",
+                        "key": "knockback_link",
+                    },
+                ]
+
+                settings.add_json_panel("Minit Client Settings", self.config, data=json.dumps(json_data))
+
+            def build_config(self, config):
+                super().build_config(config)
+                config.adddefaultsection("minit")
+                config.setdefaults("minit", {
+                    "death_link": "0",
+                    "knockback_link": "0",
+                })
+
+            def on_config_change(self, config, section, key, value):
+                super().on_config_change(config, section, key, value)
+                if section == "minit":
+                    if key == "death_link":
+                        Utils.async_start(self.ctx.update_death_link(bool(int(value))))
+                    elif key == "knockback_link":
+                        Utils.async_start(self.ctx.update_knockback_link(bool(int(value))))
+        return MinitGui
 
     def on_package(self, cmd: str, args: dict):
         super().on_package(cmd, args)
@@ -84,7 +133,7 @@ class ProxyGameContext(SuperContext):
                 "create_as_hint": 0
                 }]))
             self.goals = self.slot_data["goals"]
-            Utils.async_start(self.update_death_link(self.slot_data["death_link"]))
+            # Utils.async_start(self.update_death_link(self.slot_data["death_link"]))
 
         # if cmd == 'LocationInfo':
         #     save(self.locations_info)
@@ -333,6 +382,25 @@ class ProxyGameContext(SuperContext):
             "swordsF": swords_f,
             "swordsR": swords_r,
         }
+
+    async def update_death_link(self, death_link: bool):
+        if self.ui:
+            self.ui.config.set("minit", "death_link", str(int(death_link)))
+
+        await super().update_death_link(death_link)
+
+    async def update_knockback_link(self, knockback_link: bool):
+        """Helper function to set Knockback Link connection tag on/off and update the connection if already connected."""
+        if self.ui:
+            self.ui.config.set("minit", "knockback_link", str(int(knockback_link)))
+
+        old_tags = self.tags.copy()
+        if knockback_link:
+            self.tags.add("KnockbackLink")
+        else:
+            self.tags -= {"KnockbackLink"}
+        if old_tags != self.tags and self.server and not self.server.socket.closed:
+            await self.send_msgs([{"cmd": "ConnectUpdate", "tags": self.tags}])
 
 
 async def main(args):
