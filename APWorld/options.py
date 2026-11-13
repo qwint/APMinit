@@ -3,11 +3,11 @@ from typing import ClassVar
 
 from Options import (
     Choice,
-    DeathLink,
     PerGameCommonOptions,
     Range,
     StartInventoryPool,
     Toggle,
+    Visibility,
 )
 
 
@@ -41,7 +41,7 @@ class Obscure(Toggle):
 
 
 class DeathLinkAmnesty(Range):
-    """Amount of deaths before a deathlink is sent."""
+    """Amount of deaths before a deathlink is sent. Note: DeathLink itself is fully configured in the client."""
     range_start = 0
     range_end = 20
     default = 10
@@ -115,6 +115,11 @@ class DamageBoosts(Toggle):
     """
     display_name = "DamageBoosts"
 
+class DeathLink(Toggle):
+    """
+    Deathlink is now fully handled in the client, keeping temporarily for back compat
+    """
+    visibility = Visibility.none
 
 @dataclass
 class MinitGameOptions(PerGameCommonOptions):
