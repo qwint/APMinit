@@ -53,6 +53,8 @@ Use one of the following hosting options
 * Install the Mod Loader
   * download from https://github.com/qwint/UFO-50-MOD-LOADER/releases
   * unzip the appropriate version to a reasonable location, run `minit Mod Loader` to open the Mod Loader
+    * Note: on Windows make sure to make an extra folder outside of the unzipped contents,
+      this is where the mods, etc. will be managed.
 * Install the Minit Mod into the Mod Loader
   * download `Source code (zip)` from https://github.com/qwint/archipelago_minit_mod/releases
   * Launch the Mod Loader
