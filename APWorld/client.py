@@ -27,6 +27,7 @@ except ModuleNotFoundError:
 DEBUG = False
 GAMENAME = "Minit"
 ITEMS_HANDLING = 0b111
+CONFIG_PATH = Utils.user_path("data", "minit_client.ini")
 
 
 class MinitCommandProcessor(SuperCommandProcessor):
@@ -79,7 +80,7 @@ class ProxyGameContext(SuperContext):
             base_title = "Minit Client"
 
             def get_application_config(self, defaultpath: str = "") -> str:
-                return Utils.user_path("data", "minit_client.ini")
+                return CONFIG_PATH
 
             def build_settings(self, settings):
                 super().build_settings(settings)
@@ -415,6 +416,16 @@ async def main(args):
         ctx.run_generator()
     if Utils.gui_enabled:
         ctx.run_gui()
+    else:
+        import configparser
+        config = configparser.RawConfigParser()
+        config.read(CONFIG_PATH)
+        dl = config.get("minit", "death_link")
+        kb = config.get("minit", "knockback_link")
+        if int(dl):
+            ctx.tags.add("DeathLink")
+        if int(kb):
+            ctx.tags.add("KnockbackLink")
     ctx.run_cli()
 
     await ctx.exit_event.wait()
